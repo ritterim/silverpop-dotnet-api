@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B3170ACA-0EDE-4B66-96A0-62FB97AACAC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Client", "src\Silverpop.Client\Silverpop.Client.csproj", "{E2B995C8-4A66-4C1C-B4F9-20D11ED0F79F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Client.Tests", "test\Silverpop.Client.Tests\Silverpop.Client.Tests.csproj", "{AB3DE6A1-252E-4541-9B16-92677C96D166}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Core", "src\Silverpop.Core\Silverpop.Core.csproj", "{1F9311EF-1D52-4FFC-A852-9D50AD25B1A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Core.Tests", "test\Silverpop.Core.Tests\Silverpop.Core.Tests.csproj", "{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{008E9135-77B8-4BEA-BE67-386C8B8D69F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Client.Tester", "samples\Silverpop.Client.Tester\Silverpop.Client.Tester.csproj", "{959CE82B-2C47-42CC-922F-FC4C0DAD255B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2B995C8-4A66-4C1C-B4F9-20D11ED0F79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2B995C8-4A66-4C1C-B4F9-20D11ED0F79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2B995C8-4A66-4C1C-B4F9-20D11ED0F79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2B995C8-4A66-4C1C-B4F9-20D11ED0F79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB3DE6A1-252E-4541-9B16-92677C96D166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB3DE6A1-252E-4541-9B16-92677C96D166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB3DE6A1-252E-4541-9B16-92677C96D166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB3DE6A1-252E-4541-9B16-92677C96D166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9311EF-1D52-4FFC-A852-9D50AD25B1A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F9311EF-1D52-4FFC-A852-9D50AD25B1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F9311EF-1D52-4FFC-A852-9D50AD25B1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F9311EF-1D52-4FFC-A852-9D50AD25B1A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971}.Release|Any CPU.Build.0 = Release|Any CPU
+		{959CE82B-2C47-42CC-922F-FC4C0DAD255B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{959CE82B-2C47-42CC-922F-FC4C0DAD255B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{959CE82B-2C47-42CC-922F-FC4C0DAD255B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{959CE82B-2C47-42CC-922F-FC4C0DAD255B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AB3DE6A1-252E-4541-9B16-92677C96D166} = {B3170ACA-0EDE-4B66-96A0-62FB97AACAC0}
+		{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971} = {B3170ACA-0EDE-4B66-96A0-62FB97AACAC0}
+		{959CE82B-2C47-42CC-922F-FC4C0DAD255B} = {008E9135-77B8-4BEA-BE67-386C8B8D69F8}
+	EndGlobalSection
+EndGlobal
