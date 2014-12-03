@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Silverpop.Core
@@ -44,6 +45,13 @@ namespace Silverpop.Core
                     var personalizationXml = new XElement(XName.Get("PERSONALIZATION"));
 
                     personalizationXml.SetElementValue(XName.Get("TAG_NAME"), personalizationTag.Key);
+
+                    // Prevent usage of XML CDATA sections,
+                    // if there is reason to allow these it can be revisited.
+                    if (ContainsCDATASection(personalizationTag.Value))
+                        throw new ArgumentException(
+                            "XML CDATA sections should not be used in PersonalizationTags values.");
+
                     personalizationXml.SetElementValue(XName.Get("VALUE"), personalizationTag.Value);
 
                     recipientXml.Add(personalizationXml);
@@ -53,6 +61,11 @@ namespace Silverpop.Core
             }
 
             return xml.ToString();
+        }
+
+        private static bool ContainsCDATASection(string str)
+        {
+            return Regex.Match(str, @"<!\[CDATA\[(.|\n|\r)*]]>").Success;
         }
     }
 }

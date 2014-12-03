@@ -196,6 +196,33 @@ namespace Silverpop.Core.Tests
                         .ContainsIgnoreWhitespaceAndNewLines(
                             "<TAG_NAME>tag1&amp;</TAG_NAME><VALUE>&lt;value&gt;</VALUE>"));
                 }
+
+                [Fact]
+                public void PersonalizationTags_Value_ThrowsWhenCDATASectionIsUsed()
+                {
+                    var exception = Assert.Throws<ArgumentException>(
+                        () => EncodedMessage(recipients: new List<TransactMessageRecipient>()
+                              {
+                                  new TransactMessageRecipient()
+                                  {
+                                      EmailAddress = "test1@example.com",
+                                      BodyType = TransactMessageRecipientBodyType.Html,
+                                      PersonalizationTags = new Dictionary<string, string>()
+                                      {
+                                          {
+                                              "tag1",
+                                              "<![CDATA[<html><body>" +
+                                                  Environment.NewLine +
+                                                  @"<a href=""http://"">test</a></body></html>]]>"
+                                          },
+                                      }
+                                  }
+                              }));
+
+                    Assert.Equal(
+                        "XML CDATA sections should not be used in PersonalizationTags values.",
+                        exception.Message);
+                }
             }
         }
     }

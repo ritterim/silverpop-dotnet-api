@@ -13,9 +13,6 @@ namespace Silverpop.Core
 
         public TransactMessageRecipientBodyType? BodyType { get; set; }
 
-        /// <summary>
-        /// Dictionary values should be wrapped in <![CDATA[ ... ]]> if necessary.
-        /// </summary>
         public IDictionary<string, string> PersonalizationTags { get; set; }
     }
 }
