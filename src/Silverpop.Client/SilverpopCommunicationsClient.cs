@@ -2,6 +2,7 @@
 using Renci.SshNet.Common;
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,8 +41,9 @@ namespace Silverpop.Client
             WithOpenSftpConnection(x =>
             {
                 using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+                using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
                 {
-                    x.UploadFile(ms, destinationPath, /*canOverride: */ false);
+                    x.UploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false);
                 }
             });
         }
@@ -49,13 +51,14 @@ namespace Silverpop.Client
         public Task FtpUploadAsync(string data, string destinationPath)
         {
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+            using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
             {
                 var sftpClient = GetSftpClient();
 
                 sftpClient.Connect();
 
                 return Task.Factory.FromAsync(
-                    sftpClient.BeginUploadFile(ms, destinationPath, /*canOverride: */ false, null, null),
+                    sftpClient.BeginUploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false, null, null),
                     x =>
                     {
                         sftpClient.EndUploadFile(x);
