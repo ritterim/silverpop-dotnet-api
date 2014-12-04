@@ -23,7 +23,7 @@ namespace Silverpop.Core
 
         public bool NoRetryOnFailure { get; set; }
 
-        public IEnumerable<string> SaveColumns { get; set; }
+        public ICollection<string> SaveColumns { get; set; }
 
         public ICollection<TransactMessageRecipient> Recipients { get; set; }
 
