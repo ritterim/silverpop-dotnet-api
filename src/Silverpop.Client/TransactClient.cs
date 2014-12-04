@@ -10,8 +10,8 @@ namespace Silverpop.Client
 {
     public class TransactClient
     {
-        public const int MaxRecipientsForBatchRequest = 5000;
-        public const int MaxRecipientsForNonBatchRequest = 10;
+        public const int MaxRecipientsPerBatchRequest = 5000;
+        public const int MaxRecipientsPerNonBatchRequest = 10;
 
         public static readonly string ErrorMissingHttpUrl =
             "A valid TransactHttpUrl must be provided.";
@@ -22,7 +22,7 @@ namespace Silverpop.Client
         public static readonly string ErrorExceededNonBatchRecipients = string.Format(
             "Number of recipients exceeds the max of {0} recipients permitted. " +
             "Use SendMessageBatch or SendMessageBatchAsync instead.",
-            MaxRecipientsForNonBatchRequest);
+            MaxRecipientsPerNonBatchRequest);
 
         private readonly TransactClientConfiguration _configuration;
         private readonly TransactMessageEncoder _encoder;
@@ -90,7 +90,7 @@ namespace Silverpop.Client
             MessageBatchPreCommunicationVerification();
 
             var filenames = new List<string>();
-            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsForBatchRequest))
+            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
             {
                 var encodedMessage = _encoder.Encode(batchMessage);
 
@@ -118,7 +118,7 @@ namespace Silverpop.Client
             MessageBatchPreCommunicationVerification();
 
             var filenames = new List<string>();
-            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsForBatchRequest))
+            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
             {
                 var encodedMessage = _encoder.Encode(batchMessage);
 
@@ -172,7 +172,7 @@ namespace Silverpop.Client
 
         private void SendMessagePreCommunicationVerification(TransactMessage message)
         {
-            if (message.Recipients.Count() > MaxRecipientsForNonBatchRequest)
+            if (message.Recipients.Count() > MaxRecipientsPerNonBatchRequest)
                 throw new ArgumentException(ErrorExceededNonBatchRecipients);
 
             if (string.IsNullOrWhiteSpace(_configuration.TransactHttpHost))
