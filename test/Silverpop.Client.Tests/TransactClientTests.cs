@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Extensions;
 
 namespace Silverpop.Client.Tests
 {
@@ -24,26 +25,13 @@ namespace Silverpop.Client.Tests
                 .Select(x => new TransactMessageRecipient())
                 .ToList();
 
-        public static TransactClient Create(
-            TransactClientConfiguration configuration = null,
-            TransactMessageEncoder encoder = null,
-            TransactMessageResponseDecoder decoder = null,
-            ISilverpopCommunicationsClient silverpop = null)
-        {
-            return new TransactClient(
-                configuration ?? new TransactClientConfiguration(),
-                encoder ?? new TransactMessageEncoder(),
-                decoder ?? new TransactMessageResponseDecoder(),
-                silverpop ?? Mock.Of<ISilverpopCommunicationsClient>());
-        }
-
         public class SendMessageMethodTests : TransactClientTests
         {
             [Fact]
             public void ThrowsForNullMessage()
             {
                 Assert.Throws<ArgumentNullException>(
-                    () => Create().SendMessage(null));
+                    () => new TransactClientTester().SendMessage(null));
             }
 
             [Fact]
@@ -57,7 +45,7 @@ namespace Silverpop.Client.Tests
                 };
 
                 var exception = Assert.Throws<ArgumentException>(
-                    () => Create().SendMessage(message));
+                    () => new TransactClientTester().SendMessage(message));
 
                 Assert.Equal(TransactClient.ErrorExceededNonBatchRecipients, exception.Message);
             }
@@ -66,7 +54,7 @@ namespace Silverpop.Client.Tests
             public void ThrowsWhenTransactHttpUrlIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
-                    () => Create().SendMessage(new TransactMessage()));
+                    () => new TransactClientTester().SendMessage(new TransactMessage()));
 
                 Assert.Equal(TransactClient.ErrorMissingHttpUrl, exception.Message);
             }
@@ -84,7 +72,7 @@ namespace Silverpop.Client.Tests
                     });
 
                 var exception = Assert.Throws<TransactClientException>(
-                    () => Create(configuration: new TransactClientConfiguration()
+                    () => new TransactClientTester(configuration: new TransactClientConfiguration()
                           {
                               TransactHttpHost = "test-host"
                           }, decoder: decoder).SendMessage(new TransactMessage()));
@@ -102,7 +90,7 @@ namespace Silverpop.Client.Tests
                     .Setup(x => x.Decode(It.IsAny<string>()))
                     .Returns(new TransactMessageResponse());
 
-                Create(configuration: new TransactClientConfiguration()
+                new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactHttpHost = "test-host"
                 }, decoder: decoder, silverpop: silverpop).SendMessage(new TransactMessage());
@@ -124,7 +112,7 @@ namespace Silverpop.Client.Tests
                         TransactionId = "123"
                     });
 
-                var response = Create(configuration: new TransactClientConfiguration()
+                var response = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactHttpHost = "test-host"
                 }, decoder: decoder).SendMessage(new TransactMessage());
@@ -139,7 +127,7 @@ namespace Silverpop.Client.Tests
             public void ThrowsForNullMessage()
             {
                 AssertEx.TaskThrows<ArgumentNullException>(
-                    () => Create().SendMessageAsync(null));
+                    () => new TransactClientTester().SendMessageAsync(null));
             }
 
             [Fact]
@@ -153,7 +141,7 @@ namespace Silverpop.Client.Tests
                 };
 
                 var exception = AssertEx.TaskThrows<ArgumentException>(
-                    () => Create().SendMessageAsync(message));
+                    () => new TransactClientTester().SendMessageAsync(message));
 
                 Assert.Equal(TransactClient.ErrorExceededNonBatchRecipients, exception.Message);
             }
@@ -162,7 +150,7 @@ namespace Silverpop.Client.Tests
             public void ThrowsWhenTransactHttpUrlIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
-                    () => Create().SendMessageAsync(new TransactMessage()));
+                    () => new TransactClientTester().SendMessageAsync(new TransactMessage()));
 
                 Assert.Equal(TransactClient.ErrorMissingHttpUrl, exception.Message);
             }
@@ -180,7 +168,7 @@ namespace Silverpop.Client.Tests
                     });
 
                 var exception = AssertEx.TaskThrows<TransactClientException>(
-                    () => Create(configuration: new TransactClientConfiguration()
+                    () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         TransactHttpHost = "test-host"
                     }, decoder: decoder).SendMessageAsync(new TransactMessage()));
@@ -198,7 +186,7 @@ namespace Silverpop.Client.Tests
                     .Setup(x => x.Decode(It.IsAny<string>()))
                     .Returns(new TransactMessageResponse());
 
-                await Create(configuration: new TransactClientConfiguration()
+                await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactHttpHost = "test-host"
                 }, decoder: decoder, silverpop: silverpop).SendMessageAsync(new TransactMessage());
@@ -220,7 +208,7 @@ namespace Silverpop.Client.Tests
                         TransactionId = "123"
                     });
 
-                var response = await Create(configuration: new TransactClientConfiguration()
+                var response = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactHttpHost = "test-host"
                 }, decoder: decoder).SendMessageAsync(new TransactMessage());
@@ -235,36 +223,30 @@ namespace Silverpop.Client.Tests
             public void ThrowsForNullMessages()
             {
                 Assert.Throws<ArgumentNullException>(
-                    () => Create().SendMessageBatch(null));
+                    () => new TransactClientTester().SendMessageBatch(null));
             }
 
             [Fact]
             public void ThrowsWhenTransactFtpUrlIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
-                    () => Create().SendMessageBatch(new TransactMessage()));
+                    () => new TransactClientTester().SendMessageBatch(new TransactMessage()));
 
                 Assert.Equal(TransactClient.ErrorMissingFtpUrl, exception.Message);
             }
 
-            [Fact]
-            public void ReturnsExpectedTrackingFilename()
+            [Fact, FreezeClock]
+            public void ReturnsExpectedTrackingFilenames()
             {
-                var filename = Create(configuration: new TransactClientConfiguration()
+                var filenames = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
-                })
-                .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
-                .Single();
+                }, utcNow: Clock.UtcNow)
+                .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                // filename is a randomly generated GUID with an .xml extension appended.
-
-                Assert.True(filename.EndsWith(".xml"), "Filename should end in .xml");
-
-                var filenameNoExtension = filename.Replace(".xml", string.Empty);
-
-                Assert.DoesNotThrow(
-                    () => Guid.Parse(filenameNoExtension));
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml", filenames.First());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml", filenames.Last());
+                Assert.Equal(2, filenames.Count());
             }
 
             [Fact]
@@ -272,7 +254,7 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
-                var filename = Create(configuration: new TransactClientConfiguration()
+                var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
@@ -290,7 +272,7 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
-                var filename = Create(configuration: new TransactClientConfiguration()
+                var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
@@ -312,7 +294,7 @@ namespace Silverpop.Client.Tests
             {
                 var encoder = Mock.Of<TransactMessageEncoder>();
 
-                var filename = Create(configuration: new TransactClientConfiguration()
+                var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, encoder: encoder)
@@ -331,36 +313,30 @@ namespace Silverpop.Client.Tests
             public void ThrowsForNullMessages()
             {
                 AssertEx.TaskThrows<ArgumentNullException>(
-                    () => Create().SendMessageBatchAsync(null));
+                    () => new TransactClientTester().SendMessageBatchAsync(null));
             }
 
             [Fact]
             public void ThrowsWhenTransactFtpUrlIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
-                    () => Create().SendMessageBatchAsync(new TransactMessage()));
+                    () => new TransactClientTester().SendMessageBatchAsync(new TransactMessage()));
 
                 Assert.Equal(TransactClient.ErrorMissingFtpUrl, exception.Message);
             }
 
-            [Fact]
-            public async Task ReturnsExpectedTrackingFilename()
+            [Fact, FreezeClock]
+            public async Task ReturnsExpectedTrackingFilenames()
             {
-                var filename = (await Create(configuration: new TransactClientConfiguration()
+                var filenames = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
-                })
-                .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
-                .Single();
+                }, utcNow: Clock.UtcNow)
+                .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                // filename is a randomly generated GUID with an .xml extension appended.
-
-                Assert.True(filename.EndsWith(".xml"), "Filename should end in .xml");
-
-                var filenameNoExtension = filename.Replace(".xml", string.Empty);
-
-                Assert.DoesNotThrow(
-                    () => Guid.Parse(filenameNoExtension));
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml", filenames.First());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml", filenames.Last());
+                Assert.Equal(2, filenames.Count());
             }
 
             [Fact]
@@ -368,7 +344,7 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
-                var filename = (await Create(configuration: new TransactClientConfiguration()
+                var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
@@ -386,7 +362,7 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
-                var filename = (await Create(configuration: new TransactClientConfiguration()
+                var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
@@ -408,7 +384,7 @@ namespace Silverpop.Client.Tests
             {
                 var encoder = Mock.Of<TransactMessageEncoder>();
 
-                var filename = (await Create(configuration: new TransactClientConfiguration()
+                var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, encoder: encoder)
@@ -427,14 +403,14 @@ namespace Silverpop.Client.Tests
             public void ThrowsForNullFilename()
             {
                 Assert.Throws<ArgumentNullException>(
-                    () => Create().GetStatusOfMessageBatch(null));
+                    () => new TransactClientTester().GetStatusOfMessageBatch(null));
             }
 
             [Fact]
             public void ThrowsWhenTransactFtpUrlIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
-                    () => Create().GetStatusOfMessageBatch("file.xml"));
+                    () => new TransactClientTester().GetStatusOfMessageBatch("file.xml"));
 
                 Assert.Equal(TransactClient.ErrorMissingFtpUrl, exception.Message);
             }
@@ -452,7 +428,7 @@ namespace Silverpop.Client.Tests
                     .Setup(x => x.FtpDownload(It.IsAny<string>()))
                     .Returns(new MemoryStream());
 
-                Create(configuration: new TransactClientConfiguration()
+                new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, decoder: decoder, silverpop: silverpop)
@@ -473,7 +449,7 @@ namespace Silverpop.Client.Tests
                     .Returns((Stream)null);
 
                 var exception = Assert.Throws<TransactClientException>(
-                    () => Create(configuration: new TransactClientConfiguration()
+                    () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         TransactFtpHost = "test-host"
                     }, silverpop: silverpop)
@@ -498,7 +474,7 @@ namespace Silverpop.Client.Tests
                     .Setup(x => x.FtpDownload(It.IsAny<string>()))
                     .Returns(new MemoryStream());
 
-                var response = Create(configuration: new TransactClientConfiguration()
+                var response = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, decoder: decoder, silverpop: silverpop)
@@ -514,14 +490,14 @@ namespace Silverpop.Client.Tests
             public void ThrowsForNullFilename()
             {
                 AssertEx.TaskThrows<ArgumentNullException>(
-                    () => Create().GetStatusOfMessageBatchAsync(null));
+                    () => new TransactClientTester().GetStatusOfMessageBatchAsync(null));
             }
 
             [Fact]
             public void ThrowsWhenTransactFtpUrlIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
-                    () => Create().GetStatusOfMessageBatchAsync("file.xml"));
+                    () => new TransactClientTester().GetStatusOfMessageBatchAsync("file.xml"));
 
                 Assert.Equal(TransactClient.ErrorMissingFtpUrl, exception.Message);
             }
@@ -539,7 +515,7 @@ namespace Silverpop.Client.Tests
                     .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
                     .ReturnsAsync(new MemoryStream());
 
-                await Create(configuration: new TransactClientConfiguration()
+                await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, decoder: decoder, silverpop: silverpop)
@@ -560,7 +536,7 @@ namespace Silverpop.Client.Tests
                     .ReturnsAsync(null);
 
                 var exception = AssertEx.TaskThrows<TransactClientException>(
-                    () => Create(configuration: new TransactClientConfiguration()
+                    () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         TransactFtpHost = "test-host"
                     }, silverpop: silverpop)
@@ -585,13 +561,38 @@ namespace Silverpop.Client.Tests
                     .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
                     .ReturnsAsync(new MemoryStream());
 
-                var response = await Create(configuration: new TransactClientConfiguration()
+                var response = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, decoder: decoder, silverpop: silverpop)
                 .GetStatusOfMessageBatchAsync("file.xml");
 
                 Assert.Equal("123", response.TransactionId);
+            }
+        }
+
+        public class TransactClientTester : TransactClient
+        {
+            private readonly DateTime? _utcNow;
+
+            public TransactClientTester(
+                TransactClientConfiguration configuration = null,
+                TransactMessageEncoder encoder = null,
+                TransactMessageResponseDecoder decoder = null,
+                ISilverpopCommunicationsClient silverpop = null,
+                DateTime? utcNow = null)
+                : base(
+                    configuration ?? new TransactClientConfiguration(),
+                    encoder ?? new TransactMessageEncoder(),
+                    decoder ?? new TransactMessageResponseDecoder(),
+                    silverpop ?? Mock.Of<ISilverpopCommunicationsClient>())
+            {
+                _utcNow = utcNow;
+            }
+
+            public override DateTime UtcNow
+            {
+                get { return _utcNow ?? base.UtcNow; }
             }
         }
     }

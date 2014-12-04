@@ -50,6 +50,11 @@ namespace Silverpop.Client
             _silverpop = silverpop;
         }
 
+        public virtual DateTime UtcNow
+        {
+            get { return DateTime.UtcNow; }
+        }
+
         public TransactMessageResponse SendMessage(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -94,7 +99,9 @@ namespace Silverpop.Client
             {
                 var encodedMessage = _encoder.Encode(batchMessage);
 
-                var filename = Guid.NewGuid().ToString() + ".xml";
+                var filename = string.Format("{0}_UTC.{1}.xml",
+                    UtcNow.ToString("s").Replace(':', '_'),
+                    filenames.Count() + 1);
 
                 _silverpop.FtpUpload(
                     encodedMessage,
@@ -122,7 +129,9 @@ namespace Silverpop.Client
             {
                 var encodedMessage = _encoder.Encode(batchMessage);
 
-                var filename = Guid.NewGuid().ToString() + ".xml";
+                var filename = string.Format("{0}_UTC.{1}.xml",
+                    UtcNow.ToString("s").Replace(':', '_'),
+                    filenames.Count() + 1);
 
                 await _silverpop.FtpUploadAsync(
                     encodedMessage,
