@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Xunit" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <XunitMsBuildRunner Include="..\packages\**\xunit.runner.msbuild.dll" />
+  </ItemGroup>
+
+  <UsingTask TaskName="Xunit.Runner.MSBuild.xunit" AssemblyFile="@(XunitMsBuildRunner)"
+             Condition=" '@(XunitMsBuildRunner -> Count())' == '1' " />
+
+  <Target Name="Xunit">
+    <Error Text="'xunit.runner.msbuild.dll' was not found in the packages directory." Condition=" '@(XunitMsBuildRunner)' == '' " />
+    <Error Text="Multiple versions of 'xunit.runner.msbuild.dll' were found. Please delete your packages directory from the solution folder and try again." Condition=" '@(XunitMsBuildRunner -> Count())' != '1' " />
+
+    <xunit Assembly="$(TestAssembly)" Xml="$(XmlPath)" />
+  </Target>
+</Project>

@@ -14,8 +14,7 @@
 [Rr]eleases/
 x64/
 x86/
-build/
-bld/
+artifacts/
 [Bb]in/
 [Oo]bj/
 
