@@ -2,6 +2,7 @@
 
 namespace Silverpop.Client
 {
+    [Serializable]
     public class TransactClientException : Exception
     {
         public TransactClientException()
