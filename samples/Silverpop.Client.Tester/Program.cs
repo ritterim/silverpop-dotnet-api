@@ -1,6 +1,7 @@
 ﻿using Silverpop.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +52,7 @@ namespace Silverpop.Client.Tester
             var getStatusOfMessageBatchStart = DateTime.Now;
             while (true)
             {
-                var getStatusOfMessageBatchResponse = client.GetStatusOfMessageBatch(sendMessageBatchResponse);
+                var getStatusOfMessageBatchResponse = client.GetStatusOfMessageBatch(sendMessageBatchResponse.Single());
 
                 if (getStatusOfMessageBatchResponse == null)
                 {
@@ -80,7 +81,7 @@ namespace Silverpop.Client.Tester
             var getStatusOfMessageBatchAsyncStart = DateTime.Now;
             while (true)
             {
-                var getStatusOfMessageBatchAsyncResponse = await client.GetStatusOfMessageBatchAsync(sendMessageBatchResponse);
+                var getStatusOfMessageBatchAsyncResponse = await client.GetStatusOfMessageBatchAsync(sendMessageBatchResponse.Single());
 
                 if (getStatusOfMessageBatchAsyncResponse == null)
                 {

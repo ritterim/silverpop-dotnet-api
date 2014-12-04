@@ -21,13 +21,13 @@ namespace Silverpop.Core.Tests
                 bool sendAsBatch = false,
                 bool noRetryOnFailure = false,
                 IEnumerable<string> saveColumns = null,
-                IEnumerable<TransactMessageRecipient> recipients = null)
+                ICollection<TransactMessageRecipient> recipients = null)
             {
                 if (saveColumns == null)
                     saveColumns = Enumerable.Empty<string>();
 
                 if (recipients == null)
-                    recipients = Enumerable.Empty<TransactMessageRecipient>();
+                    recipients = new List<TransactMessageRecipient>();
 
                 var message = new TransactMessage()
                 {

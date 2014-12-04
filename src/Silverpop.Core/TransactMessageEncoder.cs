@@ -6,7 +6,7 @@ namespace Silverpop.Core
 {
     public class TransactMessageEncoder
     {
-        public string Encode(TransactMessage message)
+        public virtual string Encode(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 

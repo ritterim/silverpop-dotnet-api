@@ -1,6 +1,7 @@
 ﻿using Silverpop.Client.Extensions;
 using Silverpop.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Silverpop.Client
 {
     public class TransactClient
     {
+        public const int MaxRecipientsForBatchRequest = 5000;
         public const int MaxRecipientsForNonBatchRequest = 10;
 
         public static readonly string ErrorMissingHttpUrl =
@@ -80,48 +82,60 @@ namespace Silverpop.Client
             return decodedResponse;
         }
 
-        /// <returns>Filename used for checking status of batch.</returns>
-        /// <remarks>This should be limited to 5,000 recipients per call.</remarks>
-        public string SendMessageBatch(TransactMessage message)
+        /// <returns>Filenames can be used for checking status of batches.</returns>
+        public IEnumerable<string> SendMessageBatch(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
             MessageBatchPreCommunicationVerification();
 
-            var encodedMessage = _encoder.Encode(message);
+            var filenames = new List<string>();
+            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsForBatchRequest))
+            {
+                var encodedMessage = _encoder.Encode(batchMessage);
 
-            var filename = Guid.NewGuid().ToString() + ".xml";
-            _silverpop.FtpUpload(
-                encodedMessage,
-                "transact/temp/" + filename);
+                var filename = Guid.NewGuid().ToString() + ".xml";
 
-            _silverpop.FtpMove(
-                "transact/temp/" + filename,
-                "transact/inbound/" + filename);
+                _silverpop.FtpUpload(
+                    encodedMessage,
+                    "transact/temp/" + filename);
 
-            return filename;
+                _silverpop.FtpMove(
+                    "transact/temp/" + filename,
+                    "transact/inbound/" + filename);
+
+                filenames.Add(filename);
+            }
+
+            return filenames;
         }
 
-        /// <returns>Filename used for checking status of batch.</returns>
-        /// <remarks>This should be limited to 5,000 recipients per call.</remarks>
-        public async Task<string> SendMessageBatchAsync(TransactMessage message)
+        /// <returns>Filenames can be used for checking status of batches.</returns>
+        public async Task<IEnumerable<string>> SendMessageBatchAsync(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
             MessageBatchPreCommunicationVerification();
 
-            var encodedMessage = _encoder.Encode(message);
+            var filenames = new List<string>();
+            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsForBatchRequest))
+            {
+                var encodedMessage = _encoder.Encode(batchMessage);
 
-            var filename = Guid.NewGuid().ToString() + ".xml";
-            await _silverpop.FtpUploadAsync(
-                encodedMessage,
-                "transact/temp/" + filename);
+                var filename = Guid.NewGuid().ToString() + ".xml";
 
-            _silverpop.FtpMove(
-                "transact/temp/" + filename,
-                "transact/inbound/" + filename);
+                await _silverpop.FtpUploadAsync(
+                    encodedMessage,
+                    "transact/temp/" + filename);
 
-            return filename;
+                _silverpop.FtpMove(
+                    "transact/temp/" + filename,
+                    "transact/inbound/" + filename);
+
+                filenames.Add(filename);
+            }
+
+            return filenames;
         }
 
         public TransactMessageResponse GetStatusOfMessageBatch(string filename)

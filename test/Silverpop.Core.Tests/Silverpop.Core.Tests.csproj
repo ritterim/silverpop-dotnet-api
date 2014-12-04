@@ -52,6 +52,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactMessageEncoderTests.cs" />
     <Compile Include="TransactMessageResponseDecoderTests.cs" />
+    <Compile Include="TransactMessageTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Silverpop.Core\Silverpop.Core.csproj">

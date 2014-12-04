@@ -12,6 +12,18 @@ namespace Silverpop.Client.Tests
 {
     public class TransactClientTests
     {
+        protected static readonly ICollection<TransactMessageRecipient> TestRecipients =
+            Enumerable.Range(0, 1)
+                .Select(x => new TransactMessageRecipient()
+                {
+                    EmailAddress = Guid.NewGuid().ToString() + "@example.com"
+                }).ToList();
+
+        protected static readonly ICollection<TransactMessageRecipient> TestRecipientsTwoBatches =
+            Enumerable.Range(0, TransactClient.MaxRecipientsForBatchRequest + 1)
+                .Select(x => new TransactMessageRecipient())
+                .ToList();
+
         public static TransactClient Create(
             TransactClientConfiguration configuration = null,
             TransactMessageEncoder encoder = null,
@@ -41,6 +53,7 @@ namespace Silverpop.Client.Tests
                 {
                     Recipients = Enumerable.Range(0, TransactClient.MaxRecipientsForNonBatchRequest + 1)
                         .Select(x => new TransactMessageRecipient())
+                        .ToList()
                 };
 
                 var exception = Assert.Throws<ArgumentException>(
@@ -136,6 +149,7 @@ namespace Silverpop.Client.Tests
                 {
                     Recipients = Enumerable.Range(0, TransactClient.MaxRecipientsForNonBatchRequest + 1)
                         .Select(x => new TransactMessageRecipient())
+                        .ToList()
                 };
 
                 var exception = AssertEx.TaskThrows<ArgumentException>(
@@ -240,7 +254,8 @@ namespace Silverpop.Client.Tests
                 {
                     TransactFtpHost = "test-host"
                 })
-                .SendMessageBatch(new TransactMessage());
+                .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
+                .Single();
 
                 // filename is a randomly generated GUID with an .xml extension appended.
 
@@ -261,7 +276,8 @@ namespace Silverpop.Client.Tests
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
-                .SendMessageBatch(new TransactMessage());
+                .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
+                .Single();
 
                 Mock.Get(silverpop)
                     .Verify(
@@ -278,7 +294,8 @@ namespace Silverpop.Client.Tests
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
-                .SendMessageBatch(new TransactMessage());
+                .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
+                .Single();
 
                 // Moq.Sequences has a dependency on NUnit.
                 // Rather than installing it to verify upload occurs before move
@@ -288,6 +305,23 @@ namespace Silverpop.Client.Tests
                     .Verify(
                         x => x.FtpMove("transact/temp/" + filename, "transact/inbound/" + filename),
                         Times.Once());
+            }
+
+            [Fact]
+            public void PerformsOperationsInBatches()
+            {
+                var encoder = Mock.Of<TransactMessageEncoder>();
+
+                var filename = Create(configuration: new TransactClientConfiguration()
+                {
+                    TransactFtpHost = "test-host"
+                }, encoder: encoder)
+                .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
+
+                Mock.Get(encoder)
+                    .Verify(
+                        x => x.Encode(It.IsAny<TransactMessage>()),
+                        Times.Exactly(2));
             }
         }
 
@@ -312,11 +346,12 @@ namespace Silverpop.Client.Tests
             [Fact]
             public async Task ReturnsExpectedTrackingFilename()
             {
-                var filename = await Create(configuration: new TransactClientConfiguration()
+                var filename = (await Create(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 })
-                .SendMessageBatchAsync(new TransactMessage());
+                .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
+                .Single();
 
                 // filename is a randomly generated GUID with an .xml extension appended.
 
@@ -333,11 +368,12 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
-                var filename = await Create(configuration: new TransactClientConfiguration()
+                var filename = (await Create(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
-                .SendMessageBatchAsync(new TransactMessage());
+                .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
+                .Single();
 
                 Mock.Get(silverpop)
                     .Verify(
@@ -350,11 +386,12 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
-                var filename = await Create(configuration: new TransactClientConfiguration()
+                var filename = (await Create(configuration: new TransactClientConfiguration()
                 {
                     TransactFtpHost = "test-host"
                 }, silverpop: silverpop)
-                .SendMessageBatchAsync(new TransactMessage());
+                .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
+                .Single();
 
                 // Moq.Sequences has a dependency on NUnit.
                 // Rather than installing it to verify upload occurs before move
@@ -364,6 +401,23 @@ namespace Silverpop.Client.Tests
                     .Verify(
                         x => x.FtpMove("transact/temp/" + filename, "transact/inbound/" + filename),
                         Times.Once());
+            }
+
+            [Fact]
+            public async Task PerformsOperationsInBatches()
+            {
+                var encoder = Mock.Of<TransactMessageEncoder>();
+
+                var filename = (await Create(configuration: new TransactClientConfiguration()
+                {
+                    TransactFtpHost = "test-host"
+                }, encoder: encoder)
+                .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches }));
+
+                Mock.Get(encoder)
+                    .Verify(
+                        x => x.Encode(It.IsAny<TransactMessage>()),
+                        Times.Exactly(2));
             }
         }
 

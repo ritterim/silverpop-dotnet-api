@@ -55,25 +55,25 @@ TransactMessageResponse response = await client.SendMessageAsync(message);
 **Send a message batch using the client *(11 - 5,000 recipients)***
 
 ```csharp
-string batchResponse = client.SendMessageBatch(message);
+IEnumerable<string> batchResponse = client.SendMessageBatch(message);
 ```
 
 **Send a message batch using the client asynchronously *(11 - 5,000 recipients)***
 
 ```csharp
-string batchResponse = await client.SendMessageBatchAsync(message);
+IEnumerable<string> batchResponse = await client.SendMessageBatchAsync(message);
 ```
 
 **Get the status of a message batch**
 
 ```csharp
-TransactMessageResponse response = client.GetStatusOfMessageBatch(batchResponse);
+TransactMessageResponse response = client.GetStatusOfMessageBatch("a_filename_from_batchResponse.xml");
 ```
 
 **Get the status of a message batch asynchronously**
 
 ```csharp
-TransactMessageResponse response = await client.GetStatusOfMessageBatchAsync(batchResponse);
+TransactMessageResponse response = await client.GetStatusOfMessageBatchAsync("a_filename_from_batchResponse.xml");
 ```
 
 # License
