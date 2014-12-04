@@ -28,12 +28,12 @@ namespace Silverpop.Client
 
         public string HttpUpload(string data)
         {
-            return _webClient.UploadString("https://" + _configuration.TransactHttpHost, data);
+            return _webClient.UploadString("https://" + _configuration.TransactHttpsHost, data);
         }
 
         public async Task<string> HttpUploadAsync(string data)
         {
-            return await _webClient.UploadStringTaskAsync("https://" + _configuration.TransactHttpHost, data);
+            return await _webClient.UploadStringTaskAsync("https://" + _configuration.TransactHttpsHost, data);
         }
 
         public void FtpUpload(string data, string destinationPath)
@@ -123,7 +123,7 @@ namespace Silverpop.Client
         private SftpClient GetSftpClient()
         {
             return new SftpClient(
-                _configuration.TransactFtpHost,
+                _configuration.TransactSftpHost,
                 _configuration.Username,
                 _configuration.Password);
         }

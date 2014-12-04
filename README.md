@@ -9,8 +9,8 @@ This is an .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact 
 ```csharp
 var configuration = new TransactClientConfiguration()
 {
-    TransactHttpHost = "transact#.silverpop.com/XTMail",
-    TransactFtpHost = "transfer#.silverpop.com",
+    TransactHttpsHost = "transact#.silverpop.com/XTMail",
+    TransactSftpHost = "transfer#.silverpop.com",
     Username = "username",
     Password = "password"
 };

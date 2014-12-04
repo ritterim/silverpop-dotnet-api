@@ -6,13 +6,13 @@
         /// transact#.silverpop.com/XTMail
         /// where # is the pod number you wish to connect to.
         /// </summary>
-        public string TransactHttpHost { get; set; }
+        public string TransactHttpsHost { get; set; }
 
         /// <summary>
         /// transfer#.silverpop.com
         /// where # is the pod number you wish to connect to.
         /// </summary>
-        public string TransactFtpHost { get; set; }
+        public string TransactSftpHost { get; set; }
 
         public string Username { get; set; }
 

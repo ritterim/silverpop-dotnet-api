@@ -13,11 +13,11 @@ namespace Silverpop.Client
         public const int MaxRecipientsPerBatchRequest = 5000;
         public const int MaxRecipientsPerNonBatchRequest = 10;
 
-        public static readonly string ErrorMissingHttpUrl =
-            "A valid TransactHttpUrl must be provided.";
+        public static readonly string ErrorMissingHttpsUrl =
+            "A valid TransactHttpsUrl must be provided.";
 
-        public static readonly string ErrorMissingFtpUrl =
-            "A valid TransactFtpUrl must be provided.";
+        public static readonly string ErrorMissingSftpUrl =
+            "A valid TransactSftpUrl must be provided.";
 
         public static readonly string ErrorExceededNonBatchRecipients = string.Format(
             "Number of recipients exceeds the max of {0} recipients permitted. " +
@@ -184,14 +184,14 @@ namespace Silverpop.Client
             if (message.Recipients.Count() > MaxRecipientsPerNonBatchRequest)
                 throw new ArgumentException(ErrorExceededNonBatchRecipients);
 
-            if (string.IsNullOrWhiteSpace(_configuration.TransactHttpHost))
-                throw new ApplicationException(ErrorMissingHttpUrl);
+            if (string.IsNullOrWhiteSpace(_configuration.TransactHttpsHost))
+                throw new ApplicationException(ErrorMissingHttpsUrl);
         }
 
         private void MessageBatchPreCommunicationVerification()
         {
-            if (string.IsNullOrWhiteSpace(_configuration.TransactFtpHost))
-                throw new ApplicationException(ErrorMissingFtpUrl);
+            if (string.IsNullOrWhiteSpace(_configuration.TransactSftpHost))
+                throw new ApplicationException(ErrorMissingSftpUrl);
         }
     }
 }
