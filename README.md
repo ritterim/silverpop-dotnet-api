@@ -1,6 +1,6 @@
 # Silverpop .NET API
 
-This is an .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact XML email sending.
+This is a .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact XML email sending.
 
 ## Usage
 
