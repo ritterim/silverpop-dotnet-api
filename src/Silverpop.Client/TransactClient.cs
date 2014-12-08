@@ -184,13 +184,13 @@ namespace Silverpop.Client
             if (message.Recipients.Count() > MaxRecipientsPerNonBatchRequest)
                 throw new ArgumentException(ErrorExceededNonBatchRecipients);
 
-            if (string.IsNullOrWhiteSpace(_configuration.TransactHttpsHost))
+            if (string.IsNullOrWhiteSpace(_configuration.TransactHttpsUrl))
                 throw new ApplicationException(ErrorMissingHttpsUrl);
         }
 
         private void MessageBatchPreCommunicationVerification()
         {
-            if (string.IsNullOrWhiteSpace(_configuration.TransactSftpHost))
+            if (string.IsNullOrWhiteSpace(_configuration.TransactSftpUrl))
                 throw new ApplicationException(ErrorMissingSftpUrl);
         }
     }

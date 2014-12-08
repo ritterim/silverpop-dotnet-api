@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Silverpop.Client
@@ -28,12 +29,12 @@ namespace Silverpop.Client
 
         public string HttpUpload(string data)
         {
-            return _webClient.UploadString("https://" + _configuration.TransactHttpsHost, data);
+            return _webClient.UploadString(_configuration.TransactHttpsUrl, data);
         }
 
         public async Task<string> HttpUploadAsync(string data)
         {
-            return await _webClient.UploadStringTaskAsync("https://" + _configuration.TransactHttpsHost, data);
+            return await _webClient.UploadStringTaskAsync(_configuration.TransactHttpsUrl, data);
         }
 
         public void FtpUpload(string data, string destinationPath)
@@ -122,8 +123,14 @@ namespace Silverpop.Client
 
         private SftpClient GetSftpClient()
         {
+            var transactSftpHost = Regex.Replace(
+                _configuration.TransactSftpUrl,
+                @"sftp:\/\/",
+                string.Empty,
+                RegexOptions.IgnoreCase);
+
             return new SftpClient(
-                _configuration.TransactSftpHost,
+                transactSftpHost,
                 _configuration.Username,
                 _configuration.Password);
         }
