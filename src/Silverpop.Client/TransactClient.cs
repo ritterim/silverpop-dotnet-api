@@ -2,6 +2,7 @@
 using Silverpop.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,14 +28,14 @@ namespace Silverpop.Client
         private readonly TransactClientConfiguration _configuration;
         private readonly TransactMessageEncoder _encoder;
         private readonly TransactMessageResponseDecoder _decoder;
-        private readonly ISilverpopCommunicationsClient _silverpop;
+        private readonly Func<ISilverpopCommunicationsClient> _silverpopFactory;
 
         public TransactClient(TransactClientConfiguration configuration)
             : this(
                 configuration,
                 new TransactMessageEncoder(),
                 new TransactMessageResponseDecoder(),
-                new SilverpopCommunicationsClient(configuration))
+                () => new SilverpopCommunicationsClient(configuration))
         {
         }
 
@@ -42,12 +43,12 @@ namespace Silverpop.Client
             TransactClientConfiguration configuration,
             TransactMessageEncoder encoder,
             TransactMessageResponseDecoder decoder,
-            ISilverpopCommunicationsClient silverpop)
+            Func<ISilverpopCommunicationsClient> silverpopFactory)
         {
             _configuration = configuration;
             _encoder = encoder;
             _decoder = decoder;
-            _silverpop = silverpop;
+            _silverpopFactory = silverpopFactory;
         }
 
         public virtual DateTime UtcNow
@@ -62,7 +63,13 @@ namespace Silverpop.Client
             SendMessagePreCommunicationVerification(message);
 
             var encodedMessage = _encoder.Encode(message);
-            var response = _silverpop.HttpUpload(encodedMessage);
+
+            string response;
+            using (var silverpop = _silverpopFactory())
+            {
+                response = silverpop.HttpUpload(encodedMessage);
+            }
+
             var decodedResponse = _decoder.Decode(response);
 
             if (decodedResponse.Status == TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent)
@@ -78,7 +85,13 @@ namespace Silverpop.Client
             SendMessagePreCommunicationVerification(message);
 
             var encodedMessage = _encoder.Encode(message);
-            var response = await _silverpop.HttpUploadAsync(encodedMessage);
+
+            string response;
+            using (var silverpop = _silverpopFactory())
+            {
+                response = await silverpop.HttpUploadAsync(encodedMessage);
+            }
+
             var decodedResponse = _decoder.Decode(response);
 
             if (decodedResponse.Status == TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent)
@@ -95,23 +108,27 @@ namespace Silverpop.Client
             MessageBatchPreCommunicationVerification();
 
             var filenames = new List<string>();
-            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
+
+            using (var silverpop = _silverpopFactory())
             {
-                var encodedMessage = _encoder.Encode(batchMessage);
+                foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
+                {
+                    var encodedMessage = _encoder.Encode(batchMessage);
 
-                var filename = string.Format("{0}_UTC.{1}.xml",
-                    UtcNow.ToString("s").Replace(':', '_'),
-                    filenames.Count() + 1);
+                    var filename = string.Format("{0}_UTC.{1}.xml",
+                        UtcNow.ToString("s").Replace(':', '_'),
+                        filenames.Count() + 1);
 
-                _silverpop.FtpUpload(
-                    encodedMessage,
-                    "transact/temp/" + filename);
+                    silverpop.FtpUpload(
+                        encodedMessage,
+                        "transact/temp/" + filename);
 
-                _silverpop.FtpMove(
-                    "transact/temp/" + filename,
-                    "transact/inbound/" + filename);
+                    silverpop.FtpMove(
+                        "transact/temp/" + filename,
+                        "transact/inbound/" + filename);
 
-                filenames.Add(filename);
+                    filenames.Add(filename);
+                }
             }
 
             return filenames;
@@ -125,23 +142,27 @@ namespace Silverpop.Client
             MessageBatchPreCommunicationVerification();
 
             var filenames = new List<string>();
-            foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
+
+            using (var silverpop = _silverpopFactory())
             {
-                var encodedMessage = _encoder.Encode(batchMessage);
+                foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
+                {
+                    var encodedMessage = _encoder.Encode(batchMessage);
 
-                var filename = string.Format("{0}_UTC.{1}.xml",
-                    UtcNow.ToString("s").Replace(':', '_'),
-                    filenames.Count() + 1);
+                    var filename = string.Format("{0}_UTC.{1}.xml",
+                        UtcNow.ToString("s").Replace(':', '_'),
+                        filenames.Count() + 1);
 
-                await _silverpop.FtpUploadAsync(
-                    encodedMessage,
-                    "transact/temp/" + filename);
+                    await silverpop.FtpUploadAsync(
+                        encodedMessage,
+                        "transact/temp/" + filename);
 
-                _silverpop.FtpMove(
-                    "transact/temp/" + filename,
-                    "transact/inbound/" + filename);
+                    silverpop.FtpMove(
+                        "transact/temp/" + filename,
+                        "transact/inbound/" + filename);
 
-                filenames.Add(filename);
+                    filenames.Add(filename);
+                }
             }
 
             return filenames;
@@ -153,7 +174,12 @@ namespace Silverpop.Client
 
             MessageBatchPreCommunicationVerification();
 
-            var stream = _silverpop.FtpDownload("transact/status/" + filename);
+            Stream stream;
+            using (var silverpop = _silverpopFactory())
+            {
+                stream = silverpop.FtpDownload("transact/status/" + filename);
+            }
+
             if (stream == null)
                 throw new TransactClientException(
                     filename + " does not exist in the transact/status folder");
@@ -169,7 +195,12 @@ namespace Silverpop.Client
 
             MessageBatchPreCommunicationVerification();
 
-            var stream = await _silverpop.FtpDownloadAsync("transact/status/" + filename);
+            Stream stream;
+            using (var silverpop = _silverpopFactory())
+            {
+                stream = await silverpop.FtpDownloadAsync("transact/status/" + filename);
+            }
+
             if (stream == null)
                 throw new TransactClientException(
                     filename + " does not exist in the transact/status folder");

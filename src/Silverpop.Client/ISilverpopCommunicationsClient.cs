@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Silverpop.Client
 {
-    public interface ISilverpopCommunicationsClient
+    public interface ISilverpopCommunicationsClient : IDisposable
     {
         string HttpUpload(string data);
 

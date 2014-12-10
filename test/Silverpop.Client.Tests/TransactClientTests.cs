@@ -93,7 +93,7 @@ namespace Silverpop.Client.Tests
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactHttpsUrl = "https://"
-                }, decoder: decoder, silverpop: silverpop).SendMessage(new TransactMessage());
+                }, decoder: decoder, silverpopFactory: () => silverpop).SendMessage(new TransactMessage());
 
                 Mock.Get(silverpop)
                     .Verify(
@@ -118,6 +118,25 @@ namespace Silverpop.Client.Tests
                 }, decoder: decoder).SendMessage(new TransactMessage());
 
                 Assert.Equal("123", response.TransactionId);
+            }
+
+            [Fact]
+            public void DisposesISilverpopCommunicationsClient()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse());
+
+                var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
+
+                new TransactClientTester(configuration: new TransactClientConfiguration()
+                {
+                    TransactHttpsUrl = "https://"
+                }, decoder: decoder, silverpopFactory: () => silverpop).SendMessage(new TransactMessage());
+
+                Mock.Get(silverpop)
+                    .Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -189,7 +208,7 @@ namespace Silverpop.Client.Tests
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactHttpsUrl = "https://"
-                }, decoder: decoder, silverpop: silverpop).SendMessageAsync(new TransactMessage());
+                }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageAsync(new TransactMessage());
 
                 Mock.Get(silverpop)
                     .Verify(
@@ -214,6 +233,25 @@ namespace Silverpop.Client.Tests
                 }, decoder: decoder).SendMessageAsync(new TransactMessage());
 
                 Assert.Equal("123", response.TransactionId);
+            }
+
+            [Fact]
+            public async Task DisposesISilverpopCommunicationsClient()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse());
+
+                var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
+
+                await new TransactClientTester(configuration: new TransactClientConfiguration()
+                {
+                    TransactHttpsUrl = "https://"
+                }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageAsync(new TransactMessage());
+
+                Mock.Get(silverpop)
+                    .Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -257,7 +295,7 @@ namespace Silverpop.Client.Tests
                 var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, silverpop: silverpop)
+                }, silverpopFactory: () => silverpop)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
                 .Single();
 
@@ -275,7 +313,7 @@ namespace Silverpop.Client.Tests
                 var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, silverpop: silverpop)
+                }, silverpopFactory: () => silverpop)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
                 .Single();
 
@@ -304,6 +342,25 @@ namespace Silverpop.Client.Tests
                     .Verify(
                         x => x.Encode(It.IsAny<TransactMessage>()),
                         Times.Exactly(2));
+            }
+
+            [Fact]
+            public void DisposesISilverpopCommunicationsClient()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse());
+
+                var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
+
+                new TransactClientTester(configuration: new TransactClientConfiguration()
+                {
+                    TransactSftpUrl = "sftp://"
+                }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageBatch(new TransactMessage());
+
+                Mock.Get(silverpop)
+                    .Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -347,7 +404,7 @@ namespace Silverpop.Client.Tests
                 var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, silverpop: silverpop)
+                }, silverpopFactory: () => silverpop)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
                 .Single();
 
@@ -365,7 +422,7 @@ namespace Silverpop.Client.Tests
                 var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, silverpop: silverpop)
+                }, silverpopFactory: () => silverpop)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
                 .Single();
 
@@ -394,6 +451,25 @@ namespace Silverpop.Client.Tests
                     .Verify(
                         x => x.Encode(It.IsAny<TransactMessage>()),
                         Times.Exactly(2));
+            }
+
+            [Fact]
+            public async Task DisposesISilverpopCommunicationsClient()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse());
+
+                var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
+
+                await new TransactClientTester(configuration: new TransactClientConfiguration()
+                {
+                    TransactSftpUrl = "sftp://"
+                }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageBatchAsync(new TransactMessage());
+
+                Mock.Get(silverpop)
+                    .Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -431,7 +507,7 @@ namespace Silverpop.Client.Tests
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, decoder: decoder, silverpop: silverpop)
+                }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatch("file.xml");
 
                 Mock.Get(silverpop)
@@ -452,7 +528,7 @@ namespace Silverpop.Client.Tests
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         TransactSftpUrl = "sftp://"
-                    }, silverpop: silverpop)
+                    }, silverpopFactory: () => silverpop)
                     .GetStatusOfMessageBatch("file.xml"));
 
                 Assert.Equal("file.xml does not exist in the transact/status folder", exception.Message);
@@ -477,10 +553,32 @@ namespace Silverpop.Client.Tests
                 var response = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, decoder: decoder, silverpop: silverpop)
+                }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatch("file.xml");
 
                 Assert.Equal("123", response.TransactionId);
+            }
+
+            [Fact]
+            public void DisposesISilverpopCommunicationsClient()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse());
+
+                var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
+                Mock.Get(silverpop)
+                    .Setup(x => x.FtpDownload(It.IsAny<string>()))
+                    .Returns(new MemoryStream());
+
+                new TransactClientTester(configuration: new TransactClientConfiguration()
+                {
+                    TransactSftpUrl = "sftp://"
+                }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatch("file.xml");
+
+                Mock.Get(silverpop)
+                    .Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -518,7 +616,7 @@ namespace Silverpop.Client.Tests
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, decoder: decoder, silverpop: silverpop)
+                }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatchAsync("file.xml");
 
                 Mock.Get(silverpop)
@@ -539,7 +637,7 @@ namespace Silverpop.Client.Tests
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         TransactSftpUrl = "sftp://"
-                    }, silverpop: silverpop)
+                    }, silverpopFactory: () => silverpop)
                     .GetStatusOfMessageBatchAsync("file.xml"));
 
                 Assert.Equal("file.xml does not exist in the transact/status folder", exception.Message);
@@ -564,10 +662,32 @@ namespace Silverpop.Client.Tests
                 var response = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     TransactSftpUrl = "sftp://"
-                }, decoder: decoder, silverpop: silverpop)
+                }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatchAsync("file.xml");
 
                 Assert.Equal("123", response.TransactionId);
+            }
+
+            [Fact]
+            public async Task DisposesISilverpopCommunicationsClient()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse());
+
+                var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
+                Mock.Get(silverpop)
+                    .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
+                    .ReturnsAsync(new MemoryStream());
+
+                await new TransactClientTester(configuration: new TransactClientConfiguration()
+                {
+                    TransactSftpUrl = "sftp://"
+                }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatchAsync("file.xml");
+
+                Mock.Get(silverpop)
+                    .Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -579,13 +699,13 @@ namespace Silverpop.Client.Tests
                 TransactClientConfiguration configuration = null,
                 TransactMessageEncoder encoder = null,
                 TransactMessageResponseDecoder decoder = null,
-                ISilverpopCommunicationsClient silverpop = null,
+                Func<ISilverpopCommunicationsClient> silverpopFactory = null,
                 DateTime? utcNow = null)
                 : base(
                     configuration ?? new TransactClientConfiguration(),
                     encoder ?? new TransactMessageEncoder(),
                     decoder ?? new TransactMessageResponseDecoder(),
-                    silverpop ?? Mock.Of<ISilverpopCommunicationsClient>())
+                    silverpopFactory ?? (() => Mock.Of<ISilverpopCommunicationsClient>()))
             {
                 _utcNow = utcNow;
             }

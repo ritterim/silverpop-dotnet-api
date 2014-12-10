@@ -1,6 +1,5 @@
 ﻿using Renci.SshNet;
 using Renci.SshNet.Common;
-using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -14,6 +13,7 @@ namespace Silverpop.Client
     {
         private readonly TransactClientConfiguration _configuration;
         private readonly WebClient _webClient;
+        private readonly SftpClient _sftpClient;
 
         public SilverpopCommunicationsClient(TransactClientConfiguration configuration)
         {
@@ -25,6 +25,17 @@ namespace Silverpop.Client
                     _configuration.Username,
                     _configuration.Password)
             };
+
+            var transactSftpHost = Regex.Replace(
+                _configuration.TransactSftpUrl,
+                @"sftp:\/\/",
+                string.Empty,
+                RegexOptions.IgnoreCase);
+
+            _sftpClient = new SftpClient(
+                transactSftpHost,
+                _configuration.Username,
+                _configuration.Password);
         }
 
         public string HttpUpload(string data)
@@ -39,14 +50,13 @@ namespace Silverpop.Client
 
         public void FtpUpload(string data, string destinationPath)
         {
-            WithOpenSftpConnection(x =>
+            var sftpClient = GetConnectedSftpClient();
+
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+            using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
             {
-                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-                using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
-                {
-                    x.UploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false);
-                }
-            });
+                sftpClient.UploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false);
+            }
         }
 
         public Task FtpUploadAsync(string data, string destinationPath)
@@ -54,9 +64,7 @@ namespace Silverpop.Client
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
             {
-                var sftpClient = GetSftpClient();
-
-                sftpClient.Connect();
+                var sftpClient = GetConnectedSftpClient();
 
                 return Task.Factory.FromAsync(
                     sftpClient.BeginUploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false, null, null),
@@ -70,10 +78,8 @@ namespace Silverpop.Client
 
         public void FtpMove(string fromPath, string toPath)
         {
-            WithOpenSftpConnection(x =>
-            {
-                x.RenameFile(fromPath, toPath);
-            });
+            var sftpClient = GetConnectedSftpClient();
+            sftpClient.RenameFile(fromPath, toPath);
         }
 
         public Stream FtpDownload(string filePath)
@@ -82,10 +88,8 @@ namespace Silverpop.Client
 
             try
             {
-                WithOpenSftpConnection(x =>
-                {
-                    x.DownloadFile(filePath, ms);
-                });
+                var sftpClient = GetConnectedSftpClient();
+                sftpClient.DownloadFile(filePath, ms);
             }
             catch (SftpPathNotFoundException)
             {
@@ -99,9 +103,7 @@ namespace Silverpop.Client
         {
             var ms = new MemoryStream();
 
-            var sftpClient = GetSftpClient();
-
-            sftpClient.Connect();
+            var sftpClient = GetConnectedSftpClient();
 
             try
             {
@@ -121,29 +123,18 @@ namespace Silverpop.Client
             }
         }
 
-        private SftpClient GetSftpClient()
+        private SftpClient GetConnectedSftpClient()
         {
-            var transactSftpHost = Regex.Replace(
-                _configuration.TransactSftpUrl,
-                @"sftp:\/\/",
-                string.Empty,
-                RegexOptions.IgnoreCase);
+            if (!_sftpClient.IsConnected)
+                _sftpClient.Connect();
 
-            return new SftpClient(
-                transactSftpHost,
-                _configuration.Username,
-                _configuration.Password);
+            return _sftpClient;
         }
 
-        private void WithOpenSftpConnection(Action<SftpClient> action)
+        public void Dispose()
         {
-            var sftpClient = GetSftpClient();
-
-            sftpClient.Connect();
-
-            action(sftpClient);
-
-            sftpClient.Disconnect();
+            if (_sftpClient.IsConnected)
+                _sftpClient.Disconnect();
         }
     }
 }
