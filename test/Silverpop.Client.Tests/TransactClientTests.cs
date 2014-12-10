@@ -301,7 +301,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.FtpUpload(It.IsAny<string>(), "transact/temp/" + filename),
+                        x => x.SftpUpload(It.IsAny<string>(), "transact/temp/" + filename),
                         Times.Once());
             }
 
@@ -323,7 +323,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.FtpMove("transact/temp/" + filename, "transact/inbound/" + filename),
+                        x => x.SftpMove("transact/temp/" + filename, "transact/inbound/" + filename),
                         Times.Once());
             }
 
@@ -410,7 +410,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.FtpUploadAsync(It.IsAny<string>(), "transact/temp/" + filename),
+                        x => x.SftpUploadAsync(It.IsAny<string>(), "transact/temp/" + filename),
                         Times.Once());
             }
 
@@ -432,7 +432,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.FtpMove("transact/temp/" + filename, "transact/inbound/" + filename),
+                        x => x.SftpMove("transact/temp/" + filename, "transact/inbound/" + filename),
                         Times.Once());
             }
 
@@ -501,7 +501,7 @@ namespace Silverpop.Client.Tests
 
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownload(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownload(It.IsAny<string>()))
                     .Returns(new MemoryStream());
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
@@ -512,7 +512,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.FtpDownload("transact/status/file.xml"),
+                        x => x.SftpDownload("transact/status/file.xml"),
                         Times.Once());
             }
 
@@ -521,7 +521,7 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownload(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownload(It.IsAny<string>()))
                     .Returns((Stream)null);
 
                 var exception = Assert.Throws<TransactClientException>(
@@ -547,7 +547,7 @@ namespace Silverpop.Client.Tests
 
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownload(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownload(It.IsAny<string>()))
                     .Returns(new MemoryStream());
 
                 var response = new TransactClientTester(configuration: new TransactClientConfiguration()
@@ -569,7 +569,7 @@ namespace Silverpop.Client.Tests
 
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownload(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownload(It.IsAny<string>()))
                     .Returns(new MemoryStream());
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
@@ -610,7 +610,7 @@ namespace Silverpop.Client.Tests
 
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownloadAsync(It.IsAny<string>()))
                     .ReturnsAsync(new MemoryStream());
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
@@ -621,7 +621,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.FtpDownloadAsync("transact/status/file.xml"),
+                        x => x.SftpDownloadAsync("transact/status/file.xml"),
                         Times.Once());
             }
 
@@ -630,7 +630,7 @@ namespace Silverpop.Client.Tests
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownloadAsync(It.IsAny<string>()))
                     .ReturnsAsync(null);
 
                 var exception = AssertEx.TaskThrows<TransactClientException>(
@@ -656,7 +656,7 @@ namespace Silverpop.Client.Tests
 
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownloadAsync(It.IsAny<string>()))
                     .ReturnsAsync(new MemoryStream());
 
                 var response = await new TransactClientTester(configuration: new TransactClientConfiguration()
@@ -678,7 +678,7 @@ namespace Silverpop.Client.Tests
 
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
-                    .Setup(x => x.FtpDownloadAsync(It.IsAny<string>()))
+                    .Setup(x => x.SftpDownloadAsync(It.IsAny<string>()))
                     .ReturnsAsync(new MemoryStream());
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()

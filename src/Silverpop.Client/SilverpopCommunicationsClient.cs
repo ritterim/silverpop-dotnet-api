@@ -48,7 +48,7 @@ namespace Silverpop.Client
             return await _webClient.UploadStringTaskAsync(_configuration.TransactHttpsUrl, data);
         }
 
-        public void FtpUpload(string data, string destinationPath)
+        public void SftpUpload(string data, string destinationPath)
         {
             var sftpClient = GetConnectedSftpClient();
 
@@ -59,7 +59,7 @@ namespace Silverpop.Client
             }
         }
 
-        public Task FtpUploadAsync(string data, string destinationPath)
+        public Task SftpUploadAsync(string data, string destinationPath)
         {
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
@@ -76,13 +76,13 @@ namespace Silverpop.Client
             }
         }
 
-        public void FtpMove(string fromPath, string toPath)
+        public void SftpMove(string fromPath, string toPath)
         {
             var sftpClient = GetConnectedSftpClient();
             sftpClient.RenameFile(fromPath, toPath);
         }
 
-        public Stream FtpDownload(string filePath)
+        public Stream SftpDownload(string filePath)
         {
             var ms = new MemoryStream();
 
@@ -99,7 +99,7 @@ namespace Silverpop.Client
             return ms;
         }
 
-        public Task<Stream> FtpDownloadAsync(string filePath)
+        public Task<Stream> SftpDownloadAsync(string filePath)
         {
             var ms = new MemoryStream();
 

@@ -119,11 +119,11 @@ namespace Silverpop.Client
                         UtcNow.ToString("s").Replace(':', '_'),
                         filenames.Count() + 1);
 
-                    silverpop.FtpUpload(
+                    silverpop.SftpUpload(
                         encodedMessage,
                         "transact/temp/" + filename);
 
-                    silverpop.FtpMove(
+                    silverpop.SftpMove(
                         "transact/temp/" + filename,
                         "transact/inbound/" + filename);
 
@@ -153,11 +153,11 @@ namespace Silverpop.Client
                         UtcNow.ToString("s").Replace(':', '_'),
                         filenames.Count() + 1);
 
-                    await silverpop.FtpUploadAsync(
+                    await silverpop.SftpUploadAsync(
                         encodedMessage,
                         "transact/temp/" + filename);
 
-                    silverpop.FtpMove(
+                    silverpop.SftpMove(
                         "transact/temp/" + filename,
                         "transact/inbound/" + filename);
 
@@ -177,7 +177,7 @@ namespace Silverpop.Client
             Stream stream;
             using (var silverpop = _silverpopFactory())
             {
-                stream = silverpop.FtpDownload("transact/status/" + filename);
+                stream = silverpop.SftpDownload("transact/status/" + filename);
             }
 
             if (stream == null)
@@ -198,7 +198,7 @@ namespace Silverpop.Client
             Stream stream;
             using (var silverpop = _silverpopFactory())
             {
-                stream = await silverpop.FtpDownloadAsync("transact/status/" + filename);
+                stream = await silverpop.SftpDownloadAsync("transact/status/" + filename);
             }
 
             if (stream == null)

@@ -10,14 +10,14 @@ namespace Silverpop.Client
 
         Task<string> HttpUploadAsync(string data);
 
-        void FtpUpload(string data, string destinationPath);
+        void SftpUpload(string data, string destinationPath);
 
-        Task FtpUploadAsync(string data, string destinationPath);
+        Task SftpUploadAsync(string data, string destinationPath);
 
-        void FtpMove(string fromPath, string toPath);
+        void SftpMove(string fromPath, string toPath);
 
-        Stream FtpDownload(string filePath);
+        Stream SftpDownload(string filePath);
 
-        Task<Stream> FtpDownloadAsync(string filePath);
+        Task<Stream> SftpDownloadAsync(string filePath);
     }
 }
