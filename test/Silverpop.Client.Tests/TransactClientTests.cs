@@ -51,12 +51,12 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenTransactHttpsUrlIsNotConfigured()
+            public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
                     () => new TransactClientTester().SendMessage(new TransactMessage()));
 
-                Assert.Equal(TransactClient.ErrorMissingHttpsUrl, exception.Message);
+                Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact]
@@ -74,7 +74,7 @@ namespace Silverpop.Client.Tests
                 var exception = Assert.Throws<TransactClientException>(
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                           {
-                              TransactHttpsUrl = "https://"
+                              PodNumber = 0
                           }, decoder: decoder).SendMessage(new TransactMessage()));
 
                 Assert.Equal("An error occurred.", exception.Message);
@@ -92,7 +92,7 @@ namespace Silverpop.Client.Tests
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactHttpsUrl = "https://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).SendMessage(new TransactMessage());
 
                 Mock.Get(silverpop)
@@ -114,7 +114,7 @@ namespace Silverpop.Client.Tests
 
                 var response = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactHttpsUrl = "https://"
+                    PodNumber = 0
                 }, decoder: decoder).SendMessage(new TransactMessage());
 
                 Assert.Equal("123", response.TransactionId);
@@ -132,7 +132,7 @@ namespace Silverpop.Client.Tests
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactHttpsUrl = "https://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).SendMessage(new TransactMessage());
 
                 Mock.Get(silverpop)
@@ -166,12 +166,12 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenTransactHttpsUrlIsNotConfigured()
+            public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
                     () => new TransactClientTester().SendMessageAsync(new TransactMessage()));
 
-                Assert.Equal(TransactClient.ErrorMissingHttpsUrl, exception.Message);
+                Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact]
@@ -189,7 +189,7 @@ namespace Silverpop.Client.Tests
                 var exception = AssertEx.TaskThrows<TransactClientException>(
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
-                        TransactHttpsUrl = "https://"
+                        PodNumber = 0
                     }, decoder: decoder).SendMessageAsync(new TransactMessage()));
 
                 Assert.Equal("An error occurred.", exception.Message);
@@ -207,7 +207,7 @@ namespace Silverpop.Client.Tests
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactHttpsUrl = "https://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageAsync(new TransactMessage());
 
                 Mock.Get(silverpop)
@@ -229,7 +229,7 @@ namespace Silverpop.Client.Tests
 
                 var response = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactHttpsUrl = "https://"
+                    PodNumber = 0
                 }, decoder: decoder).SendMessageAsync(new TransactMessage());
 
                 Assert.Equal("123", response.TransactionId);
@@ -247,7 +247,7 @@ namespace Silverpop.Client.Tests
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactHttpsUrl = "https://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageAsync(new TransactMessage());
 
                 Mock.Get(silverpop)
@@ -265,12 +265,12 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenTransactSftpUrlIsNotConfigured()
+            public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
                     () => new TransactClientTester().SendMessageBatch(new TransactMessage()));
 
-                Assert.Equal(TransactClient.ErrorMissingSftpUrl, exception.Message);
+                Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact, FreezeClock]
@@ -278,7 +278,7 @@ namespace Silverpop.Client.Tests
             {
                 var filenames = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, utcNow: Clock.UtcNow)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
@@ -294,7 +294,7 @@ namespace Silverpop.Client.Tests
 
                 var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, silverpopFactory: () => silverpop)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
                 .Single();
@@ -312,7 +312,7 @@ namespace Silverpop.Client.Tests
 
                 var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, silverpopFactory: () => silverpop)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipients })
                 .Single();
@@ -334,7 +334,7 @@ namespace Silverpop.Client.Tests
 
                 var filename = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, encoder: encoder)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
@@ -356,7 +356,7 @@ namespace Silverpop.Client.Tests
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageBatch(new TransactMessage());
 
                 Mock.Get(silverpop)
@@ -374,12 +374,12 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenTransactSftpUrlIsNotConfigured()
+            public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
                     () => new TransactClientTester().SendMessageBatchAsync(new TransactMessage()));
 
-                Assert.Equal(TransactClient.ErrorMissingSftpUrl, exception.Message);
+                Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact, FreezeClock]
@@ -387,7 +387,7 @@ namespace Silverpop.Client.Tests
             {
                 var filenames = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, utcNow: Clock.UtcNow)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
@@ -403,7 +403,7 @@ namespace Silverpop.Client.Tests
 
                 var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, silverpopFactory: () => silverpop)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
                 .Single();
@@ -421,7 +421,7 @@ namespace Silverpop.Client.Tests
 
                 var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, silverpopFactory: () => silverpop)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipients }))
                 .Single();
@@ -443,7 +443,7 @@ namespace Silverpop.Client.Tests
 
                 var filename = (await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, encoder: encoder)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches }));
 
@@ -465,7 +465,7 @@ namespace Silverpop.Client.Tests
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).SendMessageBatchAsync(new TransactMessage());
 
                 Mock.Get(silverpop)
@@ -483,12 +483,12 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenTransactSftpUrlIsNotConfigured()
+            public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
                     () => new TransactClientTester().GetStatusOfMessageBatch("file.xml"));
 
-                Assert.Equal(TransactClient.ErrorMissingSftpUrl, exception.Message);
+                Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact]
@@ -506,7 +506,7 @@ namespace Silverpop.Client.Tests
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatch("file.xml");
 
@@ -527,7 +527,7 @@ namespace Silverpop.Client.Tests
                 var exception = Assert.Throws<TransactClientException>(
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
-                        TransactSftpUrl = "sftp://"
+                        PodNumber = 0
                     }, silverpopFactory: () => silverpop)
                     .GetStatusOfMessageBatch("file.xml"));
 
@@ -552,7 +552,7 @@ namespace Silverpop.Client.Tests
 
                 var response = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatch("file.xml");
 
@@ -574,7 +574,7 @@ namespace Silverpop.Client.Tests
 
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatch("file.xml");
 
                 Mock.Get(silverpop)
@@ -592,12 +592,12 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenTransactSftpUrlIsNotConfigured()
+            public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
                     () => new TransactClientTester().GetStatusOfMessageBatchAsync("file.xml"));
 
-                Assert.Equal(TransactClient.ErrorMissingSftpUrl, exception.Message);
+                Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact]
@@ -615,7 +615,7 @@ namespace Silverpop.Client.Tests
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatchAsync("file.xml");
 
@@ -636,7 +636,7 @@ namespace Silverpop.Client.Tests
                 var exception = AssertEx.TaskThrows<TransactClientException>(
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
-                        TransactSftpUrl = "sftp://"
+                        PodNumber = 0
                     }, silverpopFactory: () => silverpop)
                     .GetStatusOfMessageBatchAsync("file.xml"));
 
@@ -661,7 +661,7 @@ namespace Silverpop.Client.Tests
 
                 var response = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
                 .GetStatusOfMessageBatchAsync("file.xml");
 
@@ -683,7 +683,7 @@ namespace Silverpop.Client.Tests
 
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
-                    TransactSftpUrl = "sftp://"
+                    PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatchAsync("file.xml");
 
                 Mock.Get(silverpop)

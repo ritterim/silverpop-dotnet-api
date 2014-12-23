@@ -12,84 +12,36 @@ namespace Silverpop.Client.Tests
             _sut = new TransactClientConfiguration();
         }
 
-        public class TransactHttpsUrlPropertyTests : TransactClientConfigurationTests
+        public class PodNumberPropertyTests : TransactClientConfigurationTests
         {
             [Fact]
-            public void KeepsExistingHttpsScheme()
+            public void IsNullBeforeSet()
             {
-                _sut.TransactHttpsUrl = "https://test";
-
-                Assert.Equal("https://test", _sut.TransactHttpsUrl);
+                Assert.Null(_sut.PodNumber);
             }
 
             [Fact]
-            public void DoesNotThrowForNull()
+            public void DoesNotThrowForZero()
             {
-                _sut.TransactHttpsUrl = "https://test";
-
-                Assert.DoesNotThrow(() => _sut.TransactHttpsUrl = null);
+                Assert.DoesNotThrow(() => _sut.PodNumber = 0);
             }
 
             [Fact]
-            public void ThrowsWhenHttpsSchemeWhenOmitted()
+            public void DoesNotThrowForPositiveNumber()
             {
-                var exception = Assert.Throws<ArgumentException>(
-                    () => _sut.TransactHttpsUrl = "test");
+                Assert.DoesNotThrow(() => _sut.PodNumber = 1);
+            }
+
+            [Fact]
+            public void ThrowsWhenNegativePodNumberSet()
+            {
+                var exception = Assert.Throws<ArgumentOutOfRangeException>(
+                    () => _sut.PodNumber = -1);
 
                 Assert.Equal(
-                    "TransactHttpsUrl property must begin with \"https://\".",
-                    exception.Message);
-            }
-
-            [Fact]
-            public void ThrowsWhenUrlHasIncorrectScheme()
-            {
-                var exception = Assert.Throws<ArgumentException>(
-                    () => _sut.TransactHttpsUrl = "http://test");
-
-                Assert.Equal(
-                    "TransactHttpsUrl property must begin with \"https://\".",
-                    exception.Message);
-            }
-        }
-
-        public class TransactSftpUrlPropertyTests : TransactClientConfigurationTests
-        {
-            [Fact]
-            public void KeepsExistingSftpScheme()
-            {
-                _sut.TransactSftpUrl = "sftp://test";
-
-                Assert.Equal("sftp://test", _sut.TransactSftpUrl);
-            }
-
-            [Fact]
-            public void DoesNotThrowForNull()
-            {
-                _sut.TransactSftpUrl = "sftp://test";
-
-                Assert.DoesNotThrow(() => _sut.TransactSftpUrl = null);
-            }
-
-            [Fact]
-            public void ThrowsWhenSftpSchemeWhenOmitted()
-            {
-                var exception = Assert.Throws<ArgumentException>(
-                    () => _sut.TransactSftpUrl = "test");
-
-                Assert.Equal(
-                    "TransactSftpUrl property must begin with \"sftp://\".",
-                    exception.Message);
-            }
-
-            [Fact]
-            public void ThrowsWhenUrlHasIncorrectScheme()
-            {
-                var exception = Assert.Throws<ArgumentException>(
-                    () => _sut.TransactSftpUrl = "ftp://test");
-
-                Assert.Equal(
-                    "TransactSftpUrl property must begin with \"sftp://\".",
+                    "PodNumber must not be a negative number." +
+                    Environment.NewLine +
+                    "Parameter name: PodNumber",
                     exception.Message);
             }
         }

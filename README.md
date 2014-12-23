@@ -4,13 +4,12 @@ This is a .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact X
 
 ## Usage
 
-**Prepare the client *(fill in the necessary details, including the appropriate pod number in place of the `#` characters)***
+**Prepare the client *(fill in the necessary details)***
 
 ```csharp
 var configuration = new TransactClientConfiguration()
 {
-    TransactHttpsUrl = "https://transact#.silverpop.com/XTMail",
-    TransactSftpUrl = "sftp://transfer#.silverpop.com",
+    PodNumber = your_pod_number,
     Username = "username",
     Password = "password"
 };

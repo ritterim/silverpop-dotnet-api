@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Silverpop.Client
@@ -12,12 +11,17 @@ namespace Silverpop.Client
     internal class SilverpopCommunicationsClient : ISilverpopCommunicationsClient
     {
         private readonly TransactClientConfiguration _configuration;
+        private readonly string _transactHttpsUrl;
         private readonly WebClient _webClient;
         private readonly SftpClient _sftpClient;
 
         public SilverpopCommunicationsClient(TransactClientConfiguration configuration)
         {
             _configuration = configuration;
+
+            _transactHttpsUrl = string.Format(
+                "https://transact{0}.silverpop.com/XTMail",
+                configuration.PodNumber);
 
             _webClient = new WebClient()
             {
@@ -26,11 +30,9 @@ namespace Silverpop.Client
                     _configuration.Password)
             };
 
-            var transactSftpHost = Regex.Replace(
-                _configuration.TransactSftpUrl,
-                @"sftp:\/\/",
-                string.Empty,
-                RegexOptions.IgnoreCase);
+            var transactSftpHost = string.Format(
+                "transfer{0}.silverpop.com",
+                configuration.PodNumber);
 
             _sftpClient = new SftpClient(
                 transactSftpHost,
@@ -40,12 +42,12 @@ namespace Silverpop.Client
 
         public string HttpUpload(string data)
         {
-            return _webClient.UploadString(_configuration.TransactHttpsUrl, data);
+            return _webClient.UploadString(_transactHttpsUrl, data);
         }
 
         public async Task<string> HttpUploadAsync(string data)
         {
-            return await _webClient.UploadStringTaskAsync(_configuration.TransactHttpsUrl, data);
+            return await _webClient.UploadStringTaskAsync(_transactHttpsUrl, data);
         }
 
         public void SftpUpload(string data, string destinationPath)

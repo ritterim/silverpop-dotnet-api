@@ -18,8 +18,7 @@ namespace Silverpop.Client.Tester
         {
             var configuration = new TransactClientConfiguration()
             {
-                TransactHttpsUrl = "https://transact#.silverpop.com/XTMail",
-                TransactSftpUrl = "sftp://transfer#.silverpop.com",
+                //PodNumber = ,
                 Username = "username",
                 Password = "password"
             };
