@@ -2,6 +2,10 @@
 
 This is a .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact XML email sending.
 
+## Requirements
+
+- .NET Framework 4.5
+
 ## Usage
 
 **Prepare the client *(fill in the necessary details)***
