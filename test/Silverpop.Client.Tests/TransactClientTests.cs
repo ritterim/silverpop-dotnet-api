@@ -97,7 +97,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.HttpUpload(It.IsAny<string>()),
+                        x => x.HttpUpload(It.IsAny<string>(), /* tryRefreshingOAuthAccessToken: */ true),
                         Times.Once());
             }
 
@@ -212,7 +212,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.HttpUploadAsync(It.IsAny<string>()),
+                        x => x.HttpUploadAsync(It.IsAny<string>(), /* tryRefreshingOAuthAccessToken: */ true),
                         Times.Once());
             }
 

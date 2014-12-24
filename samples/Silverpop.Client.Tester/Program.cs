@@ -23,7 +23,16 @@ namespace Silverpop.Client.Tester
                 Password = "password"
             };
 
+            var oAuthConfiguration = new TransactClientConfiguration()
+            {
+                //PodNumber = ,
+                OAuthClientId = "00000000-0000-0000-0000-000000000000",
+                OAuthClientSecret = "00000000-0000-0000-0000-000000000000",
+                OAuthRefreshToken = "00000000-0000-0000-0000-000000000000"
+            };
+
             var client = new TransactClient(configuration);
+            var oAuthClient = new TransactClient(oAuthConfiguration);
 
             var sendMessageResponse = client.SendMessage(GetTestMessage("SendMessage"));
             Console.WriteLine("sendMessageResponse:");
@@ -33,6 +42,16 @@ namespace Silverpop.Client.Tester
             var sendMessageAsyncResponse = await client.SendMessageAsync(GetTestMessage("SendMessageAsync"));
             Console.WriteLine("sendMessageAsyncResponse:");
             Console.WriteLine(sendMessageAsyncResponse);
+            Console.WriteLine();
+
+            var sendMessageOAuthResponse = oAuthClient.SendMessage(GetTestMessage("SendMessage-UsingOAuth"));
+            Console.WriteLine("sendMessageOAuthResponse:");
+            Console.WriteLine(sendMessageOAuthResponse);
+            Console.WriteLine();
+
+            var sendMessageAsyncOAuthResponse = await oAuthClient.SendMessageAsync(GetTestMessage("SendMessageAsync-UsingOAuth"));
+            Console.WriteLine("sendMessageAsyncOAuthResponse:");
+            Console.WriteLine(sendMessageAsyncOAuthResponse);
             Console.WriteLine();
 
             var sendMessageBatchResponse = client.SendMessageBatch(GetTestMessage("SendMessageBatch"));
@@ -109,12 +128,12 @@ namespace Silverpop.Client.Tester
             Console.ReadLine();
         }
 
-        private static TransactMessage GetTestMessage(string testMethod)
+        private static TransactMessage GetTestMessage(string testType)
         {
             return new TransactMessage()
             {
                 CampaignId = "123456",
-                TransactionId = string.Format("{0}Test-{1}", testMethod, Guid.NewGuid().ToString()),
+                TransactionId = string.Format("{0}Test-{1}", testType, Guid.NewGuid().ToString()),
                 Recipients = new List<TransactMessageRecipient>()
                 {
                     new TransactMessageRecipient()

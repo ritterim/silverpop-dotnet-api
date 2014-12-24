@@ -25,5 +25,11 @@ namespace Silverpop.Client
         public string Username { get; set; }
 
         public string Password { get; set; }
+
+        public string OAuthClientId { get; set; }
+
+        public string OAuthClientSecret { get; set; }
+
+        public string OAuthRefreshToken { get; set; }
     }
 }

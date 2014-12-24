@@ -10,8 +10,24 @@ This is a .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact X
 var configuration = new TransactClientConfiguration()
 {
     PodNumber = your_pod_number,
+
+    // Username and password are recommended, but can be omitted
+    // if you only use HTTPS communication (non-batch message sending)
+    // and specify OAuth information.
+
     Username = "username",
-    Password = "password"
+    Password = "password",
+
+    // If wishing to use OAuth for HTTPS communication
+    // provide the following:
+
+    OAuthClientId = "00000000-0000-0000-0000-000000000000",
+    OAuthClientSecret = "00000000-0000-0000-0000-000000000000",
+    OAuthRefreshToken = "00000000-0000-0000-0000-000000000000"
+
+    // OAuth is typically used when an application is hosted
+    // somewhere with a non-static IP address (Azure Websites, etc.),
+    // or when you don't want to specify the IP address with Silverpop.
 };
 
 var client = new TransactClient(configuration);
