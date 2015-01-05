@@ -154,7 +154,7 @@ namespace Silverpop.Client
                         encodedMessage,
                         "transact/temp/" + filename);
 
-                    silverpop.SftpMove(
+                    await silverpop.SftpMoveAsync(
                         "transact/temp/" + filename,
                         "transact/inbound/" + filename);
 

@@ -16,6 +16,8 @@ namespace Silverpop.Client
 
         void SftpMove(string fromPath, string toPath);
 
+        Task SftpMoveAsync(string fromPath, string toPath);
+
         Stream SftpDownload(string filePath);
 
         Task<Stream> SftpDownloadAsync(string filePath);

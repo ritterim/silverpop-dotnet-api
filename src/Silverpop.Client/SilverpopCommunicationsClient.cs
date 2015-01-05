@@ -154,6 +154,15 @@ namespace Silverpop.Client
             sftpClient.RenameFile(fromPath, toPath);
         }
 
+        public async Task SftpMoveAsync(string fromPath, string toPath)
+        {
+            await Task.Run(() =>
+            {
+                var sftpClient = GetConnectedSftpClient();
+                sftpClient.RenameFile(fromPath, toPath);
+            });
+        }
+
         public Stream SftpDownload(string filePath)
         {
             var ms = new MemoryStream();

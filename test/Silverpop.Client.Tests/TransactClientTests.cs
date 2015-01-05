@@ -432,7 +432,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpMove("transact/temp/" + filename, "transact/inbound/" + filename),
+                        x => x.SftpMoveAsync("transact/temp/" + filename, "transact/inbound/" + filename),
                         Times.Once());
             }
 
