@@ -21,7 +21,7 @@ namespace Silverpop.Client.Tests
                 }).ToList();
 
         protected static readonly ICollection<TransactMessageRecipient> TestRecipientsTwoBatches =
-            Enumerable.Range(0, TransactClient.MaxRecipientsPerBatchRequest + 1)
+            Enumerable.Range(0, TransactClientConfiguration.MaxRecipientsPerBatchRequest + 1)
                 .Select(x => new TransactMessageRecipient())
                 .ToList();
 
@@ -39,7 +39,7 @@ namespace Silverpop.Client.Tests
             {
                 var message = new TransactMessage()
                 {
-                    Recipients = Enumerable.Range(0, TransactClient.MaxRecipientsPerNonBatchRequest + 1)
+                    Recipients = Enumerable.Range(0, TransactClientConfiguration.MaxRecipientsPerNonBatchRequest + 1)
                         .Select(x => new TransactMessageRecipient())
                         .ToList()
                 };
@@ -154,7 +154,7 @@ namespace Silverpop.Client.Tests
             {
                 var message = new TransactMessage()
                 {
-                    Recipients = Enumerable.Range(0, TransactClient.MaxRecipientsPerNonBatchRequest + 1)
+                    Recipients = Enumerable.Range(0, TransactClientConfiguration.MaxRecipientsPerNonBatchRequest + 1)
                         .Select(x => new TransactMessageRecipient())
                         .ToList()
                 };

@@ -4,6 +4,9 @@ namespace Silverpop.Client
 {
     public class TransactClientConfiguration
     {
+        public const int MaxRecipientsPerBatchRequest = 5000;
+        public const int MaxRecipientsPerNonBatchRequest = 10;
+
         private int? _podNumber;
 
         public int? PodNumber

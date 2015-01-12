@@ -11,16 +11,13 @@ namespace Silverpop.Client
 {
     public class TransactClient
     {
-        public const int MaxRecipientsPerBatchRequest = 5000;
-        public const int MaxRecipientsPerNonBatchRequest = 10;
-
         public static readonly string ErrorMissingPodNumber =
             "A valid PodNumber must be provided.";
 
         public static readonly string ErrorExceededNonBatchRecipients = string.Format(
             "Number of recipients exceeds the max of {0} recipients permitted. " +
             "Use SendMessageBatch or SendMessageBatchAsync instead.",
-            MaxRecipientsPerNonBatchRequest);
+            TransactClientConfiguration.MaxRecipientsPerNonBatchRequest);
 
         private readonly TransactClientConfiguration _configuration;
         private readonly TransactMessageEncoder _encoder;
@@ -108,7 +105,10 @@ namespace Silverpop.Client
 
             using (var silverpop = _silverpopFactory())
             {
-                foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
+                var batchedMessages = message.GetRecipientBatchedMessages(
+                    TransactClientConfiguration.MaxRecipientsPerBatchRequest);
+
+                foreach (var batchMessage in batchedMessages)
                 {
                     var encodedMessage = _encoder.Encode(batchMessage);
 
@@ -142,7 +142,10 @@ namespace Silverpop.Client
 
             using (var silverpop = _silverpopFactory())
             {
-                foreach (var batchMessage in message.GetRecipientBatchedMessages(MaxRecipientsPerBatchRequest))
+                var batchedMessages = message.GetRecipientBatchedMessages(
+                    TransactClientConfiguration.MaxRecipientsPerBatchRequest);
+
+                foreach (var batchMessage in batchedMessages)
                 {
                     var encodedMessage = _encoder.Encode(batchMessage);
 
@@ -209,7 +212,7 @@ namespace Silverpop.Client
 
         private void SendMessagePreCommunicationVerification(TransactMessage message)
         {
-            if (message.Recipients.Count() > MaxRecipientsPerNonBatchRequest)
+            if (message.Recipients.Count() > TransactClientConfiguration.MaxRecipientsPerNonBatchRequest)
                 throw new ArgumentException(ErrorExceededNonBatchRecipients);
 
             if (!_configuration.PodNumber.HasValue)
