@@ -39,7 +39,7 @@
 
   <Target Name="Test" DependsOnTargets="Build">
     <ItemGroup>
-      <TestAssemblies Include="$(RootPath)tests\*\bin\$(Configuration)\*.Tests.dll" />
+      <TestAssemblies Include="$(RootPath)test\*\bin\$(Configuration)\*.Tests.dll" />
     </ItemGroup>
 
     <ItemGroup>
