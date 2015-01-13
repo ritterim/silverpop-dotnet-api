@@ -295,7 +295,7 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void PerformsFtpUpload()
+            public void PerformsSftpUpload()
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
@@ -313,7 +313,7 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void PerformsFtpMove()
+            public void PerformsSftpMove()
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
@@ -404,7 +404,7 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public async Task PerformsFtpUpload()
+            public async Task PerformsSftpUpload()
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
@@ -422,7 +422,7 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public async Task PerformsFtpMove()
+            public async Task PerformsSftpMove()
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
 
@@ -499,7 +499,7 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void PerformsFtpDownload()
+            public void PerformsSftpDownload()
             {
                 var decoder = Mock.Of<TransactMessageResponseDecoder>();
                 Mock.Get(decoder)
@@ -610,7 +610,7 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public async Task PerformsFtpDownload()
+            public async Task PerformsSftpDownload()
             {
                 var decoder = Mock.Of<TransactMessageResponseDecoder>();
                 Mock.Get(decoder)
