@@ -110,12 +110,15 @@ namespace Silverpop.Client
                 var batchedMessages = message.GetRecipientBatchedMessages(
                     TransactClientConfiguration.MaxRecipientsPerBatchRequest);
 
+                var startUtc = UtcNow.ToString("s").Replace(':', '_') + "_UTC";
+
                 foreach (var batchMessage in batchedMessages)
                 {
                     var encodedMessage = _encoder.Encode(batchMessage);
 
-                    var filename = string.Format("{0}_UTC.{1}.xml",
-                        UtcNow.ToString("s").Replace(':', '_'),
+                    var filename = string.Format(
+                        "{0}.{1}.xml",
+                        startUtc,
                         filenames.Count() + 1);
 
                     silverpop.SftpUpload(
@@ -147,12 +150,15 @@ namespace Silverpop.Client
                 var batchedMessages = message.GetRecipientBatchedMessages(
                     TransactClientConfiguration.MaxRecipientsPerBatchRequest);
 
+                var startUtc = UtcNow.ToString("s").Replace(':', '_') + "_UTC";
+
                 foreach (var batchMessage in batchedMessages)
                 {
                     var encodedMessage = _encoder.Encode(batchMessage);
 
-                    var filename = string.Format("{0}_UTC.{1}.xml",
-                        UtcNow.ToString("s").Replace(':', '_'),
+                    var filename = string.Format(
+                        "{0}.{1}.xml",
+                        startUtc,
                         filenames.Count() + 1);
 
                     await silverpop.SftpUploadAsync(
