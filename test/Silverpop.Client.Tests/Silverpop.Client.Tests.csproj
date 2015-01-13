@@ -67,6 +67,7 @@
     <Compile Include="AccessTokenRefreshResponseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactClientConfigurationTests.cs" />
+    <Compile Include="TransactClientExceptionTests.cs" />
     <Compile Include="TransactClientTests.cs" />
   </ItemGroup>
   <ItemGroup>

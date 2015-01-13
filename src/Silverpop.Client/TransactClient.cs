@@ -67,7 +67,8 @@ namespace Silverpop.Client
             var decodedResponse = _decoder.Decode(response);
 
             if (decodedResponse.Status == TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent)
-                throw new TransactClientException(decodedResponse.Error.Value);
+                throw new TransactClientException(
+                    decodedResponse.Error.Value, encodedMessage, decodedResponse.RawResponse);
 
             return decodedResponse;
         }
@@ -89,7 +90,8 @@ namespace Silverpop.Client
             var decodedResponse = _decoder.Decode(response);
 
             if (decodedResponse.Status == TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent)
-                throw new TransactClientException(decodedResponse.Error.Value);
+                throw new TransactClientException(
+                    decodedResponse.Error.Value, encodedMessage, decodedResponse.RawResponse);
 
             return decodedResponse;
         }
@@ -174,15 +176,18 @@ namespace Silverpop.Client
 
             MessageBatchPreCommunicationVerification();
 
+            var filePath = "transact/status/" + filename;
+
             Stream stream;
             using (var silverpop = _silverpopFactory())
             {
-                stream = silverpop.SftpDownload("transact/status/" + filename);
+                stream = silverpop.SftpDownload(filePath);
             }
 
             if (stream == null)
                 throw new TransactClientException(
-                    filename + " does not exist in the transact/status folder");
+                    filename + " does not exist in the transact/status folder",
+                    filePath);
 
             var decodedResponse = _decoder.Decode(stream.ToContentString(Encoding.UTF8));
 
@@ -195,15 +200,18 @@ namespace Silverpop.Client
 
             MessageBatchPreCommunicationVerification();
 
+            var filePath = "transact/status/" + filename;
+
             Stream stream;
             using (var silverpop = _silverpopFactory())
             {
-                stream = await silverpop.SftpDownloadAsync("transact/status/" + filename);
+                stream = await silverpop.SftpDownloadAsync(filePath);
             }
 
             if (stream == null)
                 throw new TransactClientException(
-                    filename + " does not exist in the transact/status folder");
+                    filename + " does not exist in the transact/status folder",
+                    filePath);
 
             var decodedResponse = _decoder.Decode(stream.ToContentString(Encoding.UTF8));
 

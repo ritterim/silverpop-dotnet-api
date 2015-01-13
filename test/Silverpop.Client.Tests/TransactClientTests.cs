@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 using Xunit.Extensions;
 
@@ -68,7 +69,8 @@ namespace Silverpop.Client.Tests
                     .Returns(new TransactMessageResponse()
                     {
                         Status = TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent,
-                        Error = new KeyValuePair<int, string>(1, "An error occurred.")
+                        Error = new KeyValuePair<int, string>(1, "An error occurred."),
+                        RawResponse = "test-response"
                     });
 
                 var exception = Assert.Throws<TransactClientException>(
@@ -78,6 +80,8 @@ namespace Silverpop.Client.Tests
                           }, decoder: decoder).SendMessage(new TransactMessage()));
 
                 Assert.Equal("An error occurred.", exception.Message);
+                Assert.Equal("XTMAILING", XDocument.Parse(exception.Request).Root.Name);
+                Assert.Equal("test-response", exception.Response);
             }
 
             [Fact]
@@ -183,7 +187,8 @@ namespace Silverpop.Client.Tests
                     .Returns(new TransactMessageResponse()
                     {
                         Status = TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent,
-                        Error = new KeyValuePair<int, string>(1, "An error occurred.")
+                        Error = new KeyValuePair<int, string>(1, "An error occurred."),
+                        RawResponse = "test-response"
                     });
 
                 var exception = AssertEx.TaskThrows<TransactClientException>(
@@ -193,6 +198,8 @@ namespace Silverpop.Client.Tests
                     }, decoder: decoder).SendMessageAsync(new TransactMessage()));
 
                 Assert.Equal("An error occurred.", exception.Message);
+                Assert.Equal("XTMAILING", XDocument.Parse(exception.Request).Root.Name);
+                Assert.Equal("test-response", exception.Response);
             }
 
             [Fact]
@@ -532,6 +539,8 @@ namespace Silverpop.Client.Tests
                     .GetStatusOfMessageBatch("file.xml"));
 
                 Assert.Equal("file.xml does not exist in the transact/status folder", exception.Message);
+                Assert.Equal("transact/status/file.xml", exception.Request);
+                Assert.Null(exception.Response);
             }
 
             [Fact]
@@ -641,6 +650,8 @@ namespace Silverpop.Client.Tests
                     .GetStatusOfMessageBatchAsync("file.xml"));
 
                 Assert.Equal("file.xml does not exist in the transact/status folder", exception.Message);
+                Assert.Equal("transact/status/file.xml", exception.Request);
+                Assert.Null(exception.Response);
             }
 
             [Fact]
