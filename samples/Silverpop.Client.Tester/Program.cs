@@ -61,7 +61,7 @@ namespace Silverpop.Client.Tester
 
             var sendMessageBatchAsyncResponse = await client.SendMessageBatchAsync(GetTestMessage("SendMessageBatchAsync"));
             Console.WriteLine("sendMessageBatchAsyncResponse:");
-            Console.WriteLine(sendMessageBatchResponse);
+            Console.WriteLine(sendMessageBatchAsyncResponse);
             Console.WriteLine();
 
             var timeout = TimeSpan.FromMinutes(5);
