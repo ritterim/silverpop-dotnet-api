@@ -124,26 +124,44 @@ namespace Silverpop.Client
         {
             var sftpClient = GetConnectedSftpClient();
 
-            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-            using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
+            using (var file = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             {
-                sftpClient.UploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false);
+                using (var ms = new MemoryStream())
+                {
+                    using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal, /* leaveOpen: */ true))
+                    {
+                        file.WriteTo(gzipStream);
+                        gzipStream.Flush();
+                    }
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    sftpClient.UploadFile(ms, destinationPath + ".gz", /* canOverride: */ false);
+                }
             }
         }
 
         public Task SftpUploadAsync(string data, string destinationPath)
         {
-            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-            using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal))
-            {
-                var sftpClient = GetConnectedSftpClient();
+            var sftpClient = GetConnectedSftpClient();
 
+            using (var file = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+            {
+                var ms = new MemoryStream();
+
+                using (var gzipStream = new GZipStream(ms, CompressionLevel.Optimal, /* leaveOpen: */ true))
+                {
+                    file.WriteTo(gzipStream);
+                    gzipStream.Flush();
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
                 return Task.Factory.FromAsync(
-                    sftpClient.BeginUploadFile(gzipStream, destinationPath + ".gz", /*canOverride: */ false, null, null),
+                    sftpClient.BeginUploadFile(ms, destinationPath + ".gz", /* canOverride: */ false, null, null),
                     x =>
                     {
                         sftpClient.EndUploadFile(x);
                         sftpClient.Disconnect();
+                        ms.Dispose();
                     });
             }
         }
