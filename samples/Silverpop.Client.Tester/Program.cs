@@ -99,7 +99,7 @@ namespace Silverpop.Client.Tester
             var getStatusOfMessageBatchAsyncStart = DateTime.Now;
             while (true)
             {
-                var getStatusOfMessageBatchAsyncResponse = await client.GetStatusOfMessageBatchAsync(sendMessageBatchResponse.Single());
+                var getStatusOfMessageBatchAsyncResponse = await client.GetStatusOfMessageBatchAsync(sendMessageBatchAsyncResponse.Single());
 
                 if (getStatusOfMessageBatchAsyncResponse == null)
                 {
