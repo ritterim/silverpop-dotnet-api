@@ -160,7 +160,6 @@ namespace Silverpop.Client
                     x =>
                     {
                         sftpClient.EndUploadFile(x);
-                        sftpClient.Disconnect();
                         ms.Dispose();
                     });
             }
@@ -212,7 +211,6 @@ namespace Silverpop.Client
                     x =>
                     {
                         sftpClient.EndUploadFile(x);
-                        sftpClient.Disconnect();
 
                         ms.Seek(0, SeekOrigin.Begin);
                         return ms;
