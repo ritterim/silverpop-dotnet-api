@@ -96,7 +96,7 @@ namespace Silverpop.Client
             return decodedResponse;
         }
 
-        /// <returns>Filenames can be used for checking status of batches.</returns>
+        /// <returns>Filenames that can be used for checking status of batches.</returns>
         public IEnumerable<string> SendMessageBatch(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -136,7 +136,7 @@ namespace Silverpop.Client
             return filenames;
         }
 
-        /// <returns>Filenames can be used for checking status of batches.</returns>
+        /// <returns>Filenames that can be used for checking status of batches.</returns>
         public async Task<IEnumerable<string>> SendMessageBatchAsync(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
