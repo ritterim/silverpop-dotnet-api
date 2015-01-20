@@ -195,6 +195,7 @@ namespace Silverpop.Client
                 return null;
             }
 
+            ms.Seek(0, SeekOrigin.Begin);
             return ms;
         }
 
@@ -213,6 +214,7 @@ namespace Silverpop.Client
                         sftpClient.EndUploadFile(x);
                         sftpClient.Disconnect();
 
+                        ms.Seek(0, SeekOrigin.Begin);
                         return ms;
                     });
             }
