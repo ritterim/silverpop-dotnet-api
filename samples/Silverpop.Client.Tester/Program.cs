@@ -36,32 +36,32 @@ namespace Silverpop.Client.Tester
 
             var sendMessageResponse = client.SendMessage(GetTestMessage("SendMessage"));
             Console.WriteLine("sendMessageResponse:");
-            Console.WriteLine(sendMessageResponse);
+            Console.WriteLine(sendMessageResponse.RawResponse);
             Console.WriteLine();
 
             var sendMessageAsyncResponse = await client.SendMessageAsync(GetTestMessage("SendMessageAsync"));
             Console.WriteLine("sendMessageAsyncResponse:");
-            Console.WriteLine(sendMessageAsyncResponse);
+            Console.WriteLine(sendMessageAsyncResponse.RawResponse);
             Console.WriteLine();
 
             var sendMessageOAuthResponse = oAuthClient.SendMessage(GetTestMessage("SendMessage-UsingOAuth"));
             Console.WriteLine("sendMessageOAuthResponse:");
-            Console.WriteLine(sendMessageOAuthResponse);
+            Console.WriteLine(sendMessageOAuthResponse.RawResponse);
             Console.WriteLine();
 
             var sendMessageAsyncOAuthResponse = await oAuthClient.SendMessageAsync(GetTestMessage("SendMessageAsync-UsingOAuth"));
             Console.WriteLine("sendMessageAsyncOAuthResponse:");
-            Console.WriteLine(sendMessageAsyncOAuthResponse);
+            Console.WriteLine(sendMessageAsyncOAuthResponse.RawResponse);
             Console.WriteLine();
 
             var sendMessageBatchResponse = client.SendMessageBatch(GetTestMessage("SendMessageBatch"));
             Console.WriteLine("sendMessageBatchResponse:");
-            Console.WriteLine(sendMessageBatchResponse);
+            Console.WriteLine(sendMessageBatchResponse.Single());
             Console.WriteLine();
 
             var sendMessageBatchAsyncResponse = await client.SendMessageBatchAsync(GetTestMessage("SendMessageBatchAsync"));
             Console.WriteLine("sendMessageBatchAsyncResponse:");
-            Console.WriteLine(sendMessageBatchAsyncResponse);
+            Console.WriteLine(sendMessageBatchAsyncResponse.Single());
             Console.WriteLine();
 
             var timeout = TimeSpan.FromMinutes(5);
