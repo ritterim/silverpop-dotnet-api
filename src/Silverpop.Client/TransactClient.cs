@@ -129,7 +129,7 @@ namespace Silverpop.Client
                         "transact/temp/" + filename,
                         "transact/inbound/" + filename);
 
-                    filenames.Add(filename);
+                    filenames.Add(filename + ".status");
                 }
             }
 
@@ -169,7 +169,7 @@ namespace Silverpop.Client
                         "transact/temp/" + filename,
                         "transact/inbound/" + filename);
 
-                    filenames.Add(filename);
+                    filenames.Add(filename + ".status");
                 }
             }
 
@@ -192,7 +192,7 @@ namespace Silverpop.Client
 
             if (stream == null)
                 throw new TransactClientException(
-                    filename + " does not exist in the transact/status folder",
+                    string.Format("Requested file {0} does not currently exist.", filePath),
                     filePath);
 
             var decodedResponse = _decoder.Decode(stream.ToContentString(Encoding.UTF8));
@@ -216,7 +216,7 @@ namespace Silverpop.Client
 
             if (stream == null)
                 throw new TransactClientException(
-                    filename + " does not exist in the transact/status folder",
+                    string.Format("Requested file {0} does not currently exist.", filePath),
                     filePath);
 
             var decodedResponse = _decoder.Decode(stream.ToContentString(Encoding.UTF8));

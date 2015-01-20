@@ -289,8 +289,8 @@ namespace Silverpop.Client.Tests
                 }, utcNow: Clock.UtcNow)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz", filenames.First());
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz", filenames.Last());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz.status", filenames.First());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz.status", filenames.Last());
                 Assert.Equal(2, filenames.Count());
             }
 
@@ -308,7 +308,9 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpGzipUpload(It.IsAny<string>(), "transact/temp/" + filename),
+                        x => x.SftpGzipUpload(
+                            It.IsAny<string>(),
+                            "transact/temp/" + GetUploadedFilenameFromStatusFilename(filename)),
                         Times.Once());
             }
 
@@ -330,7 +332,9 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpMove("transact/temp/" + filename, "transact/inbound/" + filename),
+                        x => x.SftpMove(
+                            "transact/temp/" + GetUploadedFilenameFromStatusFilename(filename),
+                            "transact/inbound/" + GetUploadedFilenameFromStatusFilename(filename)),
                         Times.Once());
             }
 
@@ -398,8 +402,8 @@ namespace Silverpop.Client.Tests
                 }, utcNow: Clock.UtcNow)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz", filenames.First());
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz", filenames.Last());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz.status", filenames.First());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz.status", filenames.Last());
                 Assert.Equal(2, filenames.Count());
             }
 
@@ -417,7 +421,9 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpGzipUploadAsync(It.IsAny<string>(), "transact/temp/" + filename),
+                        x => x.SftpGzipUploadAsync(
+                            It.IsAny<string>(),
+                            "transact/temp/" + GetUploadedFilenameFromStatusFilename(filename)),
                         Times.Once());
             }
 
@@ -439,7 +445,9 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpMoveAsync("transact/temp/" + filename, "transact/inbound/" + filename),
+                        x => x.SftpMoveAsync(
+                            "transact/temp/" + GetUploadedFilenameFromStatusFilename(filename),
+                            "transact/inbound/" + GetUploadedFilenameFromStatusFilename(filename)),
                         Times.Once());
             }
 
@@ -493,7 +501,7 @@ namespace Silverpop.Client.Tests
             public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = Assert.Throws<ApplicationException>(
-                    () => new TransactClientTester().GetStatusOfMessageBatch("file.xml.gz"));
+                    () => new TransactClientTester().GetStatusOfMessageBatch("file.xml.gz.status"));
 
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
@@ -515,11 +523,11 @@ namespace Silverpop.Client.Tests
                 {
                     PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
-                .GetStatusOfMessageBatch("file.xml.gz");
+                .GetStatusOfMessageBatch("file.xml.gz.status");
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpDownload("transact/status/file.xml.gz"),
+                        x => x.SftpDownload("transact/status/file.xml.gz.status"),
                         Times.Once());
             }
 
@@ -536,10 +544,10 @@ namespace Silverpop.Client.Tests
                     {
                         PodNumber = 0
                     }, silverpopFactory: () => silverpop)
-                    .GetStatusOfMessageBatch("file.xml.gz"));
+                    .GetStatusOfMessageBatch("file.xml.gz.status"));
 
-                Assert.Equal("file.xml.gz does not exist in the transact/status folder", exception.Message);
-                Assert.Equal("transact/status/file.xml.gz", exception.Request);
+                Assert.Equal("Requested file transact/status/file.xml.gz.status does not currently exist.", exception.Message);
+                Assert.Equal("transact/status/file.xml.gz.status", exception.Request);
                 Assert.Null(exception.Response);
             }
 
@@ -563,7 +571,7 @@ namespace Silverpop.Client.Tests
                 {
                     PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
-                .GetStatusOfMessageBatch("file.xml.gz");
+                .GetStatusOfMessageBatch("file.xml.gz.status");
 
                 Assert.Equal("123", response.TransactionId);
             }
@@ -584,7 +592,7 @@ namespace Silverpop.Client.Tests
                 new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     PodNumber = 0
-                }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatch("file.xml.gz");
+                }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatch("file.xml.gz.status");
 
                 Mock.Get(silverpop)
                     .Verify(x => x.Dispose(), Times.Once());
@@ -604,7 +612,7 @@ namespace Silverpop.Client.Tests
             public void ThrowsWhenPodNumberIsNotConfigured()
             {
                 var exception = AssertEx.TaskThrows<ApplicationException>(
-                    () => new TransactClientTester().GetStatusOfMessageBatchAsync("file.xml.gz"));
+                    () => new TransactClientTester().GetStatusOfMessageBatchAsync("file.xml.gz.status"));
 
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
@@ -626,11 +634,11 @@ namespace Silverpop.Client.Tests
                 {
                     PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
-                .GetStatusOfMessageBatchAsync("file.xml.gz");
+                .GetStatusOfMessageBatchAsync("file.xml.gz.status");
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpDownloadAsync("transact/status/file.xml.gz"),
+                        x => x.SftpDownloadAsync("transact/status/file.xml.gz.status"),
                         Times.Once());
             }
 
@@ -647,10 +655,10 @@ namespace Silverpop.Client.Tests
                     {
                         PodNumber = 0
                     }, silverpopFactory: () => silverpop)
-                    .GetStatusOfMessageBatchAsync("file.xml.gz"));
+                    .GetStatusOfMessageBatchAsync("file.xml.gz.status"));
 
-                Assert.Equal("file.xml.gz does not exist in the transact/status folder", exception.Message);
-                Assert.Equal("transact/status/file.xml.gz", exception.Request);
+                Assert.Equal("Requested file transact/status/file.xml.gz.status does not currently exist.", exception.Message);
+                Assert.Equal("transact/status/file.xml.gz.status", exception.Request);
                 Assert.Null(exception.Response);
             }
 
@@ -674,7 +682,7 @@ namespace Silverpop.Client.Tests
                 {
                     PodNumber = 0
                 }, decoder: decoder, silverpopFactory: () => silverpop)
-                .GetStatusOfMessageBatchAsync("file.xml.gz");
+                .GetStatusOfMessageBatchAsync("file.xml.gz.status");
 
                 Assert.Equal("123", response.TransactionId);
             }
@@ -695,11 +703,16 @@ namespace Silverpop.Client.Tests
                 await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     PodNumber = 0
-                }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatchAsync("file.xml.gz");
+                }, decoder: decoder, silverpopFactory: () => silverpop).GetStatusOfMessageBatchAsync("file.xml.gz.status");
 
                 Mock.Get(silverpop)
                     .Verify(x => x.Dispose(), Times.Once());
             }
+        }
+
+        private string GetUploadedFilenameFromStatusFilename(string filename)
+        {
+            return filename.Replace(".status", string.Empty);
         }
 
         public class TransactClientTester : TransactClient
