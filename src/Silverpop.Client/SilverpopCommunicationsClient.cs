@@ -210,7 +210,7 @@ namespace Silverpop.Client
                     sftpClient.BeginDownloadFile(filePath, ms),
                     x =>
                     {
-                        sftpClient.EndUploadFile(x);
+                        sftpClient.EndDownloadFile(x);
 
                         ms.Seek(0, SeekOrigin.Begin);
                         return ms;
