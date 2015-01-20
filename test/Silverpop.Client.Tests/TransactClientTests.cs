@@ -8,12 +8,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Silverpop.Client.Tests
 {
     public class TransactClientTests
     {
+        private static readonly int GuidCharCount = Guid.Empty.ToString().Length;
+
         protected static readonly ICollection<TransactMessageRecipient> TestRecipients =
             Enumerable.Range(0, 1)
                 .Select(x => new TransactMessageRecipient()
@@ -280,17 +281,21 @@ namespace Silverpop.Client.Tests
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
-            [Fact, FreezeClock]
+            [Fact]
             public void ReturnsExpectedTrackingFilenames()
             {
                 var filenames = new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     PodNumber = 0
-                }, utcNow: Clock.UtcNow)
+                })
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz.status", filenames.First());
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz.status", filenames.Last());
+                Assert.DoesNotThrow(() => Guid.Parse(filenames.First().Substring(0, GuidCharCount)));
+                Assert.True(filenames.First().EndsWith(".1.xml.gz.status"));
+
+                Assert.DoesNotThrow(() => Guid.Parse(filenames.Last().Substring(0, GuidCharCount)));
+                Assert.True(filenames.Last().EndsWith(".2.xml.gz.status"));
+
                 Assert.Equal(2, filenames.Count());
             }
 
@@ -393,17 +398,21 @@ namespace Silverpop.Client.Tests
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
-            [Fact, FreezeClock]
+            [Fact]
             public async Task ReturnsExpectedTrackingFilenames()
             {
                 var filenames = await new TransactClientTester(configuration: new TransactClientConfiguration()
                 {
                     PodNumber = 0
-                }, utcNow: Clock.UtcNow)
+                })
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz.status", filenames.First());
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz.status", filenames.Last());
+                Assert.DoesNotThrow(() => Guid.Parse(filenames.First().Substring(0, GuidCharCount)));
+                Assert.True(filenames.First().EndsWith(".1.xml.gz.status"));
+
+                Assert.DoesNotThrow(() => Guid.Parse(filenames.Last().Substring(0, GuidCharCount)));
+                Assert.True(filenames.Last().EndsWith(".2.xml.gz.status"));
+
                 Assert.Equal(2, filenames.Count());
             }
 
@@ -717,26 +726,17 @@ namespace Silverpop.Client.Tests
 
         public class TransactClientTester : TransactClient
         {
-            private readonly DateTime? _utcNow;
-
             public TransactClientTester(
                 TransactClientConfiguration configuration = null,
                 TransactMessageEncoder encoder = null,
                 TransactMessageResponseDecoder decoder = null,
-                Func<ISilverpopCommunicationsClient> silverpopFactory = null,
-                DateTime? utcNow = null)
+                Func<ISilverpopCommunicationsClient> silverpopFactory = null)
                 : base(
                     configuration ?? new TransactClientConfiguration(),
                     encoder ?? new TransactMessageEncoder(),
                     decoder ?? new TransactMessageResponseDecoder(),
                     silverpopFactory ?? (() => Mock.Of<ISilverpopCommunicationsClient>()))
             {
-                _utcNow = utcNow;
-            }
-
-            public override DateTime UtcNow
-            {
-                get { return _utcNow ?? base.UtcNow; }
             }
         }
     }

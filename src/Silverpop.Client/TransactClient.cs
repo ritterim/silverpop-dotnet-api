@@ -45,11 +45,6 @@ namespace Silverpop.Client
             _silverpopFactory = silverpopFactory;
         }
 
-        public virtual DateTime UtcNow
-        {
-            get { return DateTime.UtcNow; }
-        }
-
         public TransactMessageResponse SendMessage(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -110,7 +105,7 @@ namespace Silverpop.Client
                 var batchedMessages = message.GetRecipientBatchedMessages(
                     TransactClientConfiguration.MaxRecipientsPerBatchRequest);
 
-                var startUtc = UtcNow.ToString("s").Replace(':', '_') + "_UTC";
+                var identifier = Guid.NewGuid().ToString();
 
                 foreach (var batchMessage in batchedMessages)
                 {
@@ -118,7 +113,7 @@ namespace Silverpop.Client
 
                     var filename = string.Format(
                         "{0}.{1}.xml.gz",
-                        startUtc,
+                        identifier,
                         filenames.Count() + 1);
 
                     silverpop.SftpGzipUpload(
@@ -150,7 +145,7 @@ namespace Silverpop.Client
                 var batchedMessages = message.GetRecipientBatchedMessages(
                     TransactClientConfiguration.MaxRecipientsPerBatchRequest);
 
-                var startUtc = UtcNow.ToString("s").Replace(':', '_') + "_UTC";
+                var identifier = Guid.NewGuid().ToString();
 
                 foreach (var batchMessage in batchedMessages)
                 {
@@ -158,7 +153,7 @@ namespace Silverpop.Client
 
                     var filename = string.Format(
                         "{0}.{1}.xml.gz",
-                        startUtc,
+                        identifier,
                         filenames.Count() + 1);
 
                     await silverpop.SftpGzipUploadAsync(
