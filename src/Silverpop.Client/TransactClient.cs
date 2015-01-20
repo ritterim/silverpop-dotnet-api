@@ -117,11 +117,11 @@ namespace Silverpop.Client
                     var encodedMessage = _encoder.Encode(batchMessage);
 
                     var filename = string.Format(
-                        "{0}.{1}.xml",
+                        "{0}.{1}.xml.gz",
                         startUtc,
                         filenames.Count() + 1);
 
-                    silverpop.SftpUpload(
+                    silverpop.SftpGzipUpload(
                         encodedMessage,
                         "transact/temp/" + filename);
 
@@ -157,11 +157,11 @@ namespace Silverpop.Client
                     var encodedMessage = _encoder.Encode(batchMessage);
 
                     var filename = string.Format(
-                        "{0}.{1}.xml",
+                        "{0}.{1}.xml.gz",
                         startUtc,
                         filenames.Count() + 1);
 
-                    await silverpop.SftpUploadAsync(
+                    await silverpop.SftpGzipUploadAsync(
                         encodedMessage,
                         "transact/temp/" + filename);
 

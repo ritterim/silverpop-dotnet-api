@@ -10,9 +10,9 @@ namespace Silverpop.Client
 
         Task<string> HttpUploadAsync(string data, bool tryRefreshingOAuthAccessToken = true);
 
-        void SftpUpload(string data, string destinationPath);
+        void SftpGzipUpload(string data, string destinationPath);
 
-        Task SftpUploadAsync(string data, string destinationPath);
+        Task SftpGzipUploadAsync(string data, string destinationPath);
 
         void SftpMove(string fromPath, string toPath);
 

@@ -120,7 +120,7 @@ namespace Silverpop.Client
             }
         }
 
-        public void SftpUpload(string data, string destinationPath)
+        public void SftpGzipUpload(string data, string destinationPath)
         {
             var sftpClient = GetConnectedSftpClient();
 
@@ -135,12 +135,12 @@ namespace Silverpop.Client
                     }
 
                     ms.Seek(0, SeekOrigin.Begin);
-                    sftpClient.UploadFile(ms, destinationPath + ".gz", /* canOverride: */ false);
+                    sftpClient.UploadFile(ms, destinationPath, /* canOverride: */ false);
                 }
             }
         }
 
-        public Task SftpUploadAsync(string data, string destinationPath)
+        public Task SftpGzipUploadAsync(string data, string destinationPath)
         {
             var sftpClient = GetConnectedSftpClient();
 
@@ -156,7 +156,7 @@ namespace Silverpop.Client
 
                 ms.Seek(0, SeekOrigin.Begin);
                 return Task.Factory.FromAsync(
-                    sftpClient.BeginUploadFile(ms, destinationPath + ".gz", /* canOverride: */ false, null, null),
+                    sftpClient.BeginUploadFile(ms, destinationPath, /* canOverride: */ false, null, null),
                     x =>
                     {
                         sftpClient.EndUploadFile(x);

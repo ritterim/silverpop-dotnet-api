@@ -289,8 +289,8 @@ namespace Silverpop.Client.Tests
                 }, utcNow: Clock.UtcNow)
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml", filenames.First());
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml", filenames.Last());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz", filenames.First());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz", filenames.Last());
                 Assert.Equal(2, filenames.Count());
             }
 
@@ -308,7 +308,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpUpload(It.IsAny<string>(), "transact/temp/" + filename),
+                        x => x.SftpGzipUpload(It.IsAny<string>(), "transact/temp/" + filename),
                         Times.Once());
             }
 
@@ -398,8 +398,8 @@ namespace Silverpop.Client.Tests
                 }, utcNow: Clock.UtcNow)
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml", filenames.First());
-                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml", filenames.Last());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.1.xml.gz", filenames.First());
+                Assert.Equal(Clock.UtcNow.ToString("s").Replace(':', '_') + "_UTC.2.xml.gz", filenames.Last());
                 Assert.Equal(2, filenames.Count());
             }
 
@@ -417,7 +417,7 @@ namespace Silverpop.Client.Tests
 
                 Mock.Get(silverpop)
                     .Verify(
-                        x => x.SftpUploadAsync(It.IsAny<string>(), "transact/temp/" + filename),
+                        x => x.SftpGzipUploadAsync(It.IsAny<string>(), "transact/temp/" + filename),
                         Times.Once());
             }
 
