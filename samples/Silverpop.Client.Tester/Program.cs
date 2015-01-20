@@ -65,7 +65,7 @@ namespace Silverpop.Client.Tester
             Console.WriteLine();
 
             var timeout = TimeSpan.FromMinutes(5);
-            var sleepDuration = TimeSpan.FromSeconds(15);
+            var sleepDuration = TimeSpan.FromSeconds(5);
 
             var getStatusOfMessageBatchStart = DateTime.Now;
             while (true)
