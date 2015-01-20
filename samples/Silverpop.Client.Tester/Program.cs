@@ -9,6 +9,9 @@ namespace Silverpop.Client.Tester
 {
     internal class Program
     {
+        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan SleepDuration = TimeSpan.FromSeconds(5);
+
         private static void Main(string[] args)
         {
             MainAsync(args).Wait();
@@ -59,72 +62,95 @@ namespace Silverpop.Client.Tester
             Console.WriteLine(sendMessageBatchResponse.Single());
             Console.WriteLine();
 
-            var sendMessageBatchAsyncResponse = await client.SendMessageBatchAsync(GetTestMessage("SendMessageBatchAsync"));
-            Console.WriteLine("sendMessageBatchAsyncResponse:");
-            Console.WriteLine(sendMessageBatchAsyncResponse.Single());
-            Console.WriteLine();
-
-            var timeout = TimeSpan.FromMinutes(5);
-            var sleepDuration = TimeSpan.FromSeconds(5);
-
             var getStatusOfMessageBatchStart = DateTime.Now;
             while (true)
             {
-                var getStatusOfMessageBatchResponse = client.GetStatusOfMessageBatch(sendMessageBatchResponse.Single());
-
-                if (getStatusOfMessageBatchResponse == null)
+                try
                 {
-                    Console.WriteLine(
-                        "getStatusOfMessageBatchResponse: Response not yet available, sleeping for " +
-                        sleepDuration.ToString());
+                    var getStatusOfMessageBatchResponse =
+                        client.GetStatusOfMessageBatch(sendMessageBatchResponse.Single());
 
-                    Thread.Sleep(sleepDuration);
-                }
-                else
-                {
                     Console.WriteLine("getStatusOfMessageBatchResponse:");
                     Console.WriteLine(getStatusOfMessageBatchResponse.RawResponse);
                     Console.WriteLine();
 
                     break;
                 }
-
-                if (getStatusOfMessageBatchStart.Add(timeout) > DateTime.Now)
+                catch (TransactClientException ex)
                 {
-                    Console.WriteLine("getStatusOfMessageBatchResponse: Response timed out after " + timeout);
+                    if (ex.Message != string.Format(
+                        "Requested file transact/status/{0} does not currently exist.",
+                        sendMessageBatchResponse.Single()))
+                    {
+                        throw;
+                    }
+
+                    Console.WriteLine("getStatusOfMessageBatchResponse:");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine();
+
+                    Console.WriteLine(string.Format("Sleeping for {0}...", SleepDuration.ToString()));
+                    Thread.Sleep(SleepDuration);
+                    Console.WriteLine();
+                }
+
+                if (getStatusOfMessageBatchStart.Add(Timeout) < DateTime.Now)
+                {
+                    Console.WriteLine(string.Format(
+                        "getStatusOfMessageBatchResponse: Response timed out after {0}.",
+                        Timeout.ToString()));
                     break;
                 }
             }
 
+            var sendMessageBatchAsyncResponse = await client.SendMessageBatchAsync(GetTestMessage("SendMessageBatchAsync"));
+            Console.WriteLine("sendMessageBatchAsyncResponse:");
+            Console.WriteLine(sendMessageBatchAsyncResponse.Single());
+            Console.WriteLine();
+
             var getStatusOfMessageBatchAsyncStart = DateTime.Now;
             while (true)
             {
-                var getStatusOfMessageBatchAsyncResponse = await client.GetStatusOfMessageBatchAsync(sendMessageBatchAsyncResponse.Single());
-
-                if (getStatusOfMessageBatchAsyncResponse == null)
+                try
                 {
-                    Console.WriteLine(
-                        "getStatusOfMessageBatchAsyncResponse: Response not yet available, sleeping for " +
-                        sleepDuration.ToString());
+                    var getStatusOfMessageBatchAsyncResponse =
+                        await client.GetStatusOfMessageBatchAsync(sendMessageBatchAsyncResponse.Single());
 
-                    Thread.Sleep(sleepDuration);
-                }
-                else
-                {
                     Console.WriteLine("getStatusOfMessageBatchAsyncResponse:");
                     Console.WriteLine(getStatusOfMessageBatchAsyncResponse.RawResponse);
                     Console.WriteLine();
 
                     break;
                 }
-
-                if (getStatusOfMessageBatchAsyncStart.Add(timeout) > DateTime.Now)
+                catch (TransactClientException ex)
                 {
-                    Console.WriteLine("getStatusOfMessageBatchAsyncResponse: Response timed out after " + timeout);
+                    if (ex.Message != string.Format(
+                        "Requested file transact/status/{0} does not currently exist.",
+                        sendMessageBatchAsyncResponse.Single()))
+                    {
+                        throw;
+                    }
+
+                    Console.WriteLine("getStatusOfMessageBatchAsyncResponse:");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine();
+
+                    Console.WriteLine(string.Format("Sleeping for {0}...", SleepDuration.ToString()));
+                    Thread.Sleep(SleepDuration);
+                    Console.WriteLine();
+                }
+
+                if (getStatusOfMessageBatchAsyncStart.Add(Timeout) < DateTime.Now)
+                {
+                    Console.WriteLine(string.Format(
+                        "getStatusOfMessageBatchAsyncResponse: Response timed out after {0}.",
+                        Timeout.ToString()));
                     break;
                 }
             }
 
+            Console.WriteLine();
+            Console.WriteLine("Operation completed.");
             Console.ReadLine();
         }
 
