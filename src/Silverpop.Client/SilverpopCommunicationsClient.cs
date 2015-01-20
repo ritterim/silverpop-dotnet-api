@@ -204,22 +204,27 @@ namespace Silverpop.Client
 
             var sftpClient = GetConnectedSftpClient();
 
-            try
-            {
-                return Task.Factory.FromAsync<Stream>(
-                    sftpClient.BeginDownloadFile(filePath, ms),
-                    x =>
+            return Task.Factory.FromAsync<Stream>(
+                sftpClient.BeginDownloadFile(filePath, ms),
+                x =>
+                {
+                    try
                     {
                         sftpClient.EndDownloadFile(x);
+                    }
+                    catch (SshException ex)
+                    {
+                        if (ex.InnerException != null && ex.InnerException is SftpPathNotFoundException)
+                        {
+                            return null;
+                        }
 
-                        ms.Seek(0, SeekOrigin.Begin);
-                        return ms;
-                    });
-            }
-            catch (SftpPathNotFoundException)
-            {
-                return Task.FromResult<Stream>(null);
-            }
+                        throw;
+                    }
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    return ms;
+                });
         }
 
         private SftpClient GetConnectedSftpClient()
