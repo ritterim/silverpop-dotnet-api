@@ -18,7 +18,7 @@ namespace Silverpop.Client
         private readonly AccessTokenProvider _accessTokenProvider;
         private readonly string _transactHttpsUrl;
         private readonly Func<HttpClient> _httpClientFactory;
-        private readonly SftpClient _sftpClient;
+        private readonly Func<SftpClient> _sftpConnectedClientFactory;
 
         public SilverpopCommunicationsClient(TransactClientConfiguration configuration)
         {
@@ -38,10 +38,17 @@ namespace Silverpop.Client
             if (_configuration.Username != null &&
                 _configuration.Password != null)
             {
-                _sftpClient = new SftpClient(
-                    transactSftpHost,
-                    _configuration.Username,
-                    _configuration.Password);
+                _sftpConnectedClientFactory = () =>
+                {
+                    var sftpClient = new SftpClient(
+                        transactSftpHost,
+                        _configuration.Username,
+                        _configuration.Password);
+
+                    sftpClient.Connect();
+
+                    return sftpClient;
+                };
             }
         }
 
@@ -122,8 +129,6 @@ namespace Silverpop.Client
 
         public void SftpGzipUpload(string data, string destinationPath)
         {
-            var sftpClient = GetConnectedSftpClient();
-
             using (var file = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             {
                 using (var ms = new MemoryStream())
@@ -135,15 +140,17 @@ namespace Silverpop.Client
                     }
 
                     ms.Seek(0, SeekOrigin.Begin);
-                    sftpClient.UploadFile(ms, destinationPath, /* canOverride: */ false);
+
+                    using (var sftpClient = _sftpConnectedClientFactory())
+                    {
+                        sftpClient.UploadFile(ms, destinationPath, /* canOverride: */ false);
+                    }
                 }
             }
         }
 
         public Task SftpGzipUploadAsync(string data, string destinationPath)
         {
-            var sftpClient = GetConnectedSftpClient();
-
             using (var file = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             {
                 var ms = new MemoryStream();
@@ -155,11 +162,15 @@ namespace Silverpop.Client
                 }
 
                 ms.Seek(0, SeekOrigin.Begin);
+
+                var sftpClient = _sftpConnectedClientFactory();
+
                 return Task.Factory.FromAsync(
                     sftpClient.BeginUploadFile(ms, destinationPath, /* canOverride: */ false, null, null),
                     x =>
                     {
                         sftpClient.EndUploadFile(x);
+                        sftpClient.Dispose();
                         ms.Dispose();
                     });
             }
@@ -167,16 +178,20 @@ namespace Silverpop.Client
 
         public void SftpMove(string fromPath, string toPath)
         {
-            var sftpClient = GetConnectedSftpClient();
-            sftpClient.RenameFile(fromPath, toPath);
+            using (var sftpClient = _sftpConnectedClientFactory())
+            {
+                sftpClient.RenameFile(fromPath, toPath);
+            }
         }
 
         public async Task SftpMoveAsync(string fromPath, string toPath)
         {
             await Task.Run(() =>
             {
-                var sftpClient = GetConnectedSftpClient();
-                sftpClient.RenameFile(fromPath, toPath);
+                using (var sftpClient = _sftpConnectedClientFactory())
+                {
+                    sftpClient.RenameFile(fromPath, toPath);
+                }
             });
         }
 
@@ -186,8 +201,10 @@ namespace Silverpop.Client
 
             try
             {
-                var sftpClient = GetConnectedSftpClient();
-                sftpClient.DownloadFile(filePath, ms);
+                using (var sftpClient = _sftpConnectedClientFactory())
+                {
+                    sftpClient.DownloadFile(filePath, ms);
+                }
             }
             catch (SftpPathNotFoundException)
             {
@@ -202,7 +219,7 @@ namespace Silverpop.Client
         {
             var ms = new MemoryStream();
 
-            var sftpClient = GetConnectedSftpClient();
+            var sftpClient = _sftpConnectedClientFactory();
 
             return Task.Factory.FromAsync<Stream>(
                 sftpClient.BeginDownloadFile(filePath, ms),
@@ -222,17 +239,11 @@ namespace Silverpop.Client
                         throw;
                     }
 
+                    sftpClient.Dispose();
+
                     ms.Seek(0, SeekOrigin.Begin);
                     return ms;
                 });
-        }
-
-        private SftpClient GetConnectedSftpClient()
-        {
-            if (!_sftpClient.IsConnected)
-                _sftpClient.Connect();
-
-            return _sftpClient;
         }
 
         private HttpClient GetAuthorizedHttpClient()
@@ -304,8 +315,6 @@ namespace Silverpop.Client
 
         public void Dispose()
         {
-            if (_sftpClient != null && _sftpClient.IsConnected)
-                _sftpClient.Disconnect();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Silverpop.Client.Tester
     internal class Program
     {
         private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(5);
-        private static readonly TimeSpan SleepDuration = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan SleepDuration = TimeSpan.FromSeconds(30);
 
         private static void Main(string[] args)
         {
