@@ -2,6 +2,14 @@
 
 This is a .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact XML email sending.
 
+## Installation
+
+The recommended installation method is the [silverpop-dotnet-api](https://www.nuget.org/packages/silverpop-dotnet-api) NuGet package.
+
+```
+PM> Install-Package silverpop-dotnet-api
+```
+
 ## Requirements
 
 - .NET Framework 4.5
