@@ -1,7 +1,6 @@
 ﻿using Silverpop.Core.Tests.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Xunit;
@@ -229,6 +228,22 @@ namespace Silverpop.Core.Tests
                     Assert.Equal(
                         "XML CDATA sections should not be used in PersonalizationTags values.",
                         exception.Message);
+                }
+
+                [Fact]
+                public void BodyTypeDefaultsToHtml()
+                {
+                    var recipientTag = Regex.Match(
+                        EncodedMessage(recipients: new List<TransactMessageRecipient>()
+                        {
+                            new TransactMessageRecipient()
+                            {
+                                EmailAddress = "test1@example.com"
+                            }
+                        }), RecipientRegex).Value;
+
+                    Assert.True(recipientTag
+                        .Contains("<BODY_TYPE>HTML</BODY_TYPE>"));
                 }
             }
         }

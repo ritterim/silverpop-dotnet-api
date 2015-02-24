@@ -6,6 +6,9 @@ namespace Silverpop.Core
 {
     public class TransactMessageEncoder
     {
+        private const TransactMessageRecipientBodyType BodyTypeDefault =
+            TransactMessageRecipientBodyType.Html;
+
         public virtual string Encode(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -38,7 +41,9 @@ namespace Silverpop.Core
                 var recipientXml = new XElement(XName.Get("RECIPIENT"));
 
                 recipientXml.SetElementValue(XName.Get("EMAIL"), recipient.EmailAddress);
-                recipientXml.SetElementValue(XName.Get("BODY_TYPE"), recipient.BodyType.ToString().ToUpper());
+
+                var bodyType = recipient.BodyType ?? BodyTypeDefault;
+                recipientXml.SetElementValue(XName.Get("BODY_TYPE"), bodyType.ToString().ToUpper());
 
                 // Add PERSONALIZATION nodes for RECIPIENT
                 foreach (var personalizationTag in recipient.PersonalizationTags)
