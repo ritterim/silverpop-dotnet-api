@@ -51,7 +51,6 @@ var client = new TransactClient(configuration);
 var message = new TransactMessage()
 {
     CampaignId = "123456",
-    TransactionId = "Test-" + Guid.NewGuid().ToString()),
     Recipients = new List<TransactMessageRecipient>()
     {
         new TransactMessageRecipient()
