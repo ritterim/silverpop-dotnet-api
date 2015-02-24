@@ -45,18 +45,10 @@ var configuration = new TransactClientConfiguration()
 var client = new TransactClient(configuration);
 ```
 
-**Create a message**
+**Create a simple message**
 
 ```csharp
-var message = TransactMessage.Create("123456", new TransactMessageRecipient()
-{
-    BodyType = TransactMessageRecipientBodyType.Html,
-    EmailAddress = "user@example.com",
-    PersonalizationTags = new Dictionary<string, string>()
-    {
-        { "tag1", "tag1-value" }
-    }
-});
+var message = TransactMessage.Create("123456", TransactMessageRecipient.Create("user@example.com");
 ```
 
 **Send a message using the client *(1-10 recipients)***
