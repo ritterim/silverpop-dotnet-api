@@ -78,14 +78,14 @@ TransactMessageResponse response = client.SendMessage(message);
 TransactMessageResponse response = await client.SendMessageAsync(message);
 ```
 
-**Send a message batch using the client *(11 - 5,000 recipients)***
+**Send a message batch using the client *(1 or more recipients -- intended for bulk usage rather than sending an email to a single user)***
 
 ```csharp
 // This may send multiple XML files to Silverpop depending on the number of recipients.
 IEnumerable<string> batchResponse = client.SendMessageBatch(message);
 ```
 
-**Send a message batch using the client asynchronously *(11 - 5,000 recipients)***
+**Send a message batch using the client asynchronously *(1 or more recipients -- intended for bulk usage rather than sending an email to a single user)***
 
 ```csharp
 // This may send multiple XML files to Silverpop depending on the number of recipients.
