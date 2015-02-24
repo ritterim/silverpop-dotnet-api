@@ -49,7 +49,7 @@ namespace Silverpop.Core
         /// However, I'm choosing this over taking a dependency on a mapper
         /// or performing a deep clone that includes the Recipients collection unnecessarily.
         /// </remarks>
-        public static TransactMessage CloneWithoutRecipients(TransactMessage message)
+        private static TransactMessage CloneWithoutRecipients(TransactMessage message)
         {
             return new TransactMessage()
             {
