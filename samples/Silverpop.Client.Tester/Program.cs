@@ -19,23 +19,16 @@ namespace Silverpop.Client.Tester
 
         private async static Task MainAsync(string[] args)
         {
-            var configuration = new TransactClientConfiguration()
-            {
-                //PodNumber = ,
-                Username = "username",
-                Password = "password"
-            };
+            var client = TransactClient.Create(
+                -1, // Change this to the correct pod number
+                "username",
+                "password");
 
-            var oAuthConfiguration = new TransactClientConfiguration()
-            {
-                //PodNumber = ,
-                OAuthClientId = "00000000-0000-0000-0000-000000000000",
-                OAuthClientSecret = "00000000-0000-0000-0000-000000000000",
-                OAuthRefreshToken = "00000000-0000-0000-0000-000000000000"
-            };
-
-            var client = new TransactClient(configuration);
-            var oAuthClient = new TransactClient(oAuthConfiguration);
+            var oAuthClient = TransactClient.CreateOAuthOnly(
+                -1, // Change this to the correct pod number
+                oAuthClientId: "00000000-0000-0000-0000-000000000000",
+                oAuthClientSecret: "00000000-0000-0000-0000-000000000000",
+                oAuthRefreshToken: "00000000-0000-0000-0000-000000000000");
 
             var sendMessageResponse = client.SendMessage(GetTestMessage("SendMessage"));
             Console.WriteLine("sendMessageResponse:");
@@ -156,23 +149,13 @@ namespace Silverpop.Client.Tester
 
         private static TransactMessage GetTestMessage(string testType)
         {
-            return new TransactMessage()
-            {
-                CampaignId = "123456",
-                TransactionId = string.Format("{0}Test-{1}", testType, Guid.NewGuid().ToString()),
-                Recipients = new List<TransactMessageRecipient>()
+            return TransactMessage.Create("123456", TransactMessageRecipient.Create(
+                "user@example.com",
+                TransactMessageRecipientBodyType.Html,
+                new Dictionary<string, string>()
                 {
-                    new TransactMessageRecipient()
-                    {
-                        BodyType = TransactMessageRecipientBodyType.Html,
-                        EmailAddress = "user@example.com",
-                        PersonalizationTags = new Dictionary<string, string>()
-                        {
-                            { "tag1", "tag1-value" }
-                        }
-                    }
-                }
-            };
+                    { "tag1", "tag1-value" }
+                }));
         }
     }
 }
