@@ -13,7 +13,8 @@ namespace Silverpop.Core
             var xml = new XElement(XName.Get("XTMAILING"));
 
             xml.SetElementValue(XName.Get("CAMPAIGN_ID"), message.CampaignId);
-            xml.SetElementValue(XName.Get("TRANSACTION_ID"), message.TransactionId);
+            xml.SetElementValue(XName.Get("TRANSACTION_ID"),
+                message.TransactionId ?? "dotnet-api-" + Guid.NewGuid().ToString());
             xml.SetElementValue(XName.Get("SHOW_ALL_SEND_DETAIL"), message.ShowAllSendDetail);
             xml.SetElementValue(XName.Get("SEND_AS_BATCH"), message.SendAsBatch);
             xml.SetElementValue(XName.Get("NO_RETRY_ON_FAILURE"), message.NoRetryOnFailure);

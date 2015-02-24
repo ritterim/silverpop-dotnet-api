@@ -16,7 +16,7 @@ namespace Silverpop.Core.Tests
 
             private static string EncodedMessage(
                 string campaignId = "001",
-                string transactionId = "123",
+                string transactionId = null,
                 bool showAllSendDetail = false,
                 bool sendAsBatch = false,
                 bool noRetryOnFailure = false,
@@ -76,6 +76,13 @@ namespace Silverpop.Core.Tests
             {
                 Assert.True(EncodedMessage(transactionId: "12345")
                     .Contains("<TRANSACTION_ID>12345</TRANSACTION_ID>"));
+            }
+
+            [Fact]
+            public void EncodesDefaultTransactionIdWhenNull()
+            {
+                Assert.True(Regex.Match(EncodedMessage(),
+                    @"<TRANSACTION_ID>dotnet-api-.{36}<\/TRANSACTION_ID>").Success);
             }
 
             [Fact]
