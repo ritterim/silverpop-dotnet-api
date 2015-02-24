@@ -61,5 +61,17 @@ namespace Silverpop.Core
                 SaveColumns = message.SaveColumns,
             };
         }
+
+        public static TransactMessage Create(string campaignId, params TransactMessageRecipient[] recipients)
+        {
+            if (campaignId == null) throw new ArgumentNullException("campaignId");
+            if (recipients == null) throw new ArgumentNullException("recipients");
+
+            return new TransactMessage()
+            {
+                CampaignId = campaignId,
+                Recipients = recipients
+            };
+        }
     }
 }
