@@ -46,6 +46,7 @@
     </Compile>
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SilverpopPersonalizationTag.cs" />
     <Compile Include="TransactMessage.cs" />
     <Compile Include="TransactMessageEncoder.cs" />
     <Compile Include="TransactMessageRecipient.cs" />
