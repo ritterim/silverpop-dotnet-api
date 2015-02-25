@@ -49,7 +49,7 @@ namespace Silverpop.Core
         /// However, I'm choosing this over taking a dependency on a mapper
         /// or performing a deep clone that includes the Recipients collection unnecessarily.
         /// </remarks>
-        public static TransactMessage CloneWithoutRecipients(TransactMessage message)
+        private static TransactMessage CloneWithoutRecipients(TransactMessage message)
         {
             return new TransactMessage()
             {
@@ -59,6 +59,18 @@ namespace Silverpop.Core
                 SendAsBatch = message.SendAsBatch,
                 NoRetryOnFailure = message.NoRetryOnFailure,
                 SaveColumns = message.SaveColumns,
+            };
+        }
+
+        public static TransactMessage Create(string campaignId, params TransactMessageRecipient[] recipients)
+        {
+            if (campaignId == null) throw new ArgumentNullException("campaignId");
+            if (recipients == null) throw new ArgumentNullException("recipients");
+
+            return new TransactMessage()
+            {
+                CampaignId = campaignId,
+                Recipients = recipients
             };
         }
     }

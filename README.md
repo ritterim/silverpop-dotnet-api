@@ -16,54 +16,43 @@ PM> Install-Package silverpop-dotnet-api
 
 ## Usage
 
-**Prepare the client *(fill in the necessary details)***
+**Create the client**
 
 ```csharp
-var configuration = new TransactClientConfiguration()
-{
-    PodNumber = your_pod_number,
+// Create the TransactClient with standard authentication only.
+// Note: This does not enable OAuth scenarios.
+// OAuth is typically used when an application is hosted
+// somewhere with a non-static IP address (Azure Websites, etc.),
+// or when you don't want to specify IP address(es) with Silverpop.
+var client = TransactClient.Create(YourPodNumberInteger, YourUsername, YourPassword);
 
-    // Username and password are recommended, but can be omitted
-    // if you only use HTTPS communication (non-batch message sending)
-    // and specify OAuth information.
+// ------------------------- OR -------------------------
 
-    Username = "username",
-    Password = "password",
+// Create the TransactClient enabling all features.
+// OAuth will be used for non-batch message scenarios.
+var client = TransactClient.CreateIncludingOAuth(
+    YourPodNumberInteger,
+    YourUsername,
+    YourPassword,
+    YourOAuthClientId,
+    YourOAuthClientSecret,
+    YourOAuthRefreshToken);
 
-    // If wishing to use OAuth for HTTPS communication
-    // provide the following:
+// ------------------------- OR -------------------------
 
-    OAuthClientId = "00000000-0000-0000-0000-000000000000",
-    OAuthClientSecret = "00000000-0000-0000-0000-000000000000",
-    OAuthRefreshToken = "00000000-0000-0000-0000-000000000000"
-
-    // OAuth is typically used when an application is hosted
-    // somewhere with a non-static IP address (Azure Websites, etc.),
-    // or when you don't want to specify the IP address with Silverpop.
-};
-
-var client = new TransactClient(configuration);
+// Create the TransactClient with OAuth authentication only.
+// Note: This cannot be used with batch sending.
+var client = TransactClient.CreateOAuthOnly(
+    YourPodNumberInteger,
+    YourOAuthClientId,
+    YourOAuthClientSecret,
+    YourOAuthRefreshToken);
 ```
 
-**Create a message**
+**Create a simple message**
 
 ```csharp
-var message = new TransactMessage()
-{
-    CampaignId = "123456",
-    Recipients = new List<TransactMessageRecipient>()
-    {
-        new TransactMessageRecipient()
-        {
-            BodyType = TransactMessageRecipientBodyType.Html,
-            EmailAddress = "user@example.com",
-            PersonalizationTags = new Dictionary<string, string>()
-            {
-                { "tag1", "tag1-value" }
-            }
-        }
-    }
-};
+var message = TransactMessage.Create("123456", TransactMessageRecipient.Create("user@example.com");
 ```
 
 **Send a message using the client *(1-10 recipients)***

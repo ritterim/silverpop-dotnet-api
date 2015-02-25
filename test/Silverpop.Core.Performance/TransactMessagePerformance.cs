@@ -12,16 +12,11 @@ namespace Silverpop.Core.Performance
             int recipientsPerBatch,
             IDictionary<string, string> personalizationTagsForEachRecipient)
         {
-            var message = new TransactMessage()
-            {
-                Recipients = Enumerable.Range(0, recipientCount)
-                    .Select(x => new TransactMessageRecipient()
-                    {
-                        EmailAddress = Guid.NewGuid().ToString() + "@example.com",
-                        PersonalizationTags = personalizationTagsForEachRecipient
-                    })
-                    .ToList()
-            };
+            var message = TransactMessage.Create("123", Enumerable.Range(0, recipientCount)
+                .Select(x => TransactMessageRecipient.Create(
+                    Guid.NewGuid().ToString() + "@example.com",
+                    personalizationTags: personalizationTagsForEachRecipient))
+                .ToArray());
 
             var stopwatch = Stopwatch.StartNew();
             Console.WriteLine("Stopwatch started.");

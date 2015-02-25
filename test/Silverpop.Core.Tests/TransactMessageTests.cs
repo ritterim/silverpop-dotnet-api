@@ -91,5 +91,42 @@ namespace Silverpop.Core.Tests
                 Assert.Equal("test2@example.com", _sut.Recipients.Last().EmailAddress);
             }
         }
+
+        public class CreateTests
+        {
+            [Fact]
+            public void ThrowsForNullCampaignId()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactMessage.Create(null));
+            }
+
+            [Fact]
+            public void ThrowsForNullRecipients()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactMessage.Create("123", null));
+            }
+
+            [Fact]
+            public void SetsCampaignId()
+            {
+                var message = TransactMessage.Create("123");
+                Assert.Equal("123", message.CampaignId);
+            }
+
+            [Fact]
+            public void SetsMessageRecipient()
+            {
+                var recipient = new TransactMessageRecipient()
+                {
+                    EmailAddress = "test@example.com"
+                };
+
+                var message = TransactMessage.Create("123", recipient);
+
+                Assert.Equal(recipient, message.Recipients.Single());
+            }
+        }
     }
 }
