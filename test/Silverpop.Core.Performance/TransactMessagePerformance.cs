@@ -7,15 +7,15 @@ namespace Silverpop.Core.Performance
 {
     public class TransactMessagePerformance
     {
-        public void InvokeGetRecipientBatchedMessages(
+        public void InvokeGetRecipientBatchedMessages<T>(
             int recipientCount,
             int recipientsPerBatch,
-            IDictionary<string, string> personalizationTagsForEachRecipient)
+            T personalizationTagsForEachRecipient)
         {
             var message = TransactMessage.Create("123", Enumerable.Range(0, recipientCount)
                 .Select(x => TransactMessageRecipient.Create(
                     Guid.NewGuid().ToString() + "@example.com",
-                    personalizationTags: personalizationTagsForEachRecipient))
+                    personalizationTagsObject: personalizationTagsForEachRecipient))
                 .ToArray());
 
             var stopwatch = Stopwatch.StartNew();

@@ -151,10 +151,10 @@ namespace Silverpop.Client.Tester
         {
             return TransactMessage.Create("123456", TransactMessageRecipient.Create(
                 "user@example.com",
-                TransactMessageRecipientBodyType.Html,
-                new Dictionary<string, string>()
+                new TestPersonalizationTags()
                 {
-                    { "tag1", "tag1-value" }
+                    Tag1 = "tag1-value",
+                    Tag2 = "tag2-value"
                 }));
         }
     }

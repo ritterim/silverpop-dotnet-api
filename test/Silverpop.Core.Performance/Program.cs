@@ -8,24 +8,39 @@ namespace Silverpop.Core.Performance
     {
         private static void Main(string[] args)
         {
-            var numberOfTags = 15;
             var tagValue = new string(
                 Enumerable.Repeat("ABC", 1000)
                     .SelectMany(x => x)
                     .ToArray());
 
-            var personalizationTags = new Dictionary<string, string>();
+            var personalizationTags = new TestPersonalizationTags()
+            {
+                TagA = tagValue,
+                TagB = tagValue,
+                TagC = tagValue,
+                TagD = tagValue,
+                TagE = tagValue,
+                TagF = tagValue,
+                TagG = tagValue,
+                TagH = tagValue,
+                TagI = tagValue,
+                TagJ = tagValue,
+                TagK = tagValue,
+                TagL = tagValue,
+                TagM = tagValue,
+                TagN = tagValue,
+                TagO = tagValue
+            };
 
-            for (var i = 0; i < numberOfTags; i++)
-                personalizationTags.Add("Tag" + i, tagValue);
+            var numberOfTags = personalizationTags.GetType().GetProperties().Count();
 
             Console.WriteLine("Testing 1 million recipients with {0} tags using batches of 5000:", numberOfTags);
             new TransactMessagePerformance()
                 .InvokeGetRecipientBatchedMessages(1000000, 5000, personalizationTags);
 
-            Console.WriteLine("Testing 10 million recipients with {0} tags using batches of 5000:", numberOfTags);
+            Console.WriteLine("Testing 3 million recipients with {0} tags using batches of 5000:", numberOfTags);
             new TransactMessagePerformance()
-                .InvokeGetRecipientBatchedMessages(10000000, 5000, personalizationTags);
+                .InvokeGetRecipientBatchedMessages(3000000, 5000, personalizationTags);
 
             Console.ReadLine();
         }
