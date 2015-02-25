@@ -19,7 +19,6 @@ namespace Silverpop.Client
             "Use SendMessageBatch or SendMessageBatchAsync instead.",
             TransactClientConfiguration.MaxRecipientsPerNonBatchRequest);
 
-        private readonly TransactClientConfiguration _configuration;
         private readonly TransactMessageEncoder _encoder;
         private readonly TransactMessageResponseDecoder _decoder;
         private readonly Func<ISilverpopCommunicationsClient> _silverpopFactory;
@@ -39,11 +38,13 @@ namespace Silverpop.Client
             TransactMessageResponseDecoder decoder,
             Func<ISilverpopCommunicationsClient> silverpopFactory)
         {
-            _configuration = configuration;
+            Configuration = configuration;
             _encoder = encoder;
             _decoder = decoder;
             _silverpopFactory = silverpopFactory;
         }
+
+        public TransactClientConfiguration Configuration { get; private set; }
 
         public TransactMessageResponse SendMessage(TransactMessage message)
         {
@@ -224,14 +225,86 @@ namespace Silverpop.Client
             if (message.Recipients.Count() > TransactClientConfiguration.MaxRecipientsPerNonBatchRequest)
                 throw new ArgumentException(ErrorExceededNonBatchRecipients);
 
-            if (!_configuration.PodNumber.HasValue)
+            if (!Configuration.PodNumber.HasValue)
                 throw new ApplicationException(ErrorMissingPodNumber);
         }
 
         private void MessageBatchPreCommunicationVerification()
         {
-            if (!_configuration.PodNumber.HasValue)
+            if (!Configuration.PodNumber.HasValue)
                 throw new ApplicationException(ErrorMissingPodNumber);
+        }
+
+        /// <summary>
+        /// Create the TransactClient with standard authentication only.
+        /// Note: This does not enable OAuth scenarios.
+        /// OAuth is typically used when an application is hosted
+        /// somewhere with a non-static IP address (Azure Websites, etc.),
+        /// or when you don't want to specify IP address(es) with Silverpop.
+        /// </summary>
+        public static TransactClient Create(int podNumber, string username, string password)
+        {
+            if (username == null) throw new ArgumentNullException("username");
+            if (password == null) throw new ArgumentNullException("password");
+
+            return new TransactClient(new TransactClientConfiguration()
+            {
+                PodNumber = podNumber,
+                Username = username,
+                Password = password
+            });
+        }
+
+        /// <summary>
+        /// Create the TransactClient enabling all features.
+        /// OAuth will be used for non-batch message scenarios.
+        /// </summary>
+        public static TransactClient CreateIncludingOAuth(
+            int podNumber,
+            string username,
+            string password,
+            string oAuthClientId,
+            string oAuthClientSecret,
+            string oAuthRefreshToken)
+        {
+            if (username == null) throw new ArgumentNullException("username");
+            if (password == null) throw new ArgumentNullException("password");
+            if (oAuthClientId == null) throw new ArgumentNullException("oAuthClientId");
+            if (oAuthClientSecret == null) throw new ArgumentNullException("oAuthClientSecret");
+            if (oAuthRefreshToken == null) throw new ArgumentNullException("oAuthRefreshToken");
+
+            return new TransactClient(new TransactClientConfiguration()
+            {
+                PodNumber = podNumber,
+                Username = username,
+                Password = password,
+                OAuthClientId = oAuthClientId,
+                OAuthClientSecret = oAuthClientSecret,
+                OAuthRefreshToken = oAuthRefreshToken
+            });
+        }
+
+        /// <summary>
+        /// Create the TransactClient with OAuth authentication only.
+        /// Note: This cannot be used with batch sending.
+        /// </summary>
+        public static TransactClient CreateOAuthOnly(
+            int podNumber,
+            string oAuthClientId,
+            string oAuthClientSecret,
+            string oAuthRefreshToken)
+        {
+            if (oAuthClientId == null) throw new ArgumentNullException("oAuthClientId");
+            if (oAuthClientSecret == null) throw new ArgumentNullException("oAuthClientSecret");
+            if (oAuthRefreshToken == null) throw new ArgumentNullException("oAuthRefreshToken");
+
+            return new TransactClient(new TransactClientConfiguration()
+            {
+                PodNumber = podNumber,
+                OAuthClientId = oAuthClientId,
+                OAuthClientSecret = oAuthClientSecret,
+                OAuthRefreshToken = oAuthRefreshToken
+            });
         }
     }
 }

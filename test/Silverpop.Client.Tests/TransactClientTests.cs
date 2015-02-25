@@ -719,6 +719,292 @@ namespace Silverpop.Client.Tests
             }
         }
 
+        public class CreateTests
+        {
+            [Fact]
+            public void ThrowsForNullUsername()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.Create(1, null, "some_password"));
+            }
+
+            [Fact]
+            public void ThrowsForNullPassword()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.Create(1, "some_username", null));
+            }
+
+            [Fact]
+            public void SetsPodNumber()
+            {
+                var client = TransactClient.Create(1, "some_username", "some_password");
+                Assert.Equal(1, client.Configuration.PodNumber);
+            }
+
+            [Fact]
+            public void SetsUsername()
+            {
+                var client = TransactClient.Create(1, "some_username", "some_password");
+                Assert.Equal("some_username", client.Configuration.Username);
+            }
+
+            [Fact]
+            public void SetsPassword()
+            {
+                var client = TransactClient.Create(1, "some_username", "some_password");
+                Assert.Equal("some_password", client.Configuration.Password);
+            }
+        }
+
+        public class CreateIncludingOAuthTests
+        {
+            [Fact]
+            public void ThrowsForNullUsername()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateIncludingOAuth(
+                        1,
+                        null,
+                        "some_password",
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000"));
+            }
+
+            [Fact]
+            public void ThrowsForNullPassword()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateIncludingOAuth(
+                        1,
+                        "some_username",
+                        null,
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000"));
+            }
+
+            [Fact]
+            public void ThrowsForNullOAuthClientId()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateIncludingOAuth(
+                        1,
+                        "some_username",
+                        "some_username",
+                        null,
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000"));
+            }
+
+            [Fact]
+            public void ThrowsForNullOAuthClientSecret()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateIncludingOAuth(
+                        1,
+                        "some_username",
+                        "some_username",
+                        "00000000-0000-0000-0000-000000000000",
+                        null,
+                        "00000000-0000-0000-0000-000000000000"));
+            }
+
+            [Fact]
+            public void ThrowsForNullOAuthRefreshToken()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateIncludingOAuth(
+                        1,
+                        "some_username",
+                        "some_username",
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000",
+                        null));
+            }
+
+            [Fact]
+            public void SetsPodNumber()
+            {
+                var client = TransactClient.CreateIncludingOAuth(
+                    1,
+                    "some_username",
+                    "some_password",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(1, client.Configuration.PodNumber);
+            }
+
+            [Fact]
+            public void SetsUsername()
+            {
+                var client = TransactClient.CreateIncludingOAuth(
+                    1,
+                    "some_username",
+                    "some_password",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal("some_username", client.Configuration.Username);
+            }
+
+            [Fact]
+            public void SetsPassword()
+            {
+                var client = TransactClient.CreateIncludingOAuth(
+                    1,
+                    "some_username",
+                    "some_password",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal("some_password", client.Configuration.Password);
+            }
+
+            [Fact]
+            public void SetsOAuthClientId()
+            {
+                var client = TransactClient.CreateIncludingOAuth(
+                    1,
+                    "some_username",
+                    "some_password",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(
+                    "00000000-0000-0000-0000-000000000001",
+                    client.Configuration.OAuthClientId);
+            }
+
+            [Fact]
+            public void SetsOAuthClientSecret()
+            {
+                var client = TransactClient.CreateIncludingOAuth(
+                    1,
+                    "some_username",
+                    "some_password",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(
+                    "00000000-0000-0000-0000-000000000002",
+                    client.Configuration.OAuthClientSecret);
+            }
+
+            [Fact]
+            public void SetsOAuthRefreshToken()
+            {
+                var client = TransactClient.CreateIncludingOAuth(
+                    1,
+                    "some_username",
+                    "some_password",
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(
+                    "00000000-0000-0000-0000-000000000003",
+                    client.Configuration.OAuthRefreshToken);
+            }
+        }
+
+        public class CreateOAuthOnlyTests
+        {
+            [Fact]
+            public void ThrowsForNullOAuthClientId()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateOAuthOnly(
+                        1,
+                        null,
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000"));
+            }
+
+            [Fact]
+            public void ThrowsForNullOAuthClientSecret()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateOAuthOnly(
+                        1,
+                        "00000000-0000-0000-0000-000000000000",
+                        null,
+                        "00000000-0000-0000-0000-000000000000"));
+            }
+
+            [Fact]
+            public void ThrowsForNullOAuthRefreshToken()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => TransactClient.CreateOAuthOnly(
+                        1,
+                        "00000000-0000-0000-0000-000000000000",
+                        "00000000-0000-0000-0000-000000000000",
+                        null));
+            }
+
+            [Fact]
+            public void SetsPodNumber()
+            {
+                var client = TransactClient.CreateOAuthOnly(
+                    1,
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(1, client.Configuration.PodNumber);
+            }
+
+            [Fact]
+            public void SetsOAuthClientId()
+            {
+                var client = TransactClient.CreateOAuthOnly(
+                    1,
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(
+                    "00000000-0000-0000-0000-000000000001",
+                    client.Configuration.OAuthClientId);
+            }
+
+            [Fact]
+            public void SetsOAuthClientSecret()
+            {
+                var client = TransactClient.CreateOAuthOnly(
+                    1,
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(
+                    "00000000-0000-0000-0000-000000000002",
+                    client.Configuration.OAuthClientSecret);
+            }
+
+            [Fact]
+            public void SetsOAuthRefreshToken()
+            {
+                var client = TransactClient.CreateOAuthOnly(
+                    1,
+                    "00000000-0000-0000-0000-000000000001",
+                    "00000000-0000-0000-0000-000000000002",
+                    "00000000-0000-0000-0000-000000000003");
+
+                Assert.Equal(
+                    "00000000-0000-0000-0000-000000000003",
+                    client.Configuration.OAuthRefreshToken);
+            }
+        }
+
         private string GetUploadedFilenameFromStatusFilename(string filename)
         {
             return filename.Replace(".status", string.Empty);
