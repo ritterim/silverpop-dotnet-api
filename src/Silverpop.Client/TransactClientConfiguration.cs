@@ -7,6 +7,20 @@ namespace Silverpop.Client
         public const int MaxRecipientsPerBatchRequest = 5000;
         public const int MaxRecipientsPerNonBatchRequest = 10;
 
+        public TransactClientConfiguration()
+        {
+        }
+
+        public TransactClientConfiguration(TransactClientConfigurationSection section)
+        {
+            PodNumber = section.PodNumber;
+            Username = section.Username;
+            Password = section.Password;
+            OAuthClientId = section.OAuthClientId;
+            OAuthClientSecret = section.OAuthClientSecret;
+            OAuthRefreshToken = section.OAuthRefreshToken;
+        }
+
         private int? _podNumber;
 
         public int? PodNumber
