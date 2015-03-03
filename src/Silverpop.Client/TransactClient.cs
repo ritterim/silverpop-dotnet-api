@@ -2,6 +2,7 @@
 using Silverpop.Core;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -305,6 +306,22 @@ namespace Silverpop.Client
                 OAuthClientSecret = oAuthClientSecret,
                 OAuthRefreshToken = oAuthRefreshToken
             });
+        }
+
+        /// <summary>
+        /// Create the TransactClient using application configuration.
+        /// </summary>
+        public static TransactClient CreateUsingConfiguration()
+        {
+            var configSection = TransactClientConfigurationSection.GetFromConfiguration();
+
+            if (configSection == null)
+                throw new InvalidOperationException(
+                    "Unable to create TransactClient using configuration.");
+
+            var config = new TransactClientConfiguration(configSection);
+
+            return new TransactClient(config);
         }
     }
 }
