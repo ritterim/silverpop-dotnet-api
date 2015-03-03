@@ -38,9 +38,9 @@ namespace Silverpop.Core.Performance
             new TransactMessagePerformance()
                 .InvokeGetRecipientBatchedMessages(1000000, 5000, personalizationTags);
 
-            Console.WriteLine("Testing 3 million recipients with {0} tags using batches of 5000:", numberOfTags);
+            Console.WriteLine("Testing 5 million recipients with {0} tags using batches of 5000:", numberOfTags);
             new TransactMessagePerformance()
-                .InvokeGetRecipientBatchedMessages(3000000, 5000, personalizationTags);
+                .InvokeGetRecipientBatchedMessages(5000000, 5000, personalizationTags);
 
             Console.ReadLine();
         }
