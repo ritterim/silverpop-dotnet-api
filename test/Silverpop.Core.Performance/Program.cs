@@ -6,6 +6,14 @@ namespace Silverpop.Core.Performance
 {
     internal class Program
     {
+        private static IEnumerable<int> TestRecipientCounts = new List<int>()
+        {
+            1000000,
+            5000000,
+        };
+
+        private static int TestRecipientsPerBatch = 5000;
+
         private static void Main(string[] args)
         {
             var tagValue = new string(
@@ -34,13 +42,20 @@ namespace Silverpop.Core.Performance
 
             var numberOfTags = personalizationTags.GetType().GetProperties().Count();
 
-            Console.WriteLine("Testing 1 million recipients with {0} tags using batches of 5000:", numberOfTags);
-            new TransactMessagePerformance()
-                .InvokeGetRecipientBatchedMessages(1000000, 5000, personalizationTags);
+            foreach (var testRecipientCount in TestRecipientCounts)
+            {
+                Console.WriteLine(
+                    "Testing {0} recipients with {1} tags using batches of {2}:",
+                    testRecipientCount,
+                    numberOfTags,
+                    TestRecipientsPerBatch);
 
-            Console.WriteLine("Testing 5 million recipients with {0} tags using batches of 5000:", numberOfTags);
-            new TransactMessagePerformance()
-                .InvokeGetRecipientBatchedMessages(5000000, 5000, personalizationTags);
+                new TransactMessagePerformance()
+                    .InvokeGetRecipientBatchedMessages(
+                        testRecipientCount,
+                        TestRecipientsPerBatch,
+                        personalizationTags);
+            }
 
             Console.ReadLine();
         }
