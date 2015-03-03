@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Client.Tester", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Core.Performance", "test\Silverpop.Core.Performance\Silverpop.Core.Performance.csproj", "{722671D5-F198-4D5F-BAB2-3299E20B3ECB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Client.WebTester", "samples\Silverpop.Client.WebTester\Silverpop.Client.WebTester.csproj", "{38D6D864-1B69-4FE1-93C7-72509DF587D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silverpop.Client.WebTester.Tests", "test\Silverpop.Client.WebTester.Tests\Silverpop.Client.WebTester.Tests.csproj", "{B445C0AB-6DE4-4317-A875-546CC72E692C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,14 @@ Global
 		{722671D5-F198-4D5F-BAB2-3299E20B3ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{722671D5-F198-4D5F-BAB2-3299E20B3ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{722671D5-F198-4D5F-BAB2-3299E20B3ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38D6D864-1B69-4FE1-93C7-72509DF587D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38D6D864-1B69-4FE1-93C7-72509DF587D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38D6D864-1B69-4FE1-93C7-72509DF587D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38D6D864-1B69-4FE1-93C7-72509DF587D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B445C0AB-6DE4-4317-A875-546CC72E692C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B445C0AB-6DE4-4317-A875-546CC72E692C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B445C0AB-6DE4-4317-A875-546CC72E692C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B445C0AB-6DE4-4317-A875-546CC72E692C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,5 +70,7 @@ Global
 		{5F5F1ED6-EF08-4879-B39D-EC2F7E7A4971} = {B3170ACA-0EDE-4B66-96A0-62FB97AACAC0}
 		{959CE82B-2C47-42CC-922F-FC4C0DAD255B} = {008E9135-77B8-4BEA-BE67-386C8B8D69F8}
 		{722671D5-F198-4D5F-BAB2-3299E20B3ECB} = {B3170ACA-0EDE-4B66-96A0-62FB97AACAC0}
+		{38D6D864-1B69-4FE1-93C7-72509DF587D1} = {008E9135-77B8-4BEA-BE67-386C8B8D69F8}
+		{B445C0AB-6DE4-4317-A875-546CC72E692C} = {B3170ACA-0EDE-4B66-96A0-62FB97AACAC0}
 	EndGlobalSection
 EndGlobal
