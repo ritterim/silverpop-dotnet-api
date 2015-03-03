@@ -51,6 +51,7 @@
     <Compile Include="TransactMessageEncoder.cs" />
     <Compile Include="TransactMessageRecipient.cs" />
     <Compile Include="TransactMessageRecipientBodyType.cs" />
+    <Compile Include="TransactMessageRecipientPersonalizationTag.cs" />
     <Compile Include="TransactMessageResponse.cs" />
     <Compile Include="TransactMessageResponseDecoder.cs" />
     <Compile Include="TransactMessageResponseRecipientDetails.cs" />

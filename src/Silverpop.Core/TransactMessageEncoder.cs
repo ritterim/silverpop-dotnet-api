@@ -50,7 +50,7 @@ namespace Silverpop.Core
                 {
                     var personalizationXml = new XElement(XName.Get("PERSONALIZATION"));
 
-                    personalizationXml.SetElementValue(XName.Get("TAG_NAME"), personalizationTag.Key);
+                    personalizationXml.SetElementValue(XName.Get("TAG_NAME"), personalizationTag.Name);
 
                     // Prevent usage of XML CDATA sections,
                     // if there is reason to allow these it can be revisited.
