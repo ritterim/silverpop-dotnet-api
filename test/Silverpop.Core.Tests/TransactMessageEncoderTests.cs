@@ -135,10 +135,10 @@ namespace Silverpop.Core.Tests
                         {
                             EmailAddress = "test1@example.com",
                             BodyType = TransactMessageRecipientBodyType.Text,
-                            PersonalizationTags = new Dictionary<string, string>()
+                            PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                             {
-                                { "tag1", "tag1-value" },
-                                { "tag2", "tag2-value" },
+                                new TransactMessageRecipientPersonalizationTag("tag1", "tag1-value"),
+                                new TransactMessageRecipientPersonalizationTag("tag2", "tag2-value"),
                             }
                         }
                     }), RecipientRegex).Value;
@@ -191,9 +191,9 @@ namespace Silverpop.Core.Tests
                             {
                                 EmailAddress = "test1@example.com",
                                 BodyType = TransactMessageRecipientBodyType.Text,
-                                PersonalizationTags = new Dictionary<string, string>()
+                                PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                                 {
-                                    { "tag1&", "<value>" },
+                                    new TransactMessageRecipientPersonalizationTag("tag1&", "<value>"),
                                 }
                             }
                         }), RecipientRegex).Value;
@@ -213,14 +213,13 @@ namespace Silverpop.Core.Tests
                                   {
                                       EmailAddress = "test1@example.com",
                                       BodyType = TransactMessageRecipientBodyType.Html,
-                                      PersonalizationTags = new Dictionary<string, string>()
+                                      PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                                       {
-                                          {
+                                          new TransactMessageRecipientPersonalizationTag(
                                               "tag1",
                                               "<![CDATA[<html><body>" +
                                                   Environment.NewLine +
-                                                  @"<a href=""http://"">test</a></body></html>]]>"
-                                          },
+                                                  @"<a href=""http://"">test</a></body></html>]]>"),
                                       }
                                   }
                               }));

@@ -86,10 +86,10 @@ namespace Silverpop.Core.Tests
 
                 Assert.Equal(2, recipient.PersonalizationTags.Count());
 
-                Assert.Equal("Tag1", recipient.PersonalizationTags.First().Key);
+                Assert.Equal("Tag1", recipient.PersonalizationTags.First().Name);
                 Assert.Equal("tag1-value", recipient.PersonalizationTags.First().Value);
 
-                Assert.Equal("Tag2", recipient.PersonalizationTags.Last().Key);
+                Assert.Equal("Tag2", recipient.PersonalizationTags.Last().Name);
                 Assert.Equal("tag2-value", recipient.PersonalizationTags.Last().Value);
             }
 
@@ -107,7 +107,7 @@ namespace Silverpop.Core.Tests
 
                 Assert.Equal(1, recipient.PersonalizationTags.Count());
 
-                Assert.Equal("Tag1", recipient.PersonalizationTags.First().Key);
+                Assert.Equal("Tag1", recipient.PersonalizationTags.First().Name);
                 Assert.Equal("tag1-value", recipient.PersonalizationTags.First().Value);
             }
 
@@ -124,10 +124,10 @@ namespace Silverpop.Core.Tests
 
                 Assert.Equal(2, recipient.PersonalizationTags.Count());
 
-                Assert.Equal("special-tag1-name", recipient.PersonalizationTags.First().Key);
+                Assert.Equal("special-tag1-name", recipient.PersonalizationTags.First().Name);
                 Assert.Equal("tag1-value", recipient.PersonalizationTags.First().Value);
 
-                Assert.Equal("Tag2", recipient.PersonalizationTags.Last().Key);
+                Assert.Equal("Tag2", recipient.PersonalizationTags.Last().Name);
                 Assert.Equal("tag2-value", recipient.PersonalizationTags.Last().Value);
             }
 
