@@ -1,0 +1,58 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Silverpop.Client.WebTester.Models.IndexModel>
+@model Silverpop.Client.WebTester.Models.IndexModel
+
+<div class="row well">
+    <div class="col-sm-5">
+        <div class="form-group">
+            <label for="campaign-id">Campaign Id</label>
+            <input type="text" class="form-control" id="campaign-id" name="CampaignId" placeholder="ex: 12345" autofocus />
+        </div>
+        <div class="form-group">
+            <label for="to-address">To Address</label>
+            <input type="email" class="form-control" id="to-address" name="ToAddress" placeholder="test@example.com" />
+        </div>
+    </div>
+    <div class="col-sm-1">
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Personalization Tags</label>
+            <div id="js-personalization-tags-container"></div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button id="js-add-personalization-tag" class="btn btn-default btn-sm btn-block">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Add personalization tag
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <button type="submit" id="js-submit" class="btn btn-primary btn-lg btn-block">
+        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+        Send the email!
+    </button>
+</div>
+
+<p class="configuration-details">
+    In case you're wondering, we're targeting pod number <strong>@Model.PodNumber</strong>
+    using <strong>@Model.AuthenticationLogin</strong>
+    for <strong>@Model.AuthenticationType</strong> authentication.
+</p>
+
+<script id="personalization-tag-template" type="text/html">
+    <div class="row js-personalization-tag-row">
+        <div class="col-sm-12 personalization-tag-item">
+            <input type="text" class="form-control input-sm personalization-tag-field" name="tag-name" placeholder="Tag Name" />
+            <input type="text" class="form-control input-sm personalization-tag-field" name="tag-value" placeholder="Value" />
+            <button class="btn btn-default btn-sm js-remove-personalization-tag" tabindex="-1"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+        </div>
+    </div>
+</script>
+
+@section scripts {
+    <script src="~/Assets/index.js"></script>
+}

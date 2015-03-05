@@ -1,0 +1,19 @@
+﻿@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+
+.heart {
+    color: #f00
+}
+
+.personalization-tag-field {
+    display: inline;
+    width: 135px;
+    margin-bottom: 10px;
+}
+
+.configuration-details {
+    margin-top: 200px;
+}
