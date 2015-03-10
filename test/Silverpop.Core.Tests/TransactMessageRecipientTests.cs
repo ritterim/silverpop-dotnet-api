@@ -94,24 +94,6 @@ namespace Silverpop.Core.Tests
             }
 
             [Fact]
-            public void SetsPersonalizationTagsUsingPropertiesToUse()
-            {
-                var recipient = TransactMessageRecipient.Create<object>(
-                    "test@example.com",
-                    new
-                    {
-                        Tag1 = "tag1-value",
-                        Tag2 = "tag2-value"
-                    },
-                    new List<string>() { "Tag1" });
-
-                Assert.Equal(1, recipient.PersonalizationTags.Count());
-
-                Assert.Equal("Tag1", recipient.PersonalizationTags.First().Name);
-                Assert.Equal("tag1-value", recipient.PersonalizationTags.First().Value);
-            }
-
-            [Fact]
             public void SetsPersonalizationTagsUsingSilverpopPersonalizationTagName()
             {
                 var recipient = TransactMessageRecipient.Create<TestPersonalizationTagsWithSilverpopPersonalizationTag>(

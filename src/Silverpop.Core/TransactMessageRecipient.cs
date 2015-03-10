@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Silverpop.Core
@@ -35,7 +34,6 @@ namespace Silverpop.Core
         public static TransactMessageRecipient Create<T>(
             string emailAddress,
             T personalizationTagsObject,
-            IEnumerable<string> propertiesToUse = null,
             TransactMessageRecipientBodyType? bodyType = TransactMessageRecipientBodyType.Html)
         {
             if (emailAddress == null) throw new ArgumentNullException("emailAddress");
@@ -43,12 +41,6 @@ namespace Silverpop.Core
 
             var personalizationTags =
                 GetTransactMessageRecipientPersonalizationTags(personalizationTagsObject);
-
-            if (propertiesToUse != null)
-            {
-                personalizationTags = personalizationTags
-                    .Where(x => propertiesToUse.Any(y => y == x.Name));
-            }
 
             return new TransactMessageRecipient()
             {
