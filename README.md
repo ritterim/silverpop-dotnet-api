@@ -97,6 +97,45 @@ TransactMessageResponse response = client.GetStatusOfMessageBatch(batchResponse[
 TransactMessageResponse response = await client.GetStatusOfMessageBatchAsync(batchResponse[0]);
 ```
 
+## Messages with personalization tags
+
+**First, we recommend creating a class as a model for the personalization tags.**
+
+```csharp
+public class MyPersonalizationTags
+{
+    // The SilverpopPersonalizationTag attribute is optional
+    // and specifies the actual tag name configured in Silverpop.
+    //
+    // This is useful when you want the model properties to differ
+    // from the Silverpop tag names, or you are unable to specify
+    // the tag name as a property. For example: spaces are not permitted
+    // in C# property names.
+    [SilverpopPersonalizationTag("First Name")]
+    public string FirstName { get; set; }
+
+    [SilverpopPersonalizationTag("Last Name")]
+    public string LastName { get; set; }
+
+    public decimal Amount { get; set; }
+}
+```
+
+**Then, use the model class when constructing a message.**
+
+```csharp
+var message = TransactMessage.Create(
+    "123456",
+    TransactMessageRecipient.Create(
+        "user@example.com",
+        new MyPersonalizationTags()
+        {
+            FirstName = "TheFirstName",
+            LastName = "TheLastName",
+            Amount = 123.45M
+        }));
+```
+
 # License
 
 MIT License
