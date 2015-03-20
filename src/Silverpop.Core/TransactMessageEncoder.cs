@@ -71,6 +71,9 @@ namespace Silverpop.Core
 
         private static bool ContainsCDATASection(string str)
         {
+            if (string.IsNullOrWhiteSpace(str))
+                return false;
+
             return Regex.Match(str, @"<!\[CDATA\[(.|\n|\r)*]]>").Success;
         }
     }

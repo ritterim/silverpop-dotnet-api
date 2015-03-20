@@ -244,6 +244,28 @@ namespace Silverpop.Core.Tests
                     Assert.True(recipientTag
                         .Contains("<BODY_TYPE>HTML</BODY_TYPE>"));
                 }
+
+                [Fact]
+                public void DoesNotThrowForNullPersonalizationTagPropertyValue()
+                {
+                    var message = new TransactMessage()
+                    {
+                        Recipients = new List<TransactMessageRecipient>()
+                        {
+                            new TransactMessageRecipient()
+                            {
+                                EmailAddress = "test@example.com",
+                                PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                                {
+                                    new TransactMessageRecipientPersonalizationTag("some_property", null)
+                                }
+                            }
+                        }
+                    };
+
+                    Assert.DoesNotThrow(
+                        () => new TransactMessageEncoder().Encode(message));
+                }
             }
         }
     }
