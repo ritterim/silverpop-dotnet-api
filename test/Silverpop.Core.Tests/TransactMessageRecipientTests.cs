@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -110,6 +111,20 @@ namespace Silverpop.Core.Tests
 
                 Assert.Equal("Tag2", recipient.PersonalizationTags.Last().Name);
                 Assert.Equal("tag2-value", recipient.PersonalizationTags.Last().Value);
+            }
+
+            [Fact]
+            public void ShouldNotThrowWhenPersonalizationTagsDictionaryHasANullValue()
+            {
+                Assert.DoesNotThrow(
+                    () => new TransactMessageRecipient()
+                    {
+                        EmailAddress = "test@example.com",
+                        PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                        {
+                            new TransactMessageRecipientPersonalizationTag("Tag1", null)
+                        }
+                    });
             }
 
             [Fact]
