@@ -113,6 +113,41 @@ namespace Silverpop.Core.Tests
                 Assert.Equal("tag2-value", recipient.PersonalizationTags.Last().Value);
             }
 
+            [Fact]
+            public void ShouldNotThrowWhenPersonalizationTagsDictionaryHasANullValue()
+            {
+                Assert.DoesNotThrow(
+                    () => new TransactMessageRecipient()
+                    {
+                        EmailAddress = "test@example.com",
+                        PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                        {
+                            new TransactMessageRecipientPersonalizationTag("Tag1", null)
+                        }
+                    });
+            }
+
+            [Fact]
+            public void ShouldNotThrowWhenPropertyInPersonalizationTagsObjectHasANullValue()
+            {
+                // Verify this test is valid when using the
+                // TestPersonalizationTagsWithSilverpopPersonalizationTag type.
+                var propertiesCount = new TestPersonalizationTagsWithSilverpopPersonalizationTag()
+                    .GetType()
+                    .GetProperties(Constants.DefaultPersonalizationTagsPropertyReflectionBindingFlags)
+                    .Count();
+
+                Assert.True(propertiesCount > 1);
+
+                Assert.DoesNotThrow(
+                    () => TransactMessageRecipient.Create<TestPersonalizationTagsWithSilverpopPersonalizationTag>(
+                        "test@example.com",
+                        new TestPersonalizationTagsWithSilverpopPersonalizationTag()
+                        {
+                            Tag1 = "tag1-value",
+                        }));
+            }
+
             public class TestPersonalizationTagsWithSilverpopPersonalizationTag
             {
                 [SilverpopPersonalizationTag("special-tag1-name")]

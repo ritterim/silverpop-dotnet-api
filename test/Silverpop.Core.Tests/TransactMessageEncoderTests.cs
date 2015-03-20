@@ -230,6 +230,50 @@ namespace Silverpop.Core.Tests
                 }
 
                 [Fact]
+                public void PersonalizationTags_ThrowsWhenNameIsNull()
+                {
+                    var exception = Assert.Throws<ArgumentException>(
+                        () => EncodedMessage(recipients: new List<TransactMessageRecipient>()
+                              {
+                                  new TransactMessageRecipient()
+                                  {
+                                      EmailAddress = "test1@example.com",
+                                      BodyType = TransactMessageRecipientBodyType.Html,
+                                      PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                                      {
+                                          new TransactMessageRecipientPersonalizationTag(null, "some_value"),
+                                      }
+                                  }
+                              }));
+
+                    Assert.Equal(
+                        "TransactMessageRecipientPersonalizationTag items must have a valid Name set.",
+                        exception.Message);
+                }
+
+                [Fact]
+                public void PersonalizationTags_ThrowsWhenNameIsWhiteSpace()
+                {
+                    var exception = Assert.Throws<ArgumentException>(
+                        () => EncodedMessage(recipients: new List<TransactMessageRecipient>()
+                              {
+                                  new TransactMessageRecipient()
+                                  {
+                                      EmailAddress = "test1@example.com",
+                                      BodyType = TransactMessageRecipientBodyType.Html,
+                                      PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                                      {
+                                          new TransactMessageRecipientPersonalizationTag("   ", "some_value"),
+                                      }
+                                  }
+                              }));
+
+                    Assert.Equal(
+                        "TransactMessageRecipientPersonalizationTag items must have a valid Name set.",
+                        exception.Message);
+                }
+
+                [Fact]
                 public void BodyTypeDefaultsToHtml()
                 {
                     var recipientTag = Regex.Match(
@@ -243,6 +287,28 @@ namespace Silverpop.Core.Tests
 
                     Assert.True(recipientTag
                         .Contains("<BODY_TYPE>HTML</BODY_TYPE>"));
+                }
+
+                [Fact]
+                public void DoesNotThrowForNullPersonalizationTagPropertyValue()
+                {
+                    var message = new TransactMessage()
+                    {
+                        Recipients = new List<TransactMessageRecipient>()
+                        {
+                            new TransactMessageRecipient()
+                            {
+                                EmailAddress = "test@example.com",
+                                PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                                {
+                                    new TransactMessageRecipientPersonalizationTag("some_property", null)
+                                }
+                            }
+                        }
+                    };
+
+                    Assert.DoesNotThrow(
+                        () => new TransactMessageEncoder().Encode(message));
                 }
             }
         }

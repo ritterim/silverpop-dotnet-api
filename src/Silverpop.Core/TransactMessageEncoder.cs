@@ -48,6 +48,10 @@ namespace Silverpop.Core
                 // Add PERSONALIZATION nodes for RECIPIENT
                 foreach (var personalizationTag in recipient.PersonalizationTags)
                 {
+                    if (string.IsNullOrWhiteSpace(personalizationTag.Name))
+                        throw new ArgumentException(
+                            "TransactMessageRecipientPersonalizationTag items must have a valid Name set.");
+
                     var personalizationXml = new XElement(XName.Get("PERSONALIZATION"));
 
                     personalizationXml.SetElementValue(XName.Get("TAG_NAME"), personalizationTag.Name);
@@ -71,6 +75,9 @@ namespace Silverpop.Core
 
         private static bool ContainsCDATASection(string str)
         {
+            if (string.IsNullOrWhiteSpace(str))
+                return false;
+
             return Regex.Match(str, @"<!\[CDATA\[(.|\n|\r)*]]>").Success;
         }
     }

@@ -53,7 +53,7 @@ namespace Silverpop.Core
         // Adapted from: http://stackoverflow.com/a/4944547/941536
         private static IEnumerable<TransactMessageRecipientPersonalizationTag> GetTransactMessageRecipientPersonalizationTags(
             object source,
-            BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+            BindingFlags bindingAttr = Constants.DefaultPersonalizationTagsPropertyReflectionBindingFlags)
         {
             var properties = source.GetType().GetProperties(bindingAttr);
             foreach (var property in properties)
@@ -61,11 +61,13 @@ namespace Silverpop.Core
                 var personalizationTagAttribute =
                     property.GetCustomAttribute<SilverpopPersonalizationTag>();
 
+                var propertyValue = property.GetValue(source, null);
+
                 yield return new TransactMessageRecipientPersonalizationTag(
                     personalizationTagAttribute != null
                         ? personalizationTagAttribute.Name
                         : property.Name,
-                    property.GetValue(source, null).ToString());
+                    propertyValue == null ? null : propertyValue.ToString());
             }
         }
     }
