@@ -6,6 +6,9 @@ namespace Silverpop.Core
 {
     public class TransactMessageRecipient
     {
+        public const BindingFlags DefaultPersonalizationTagsPropertyReflectionBindingFlags =
+            BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
+
         public TransactMessageRecipient()
         {
             PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>();
@@ -53,7 +56,7 @@ namespace Silverpop.Core
         // Adapted from: http://stackoverflow.com/a/4944547/941536
         private static IEnumerable<TransactMessageRecipientPersonalizationTag> GetTransactMessageRecipientPersonalizationTags(
             object source,
-            BindingFlags bindingAttr = Constants.DefaultPersonalizationTagsPropertyReflectionBindingFlags)
+            BindingFlags bindingAttr = DefaultPersonalizationTagsPropertyReflectionBindingFlags)
         {
             var properties = source.GetType().GetProperties(bindingAttr);
             foreach (var property in properties)
