@@ -134,7 +134,7 @@ namespace Silverpop.Core.Tests
                 // TestPersonalizationTagsWithSilverpopPersonalizationTag type.
                 var propertiesCount = new TestPersonalizationTagsWithSilverpopPersonalizationTag()
                     .GetType()
-                    .GetProperties(Constants.DefaultPersonalizationTagsPropertyReflectionBindingFlags)
+                    .GetProperties(TransactMessageRecipient.DefaultPersonalizationTagsPropertyReflectionBindingFlags)
                     .Count();
 
                 Assert.True(propertiesCount > 1);
