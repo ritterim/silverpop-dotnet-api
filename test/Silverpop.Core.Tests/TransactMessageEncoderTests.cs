@@ -1,4 +1,5 @@
-﻿using Silverpop.Core.Tests.Extensions;
+﻿using Silverpop.Core.Internal;
+using Silverpop.Core.Tests.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -212,7 +213,7 @@ namespace Silverpop.Core.Tests
                                   new TransactMessageRecipient()
                                   {
                                       EmailAddress = "test1@example.com",
-                                      BodyType = TransactMessageRecipientBodyType.Html,
+                                      BodyType = Constants.TransactMessageBodyTypeDefault,
                                       PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                                       {
                                           new TransactMessageRecipientPersonalizationTag(
@@ -238,7 +239,7 @@ namespace Silverpop.Core.Tests
                                   new TransactMessageRecipient()
                                   {
                                       EmailAddress = "test1@example.com",
-                                      BodyType = TransactMessageRecipientBodyType.Html,
+                                      BodyType = Constants.TransactMessageBodyTypeDefault,
                                       PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                                       {
                                           new TransactMessageRecipientPersonalizationTag(null, "some_value"),
@@ -260,7 +261,7 @@ namespace Silverpop.Core.Tests
                                   new TransactMessageRecipient()
                                   {
                                       EmailAddress = "test1@example.com",
-                                      BodyType = TransactMessageRecipientBodyType.Html,
+                                      BodyType = Constants.TransactMessageBodyTypeDefault,
                                       PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                                       {
                                           new TransactMessageRecipientPersonalizationTag("   ", "some_value"),
