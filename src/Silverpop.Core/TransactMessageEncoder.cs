@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Silverpop.Core.Internal;
+using System;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -6,9 +7,6 @@ namespace Silverpop.Core
 {
     public class TransactMessageEncoder
     {
-        private const TransactMessageRecipientBodyType BodyTypeDefault =
-            TransactMessageRecipientBodyType.Html;
-
         public virtual string Encode(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -42,7 +40,7 @@ namespace Silverpop.Core
 
                 recipientXml.SetElementValue(XName.Get("EMAIL"), recipient.EmailAddress);
 
-                var bodyType = recipient.BodyType ?? BodyTypeDefault;
+                var bodyType = recipient.BodyType ?? Constants.TransactMessageBodyTypeDefault;
                 recipientXml.SetElementValue(XName.Get("BODY_TYPE"), bodyType.ToString().ToUpper());
 
                 // Add PERSONALIZATION nodes for RECIPIENT
