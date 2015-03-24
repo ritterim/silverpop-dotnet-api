@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Silverpop.Core
+namespace Silverpop.Core.Internal
 {
     public static class Constants
     {
