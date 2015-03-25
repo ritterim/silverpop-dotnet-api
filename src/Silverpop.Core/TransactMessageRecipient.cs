@@ -20,7 +20,7 @@ namespace Silverpop.Core
 
         public static TransactMessageRecipient Create(
             string emailAddress,
-            TransactMessageRecipientBodyType? bodyType = TransactMessageRecipientBodyType.Html)
+            TransactMessageRecipientBodyType? bodyType = Constants.TransactMessageBodyTypeDefault)
         {
             if (emailAddress == null) throw new ArgumentNullException("emailAddress");
 

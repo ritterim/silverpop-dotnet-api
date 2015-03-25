@@ -6,5 +6,8 @@ namespace Silverpop.Core.Internal
     {
         public const BindingFlags DefaultPersonalizationTagsPropertyReflectionBindingFlags =
             BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
+
+        public const TransactMessageRecipientBodyType TransactMessageBodyTypeDefault =
+            TransactMessageRecipientBodyType.Html;
     }
 }
