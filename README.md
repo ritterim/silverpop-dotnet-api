@@ -47,6 +47,33 @@ var client = TransactClient.CreateOAuthOnly(
     YourOAuthClientId,
     YourOAuthClientSecret,
     YourOAuthRefreshToken);
+
+// ------------------------- OR -------------------------
+
+var client = TransactClient.CreateUsingConfiguration();
+```
+
+with the following configuration specified:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <section name="transactClientConfiguration" type="Silverpop.Client.TransactClientConfigurationSection, Silverpop.Client" />
+  </configSections>
+  <!-- Configure:
+    - podNumber
+    - username/password and/or oAuthClientId/oAuthClientSecret/oAuthRefreshToken
+      - If both are configured, OAuth is used.
+  -->
+  <transactClientConfiguration
+    podNumber="0"
+    username=""
+    password=""
+    oAuthClientId=""
+    oAuthClientSecret=""
+    oAuthRefreshToken="" />
+</configuration>
 ```
 
 **Create a simple message**
