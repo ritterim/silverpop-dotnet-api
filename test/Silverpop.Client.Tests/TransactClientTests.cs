@@ -1005,6 +1005,76 @@ namespace Silverpop.Client.Tests
             }
         }
 
+        public class CreateUsingConfigurationTests
+        {
+            private readonly TransactClientConfigurationProvider _configProvider =
+                Mock.Of<TransactClientConfigurationProvider>();
+
+            [Fact]
+            public void UsesAppSettings()
+            {
+                Mock.Get(_configProvider)
+                    .Setup(x => x.GetFromAppSettings())
+                    .Returns(new TransactClientConfiguration
+                    {
+                        Username = "username-from-appSettings"
+                    });
+
+                var client = TransactClient.CreateUsingConfiguration(_configProvider);
+
+                Assert.Equal("username-from-appSettings", client.Configuration.Username);
+            }
+
+            [Fact]
+            public void UsesConfigSection()
+            {
+                Mock.Get(_configProvider)
+                    .Setup(x => x.GetFromConfigurationSection())
+                    .Returns(new TransactClientConfiguration
+                    {
+                        Username = "username-from-config-section"
+                    });
+
+                var client = TransactClient.CreateUsingConfiguration(_configProvider);
+
+                Assert.Equal("username-from-config-section", client.Configuration.Username);
+            }
+
+            [Fact]
+            public void AppSettingsOverwriteConfigSectionSettings()
+            {
+                Mock.Get(_configProvider)
+                    .Setup(x => x.GetFromAppSettings())
+                    .Returns(new TransactClientConfiguration
+                    {
+                        Username = "username-from-appSettings"
+                    });
+
+                Mock.Get(_configProvider)
+                    .Setup(x => x.GetFromConfigurationSection())
+                    .Returns(new TransactClientConfiguration
+                    {
+                        Username = "username-from-config-section"
+                    });
+
+                var client = TransactClient.CreateUsingConfiguration(_configProvider);
+
+                Assert.Equal("username-from-appSettings", client.Configuration.Username);
+            }
+
+            [Fact]
+            public void ThrowsWhenNoConfigurationAvailable()
+            {
+                var exception = Assert.Throws<InvalidOperationException>(
+                    () => TransactClient.CreateUsingConfiguration(_configProvider));
+
+                Assert.Equal(
+                    "Unable to create TransactClient using configuration. " +
+                        "No configuration was provided.",
+                    exception.Message);
+            }
+        }
+
         private string GetUploadedFilenameFromStatusFilename(string filename)
         {
             return filename.Replace(".status", string.Empty);

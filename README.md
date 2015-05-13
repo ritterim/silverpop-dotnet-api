@@ -53,7 +53,7 @@ var client = TransactClient.CreateOAuthOnly(
 var client = TransactClient.CreateUsingConfiguration();
 ```
 
-with the following configuration specified:
+When using `TransactClient.CreateUsingConfiguration()` the configuration can be defined using **TransactClientConfigurationSection** or **appSettings**. Both can be used, too -- they'll be combined, with **appSettings** overwriting any settings defined in **TransactClientConfigurationSection**.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -73,6 +73,14 @@ with the following configuration specified:
     oAuthClientId=""
     oAuthClientSecret=""
     oAuthRefreshToken="" />
+  <appSettings>
+    <add key="silverpop-dotnet-api:PodNumber" value="" />
+    <add key="silverpop-dotnet-api:Username" value="" />
+    <add key="silverpop-dotnet-api:Password" value="" />
+    <add key="silverpop-dotnet-api:OAuthClientId" value="" />
+    <add key="silverpop-dotnet-api:OAuthClientSecret" value="" />
+    <add key="silverpop-dotnet-api:OAuthRefreshToken" value="" />
+  </appSettings>
 </configuration>
 ```
 

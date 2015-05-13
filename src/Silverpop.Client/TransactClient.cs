@@ -310,16 +310,42 @@ namespace Silverpop.Client
 
         /// <summary>
         /// Create the TransactClient using application configuration.
+        /// This will attempt to read both the TransactClientConfigurationSection
+        /// and appSettings from configuration. When a setting is set in both
+        /// TransactClientConfigurationSection and appSettings the appSettings value is used.
         /// </summary>
-        public static TransactClient CreateUsingConfiguration()
+        /// <param name="configProvider">
+        /// Optional override for specifying a custom TransactClientConfigurationProvider.
+        /// </param>
+        public static TransactClient CreateUsingConfiguration(
+            TransactClientConfigurationProvider configProvider = null)
         {
-            var configSection = TransactClientConfigurationSection.GetFromConfiguration();
+            var config = new TransactClientConfiguration();
 
-            if (configSection == null)
+            if (configProvider == null)
+            {
+                configProvider = new TransactClientConfigurationProvider();
+            }
+
+            var configSectionConfig = configProvider.GetFromConfigurationSection();
+            var appSettingsConfig = configProvider.GetFromAppSettings();
+
+            if (configSectionConfig == null && appSettingsConfig == null)
+            {
                 throw new InvalidOperationException(
-                    "Unable to create TransactClient using configuration.");
+                    "Unable to create TransactClient using configuration. " +
+                    "No configuration was provided.");
+            }
 
-            var config = new TransactClientConfiguration(configSection);
+            if (configSectionConfig != null)
+            {
+                config.HydrateUsing(configSectionConfig);
+            }
+
+            if (appSettingsConfig != null)
+            {
+                config.HydrateUsing(appSettingsConfig);
+            }
 
             return new TransactClient(config);
         }

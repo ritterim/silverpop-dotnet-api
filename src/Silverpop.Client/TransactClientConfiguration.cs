@@ -7,20 +7,6 @@ namespace Silverpop.Client
         public const int MaxRecipientsPerBatchRequest = 5000;
         public const int MaxRecipientsPerNonBatchRequest = 10;
 
-        public TransactClientConfiguration()
-        {
-        }
-
-        public TransactClientConfiguration(TransactClientConfigurationSection section)
-        {
-            PodNumber = section.PodNumber;
-            Username = section.Username;
-            Password = section.Password;
-            OAuthClientId = section.OAuthClientId;
-            OAuthClientSecret = section.OAuthClientSecret;
-            OAuthRefreshToken = section.OAuthRefreshToken;
-        }
-
         private int? _podNumber;
 
         public int? PodNumber
@@ -48,5 +34,29 @@ namespace Silverpop.Client
         public string OAuthClientSecret { get; set; }
 
         public string OAuthRefreshToken { get; set; }
+
+        public void HydrateUsing(TransactClientConfiguration config)
+        {
+            if (config == null)
+                throw new ArgumentNullException("config");
+
+            if (config.PodNumber.HasValue)
+                PodNumber = config.PodNumber;
+
+            if (!string.IsNullOrWhiteSpace(config.Username))
+                Username = config.Username;
+
+            if (!string.IsNullOrWhiteSpace(config.Password))
+                Password = config.Password;
+
+            if (!string.IsNullOrWhiteSpace(config.OAuthClientId))
+                OAuthClientId = config.OAuthClientId;
+
+            if (!string.IsNullOrWhiteSpace(config.OAuthClientSecret))
+                OAuthClientSecret = config.OAuthClientSecret;
+
+            if (!string.IsNullOrWhiteSpace(config.OAuthRefreshToken))
+                OAuthRefreshToken = config.OAuthRefreshToken;
+        }
     }
 }
