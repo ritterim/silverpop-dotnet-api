@@ -117,15 +117,14 @@ namespace Silverpop.Core.Tests
             [Fact]
             public void ShouldNotThrowWhenPersonalizationTagsDictionaryHasANullValue()
             {
-                Assert.DoesNotThrow(
-                    () => new TransactMessageRecipient()
+                new TransactMessageRecipient()
+                {
+                    EmailAddress = "test@example.com",
+                    PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
                     {
-                        EmailAddress = "test@example.com",
-                        PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
-                        {
-                            new TransactMessageRecipientPersonalizationTag("Tag1", null)
-                        }
-                    });
+                        new TransactMessageRecipientPersonalizationTag("Tag1", null)
+                    }
+                };
             }
 
             [Fact]
@@ -140,13 +139,12 @@ namespace Silverpop.Core.Tests
 
                 Assert.True(propertiesCount > 1);
 
-                Assert.DoesNotThrow(
-                    () => TransactMessageRecipient.Create<TestPersonalizationTagsWithSilverpopPersonalizationTag>(
-                        "test@example.com",
-                        new TestPersonalizationTagsWithSilverpopPersonalizationTag()
-                        {
-                            Tag1 = "tag1-value",
-                        }));
+                TransactMessageRecipient.Create<TestPersonalizationTagsWithSilverpopPersonalizationTag>(
+                    "test@example.com",
+                    new TestPersonalizationTagsWithSilverpopPersonalizationTag()
+                    {
+                        Tag1 = "tag1-value",
+                    });
             }
 
             public class TestPersonalizationTagsWithSilverpopPersonalizationTag

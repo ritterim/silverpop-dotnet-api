@@ -53,8 +53,7 @@ namespace Silverpop.Core.Tests
             [Fact]
             public void IsValidXml()
             {
-                Assert.DoesNotThrow(
-                    () => new XmlDocument().LoadXml(EncodedMessage()));
+                new XmlDocument().LoadXml(EncodedMessage());
             }
 
             [Fact]
@@ -308,8 +307,7 @@ namespace Silverpop.Core.Tests
                         }
                     };
 
-                    Assert.DoesNotThrow(
-                        () => new TransactMessageEncoder().Encode(message));
+                    new TransactMessageEncoder().Encode(message);
                 }
             }
         }

@@ -37,19 +37,13 @@
     <MSBuild Projects="@(Solutions)" Targets="Build" BuildInParallel="$(BuildInParallel)" />
   </Target>
 
-  <Target Name="Test" DependsOnTargets="Build">
+  <Target Name="Test" DependsOnTargets="RestorePackages">
     <ItemGroup>
-      <TestAssemblies Include="$(RootPath)test\*\bin\$(Configuration)\*.Tests.dll" />
+      <TestAssemblies Include="$(RootPath)test\**\bin\$(Configuration)\*.Tests.dll" />
     </ItemGroup>
 
-    <ItemGroup>
-      <TestTargets Include="$(MSBuildThisFileDirectory)\Build.Xunit.targets">
-        <AdditionalProperties>TestAssembly=%(TestAssemblies.FullPath)</AdditionalProperties>
-      </TestTargets>
-    </ItemGroup>
-
-    <MSBuild Projects="@(TestTargets)" RunEachTargetSeparately="true" BuildInParallel="$(BuildInParallel)"
-             Condition=" '@(TestTargets)' != '' " />
+    <MSBuild Projects="$(RootPath)build\Build.Xunit.targets" Properties="TestAssemblies=%(TestAssemblies.Identity)"
+             Condition=" '@(TestAssemblies)' != '' " />
   </Target>
 
   <Target Name="Package" DependsOnTargets="Clean; Build; Test">

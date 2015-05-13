@@ -290,10 +290,10 @@ namespace Silverpop.Client.Tests
                 })
                 .SendMessageBatch(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.DoesNotThrow(() => Guid.Parse(filenames.First().Substring(0, GuidCharCount)));
+                Guid.Parse(filenames.First().Substring(0, GuidCharCount));
                 Assert.True(filenames.First().EndsWith(".1.xml.gz.status"));
 
-                Assert.DoesNotThrow(() => Guid.Parse(filenames.Last().Substring(0, GuidCharCount)));
+                Guid.Parse(filenames.Last().Substring(0, GuidCharCount));
                 Assert.True(filenames.Last().EndsWith(".2.xml.gz.status"));
 
                 Assert.Equal(2, filenames.Count());
@@ -407,10 +407,10 @@ namespace Silverpop.Client.Tests
                 })
                 .SendMessageBatchAsync(new TransactMessage() { Recipients = TransactClientTests.TestRecipientsTwoBatches });
 
-                Assert.DoesNotThrow(() => Guid.Parse(filenames.First().Substring(0, GuidCharCount)));
+                Guid.Parse(filenames.First().Substring(0, GuidCharCount));
                 Assert.True(filenames.First().EndsWith(".1.xml.gz.status"));
 
-                Assert.DoesNotThrow(() => Guid.Parse(filenames.Last().Substring(0, GuidCharCount)));
+                Guid.Parse(filenames.Last().Substring(0, GuidCharCount));
                 Assert.True(filenames.Last().EndsWith(".2.xml.gz.status"));
 
                 Assert.Equal(2, filenames.Count());

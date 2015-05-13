@@ -23,13 +23,13 @@ namespace Silverpop.Client.Tests
             [Fact]
             public void DoesNotThrowForZero()
             {
-                Assert.DoesNotThrow(() => _sut.PodNumber = 0);
+                _sut.PodNumber = 0;
             }
 
             [Fact]
             public void DoesNotThrowForPositiveNumber()
             {
-                Assert.DoesNotThrow(() => _sut.PodNumber = 1);
+                _sut.PodNumber = 1;
             }
 
             [Fact]
