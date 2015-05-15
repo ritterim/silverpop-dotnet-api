@@ -1,6 +1,5 @@
 ﻿using System;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Silverpop.Client.Tests
 {
@@ -38,15 +37,17 @@ namespace Silverpop.Client.Tests
                 Assert.Equal(DateTimeKind.Utc, _sut.ExpiresAt.Value.Kind);
             }
 
-            [Fact, FreezeClock]
+            [Fact]
             public void ReturnsExpectedDateTime()
             {
+                var utcNow = DateTime.UtcNow;
+
                 var sutTester = new AccessTokenRefreshResponseTester(
-                    utcNow: Clock.UtcNow);
+                    utcNow: utcNow);
 
                 sutTester.ExpiresIn = 60;
 
-                Assert.Equal(Clock.UtcNow.AddMinutes(1), sutTester.ExpiresAt);
+                Assert.Equal(utcNow.AddMinutes(1), sutTester.ExpiresAt);
             }
         }
 
