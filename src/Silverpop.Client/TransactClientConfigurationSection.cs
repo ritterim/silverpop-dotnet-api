@@ -21,11 +21,5 @@ namespace Silverpop.Client
 
         [ConfigurationProperty("oAuthRefreshToken")]
         public string OAuthRefreshToken { get { return (string)this["oAuthRefreshToken"]; } }
-
-        public static TransactClientConfigurationSection GetFromConfiguration()
-        {
-            return ConfigurationManager.GetSection("transactClientConfiguration")
-                as TransactClientConfigurationSection;
-        }
     }
 }
