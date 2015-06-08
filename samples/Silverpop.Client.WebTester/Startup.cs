@@ -1,4 +1,5 @@
 ﻿using Owin;
+using Owin.RequiresHttps;
 
 namespace Silverpop.Client.WebTester
 {
@@ -6,6 +7,10 @@ namespace Silverpop.Client.WebTester
     {
         public void Configuration(IAppBuilder app)
         {
+#if !DEBUG
+            app.RequiresHttps(new RequiresHttpsOptions());
+#endif
+
             app.UseNancy();
         }
     }
