@@ -147,12 +147,37 @@ namespace Silverpop.Core.Tests
                     });
             }
 
+            [Fact]
+            public void SetsAllPersonalizationTagsForParentAndSubclasses()
+            {
+                var recipient = TransactMessageRecipient.Create<TestPersonalizationTagsWithSilverpopPersonalizationTag>(
+                    "test@example.com",
+                    new TestPersonalizationTagsWithSilverpopPersonalizationTag2()
+                    {
+                        Tag1 = "tag1-value",
+                        Tag2 = "tag2-value",
+                        Tag3 = "tag3-value",
+                    });
+
+                Assert.Equal(3, recipient.PersonalizationTags.Count());
+
+                Assert.True(recipient.PersonalizationTags.Any(x => x.Value == "tag1-value"));
+                Assert.True(recipient.PersonalizationTags.Any(x => x.Value == "tag2-value"));
+                Assert.True(recipient.PersonalizationTags.Any(x => x.Value == "tag3-value"));
+            }
+
             public class TestPersonalizationTagsWithSilverpopPersonalizationTag
             {
                 [SilverpopPersonalizationTag("special-tag1-name")]
                 public string Tag1 { get; set; }
 
                 public string Tag2 { get; set; }
+            }
+
+            public class TestPersonalizationTagsWithSilverpopPersonalizationTag2
+                : TestPersonalizationTagsWithSilverpopPersonalizationTag
+            {
+                public string Tag3 { get; set; }
             }
         }
     }
