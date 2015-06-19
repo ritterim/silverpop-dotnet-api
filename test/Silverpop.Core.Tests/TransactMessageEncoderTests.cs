@@ -274,6 +274,25 @@ namespace Silverpop.Core.Tests
                 }
 
                 [Fact]
+                public void PersonalizationTags_HandlesWhenValueIsNull()
+                {
+                    var encodedMessage = EncodedMessage(recipients: new List<TransactMessageRecipient>()
+                    {
+                        new TransactMessageRecipient()
+                        {
+                            EmailAddress = "test1@example.com",
+                            BodyType = Constants.TransactMessageBodyTypeDefault,
+                            PersonalizationTags = new List<TransactMessageRecipientPersonalizationTag>()
+                            {
+                                new TransactMessageRecipientPersonalizationTag("tag1", null),
+                            }
+                        }
+                    });
+
+                    Assert.Contains("<VALUE></VALUE>", encodedMessage);
+                }
+
+                [Fact]
                 public void BodyTypeDefaultsToHtml()
                 {
                     var recipientTag = Regex.Match(
