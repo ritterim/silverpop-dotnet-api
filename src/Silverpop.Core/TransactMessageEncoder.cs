@@ -60,7 +60,9 @@ namespace Silverpop.Core
                         throw new ArgumentException(
                             "XML CDATA sections should not be used in PersonalizationTags values.");
 
-                    personalizationXml.SetElementValue(XName.Get("VALUE"), personalizationTag.Value);
+                    personalizationXml.SetElementValue(
+                        XName.Get("VALUE"),
+                        personalizationTag.Value ?? string.Empty);
 
                     recipientXml.Add(personalizationXml);
                 }
