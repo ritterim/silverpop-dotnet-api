@@ -53,6 +53,6 @@
 
     <MakeDir Directories="$(ArtifactsPath)" Condition=" !Exists('$(ArtifactsPath)') " />
 
-    <Exec Command="$(NuGetPath) pack %(NuGetSpecs.Identity) -properties Configuration=$(Configuration) -outputdirectory $(ArtifactsPath) -version $(PackageVersion) -symbols -includereferencedprojects" />
+    <Exec Command="$(NuGetPath) pack %(NuGetSpecs.Identity) -properties Configuration=$(Configuration) -outputdirectory $(ArtifactsPath) -version $(PackageVersion) -includereferencedprojects" />
   </Target>
 </Project>
