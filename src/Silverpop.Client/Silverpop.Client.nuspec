@@ -11,8 +11,4 @@
     <tags>silverpop api</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
   </metadata>
-  <files>
-    <file src="src\Silverpop.Client\bin\Release\*.dll" target="lib\net45" />
-    <file src="src\Silverpop.Client\bin\Release\*.pdb" target="lib\net45" />
-  </files>
 </package>
