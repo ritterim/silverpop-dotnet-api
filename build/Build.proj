@@ -48,11 +48,11 @@
 
   <Target Name="Package" DependsOnTargets="Clean; Build; Test">
     <ItemGroup>
-      <NuGetSpecs Include="$(RootPath)**\*.nuspec" />
+      <NuGetSpecs Include="$(RootPath)src\Silverpop.Client\Silverpop.Client.csproj" />
     </ItemGroup>
 
     <MakeDir Directories="$(ArtifactsPath)" Condition=" !Exists('$(ArtifactsPath)') " />
 
-    <Exec Command="$(NuGetPath) pack %(NuGetSpecs.Identity) -outputdirectory $(ArtifactsPath) -version $(PackageVersion) -symbols" />
+    <Exec Command="$(NuGetPath) pack %(NuGetSpecs.Identity) -properties Configuration=$(Configuration) -outputdirectory $(ArtifactsPath) -version $(PackageVersion) -includereferencedprojects" />
   </Target>
 </Project>
