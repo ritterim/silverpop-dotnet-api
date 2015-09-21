@@ -31,7 +31,6 @@ namespace Silverpop.Core
             };
         }
 
-        /// <param name="propertiesToUse">Optional. If not present, will use all available properties.</param>
         public static TransactMessageRecipient Create<T>(
             string emailAddress,
             T personalizationTagsObject,
