@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Silverpop.Client.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Silverpop.Core\Silverpop.Core.csproj">
