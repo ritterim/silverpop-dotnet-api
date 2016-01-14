@@ -10,5 +10,12 @@
     <licenseUrl>https://github.com/ritterim/silverpop-dotnet-api/blob/master/LICENSE.txt</licenseUrl>
     <tags>silverpop api</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.7" />
+      <dependency id="SSH.NET" version="2013.1.27" />
+    </dependencies>
   </metadata>
+  <files>
+    <file src="bin\Release\Silverpop.*.dll" target="lib\net45" />
+  </files>
 </package>
