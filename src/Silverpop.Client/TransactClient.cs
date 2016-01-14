@@ -47,7 +47,7 @@ namespace Silverpop.Client
 
         public TransactClientConfiguration Configuration { get; private set; }
 
-        public TransactMessageResponse SendMessage(TransactMessage message)
+        public virtual TransactMessageResponse SendMessage(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -70,7 +70,7 @@ namespace Silverpop.Client
             return decodedResponse;
         }
 
-        public async Task<TransactMessageResponse> SendMessageAsync(TransactMessage message)
+        public virtual async Task<TransactMessageResponse> SendMessageAsync(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -94,7 +94,7 @@ namespace Silverpop.Client
         }
 
         /// <returns>Filenames that can be used for checking status of batches.</returns>
-        public IEnumerable<string> SendMessageBatch(TransactMessage message)
+        public virtual IEnumerable<string> SendMessageBatch(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -134,7 +134,7 @@ namespace Silverpop.Client
         }
 
         /// <returns>Filenames that can be used for checking status of batches.</returns>
-        public async Task<IEnumerable<string>> SendMessageBatchAsync(TransactMessage message)
+        public virtual async Task<IEnumerable<string>> SendMessageBatchAsync(TransactMessage message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -173,7 +173,7 @@ namespace Silverpop.Client
             return filenames;
         }
 
-        public TransactMessageResponse GetStatusOfMessageBatch(string filename)
+        public virtual TransactMessageResponse GetStatusOfMessageBatch(string filename)
         {
             if (filename == null) throw new ArgumentNullException("filename");
 
@@ -197,7 +197,7 @@ namespace Silverpop.Client
             return decodedResponse;
         }
 
-        public async Task<TransactMessageResponse> GetStatusOfMessageBatchAsync(string filename)
+        public virtual async Task<TransactMessageResponse> GetStatusOfMessageBatchAsync(string filename)
         {
             if (filename == null) throw new ArgumentNullException("filename");
 
