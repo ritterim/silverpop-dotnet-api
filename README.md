@@ -2,7 +2,7 @@
 
 This is a .NET API wrapper for [Silverpop](http://www.silverpop.com/) Transact XML email sending.
 
-![NuGet Version](https://img.shields.io/nuget/v/silverpop-dotnet-api.svg)
+[![NuGet Version](https://img.shields.io/nuget/v/silverpop-dotnet-api.svg)](https://www.nuget.org/packages/silverpop-dotnet-api)
 
 ## Installation
 
