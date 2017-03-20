@@ -2,18 +2,12 @@
 pushd %~dp0
 setlocal enabledelayedexpansion
 
-set PROGRAMSROOT=%PROGRAMFILES%
-if defined PROGRAMFILES(X86) set PROGRAMSROOT=%PROGRAMFILES(X86)%
-
-:: Find the highest version of MSBuild installed on the system, or default to the version installed with .NET v4.0.
-set MSBUILD_VERSION=0
-for /D %%x in ("%PROGRAMSROOT%\MSBuild\*.0") do (
-  set "FN=%%~nx"
-  if !FN! gtr !MSBUILD_VERSION! set MSBUILD_VERSION=!FN!
-)
-
-set MSBUILD="%PROGRAMSROOT%\MSBuild\%MSBUILD_VERSION%.0\Bin\MSBuild.exe"
-if not exist %MSBUILD% set MSBUILD="%SYSTEMROOT%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
+:: Find the most recent 32bit MSBuild.exe on the system. Also handle x86 operating systems, where %PROGRAMFILES(X86)%
+:: is not defined. Always quote the %MSBUILD% value when setting the variable and never quote %MSBUILD% references.
+set MSBUILD="%PROGRAMFILES(X86)%\MSBuild\14.0\Bin\amd64\MSBuild.exe"
+if not exist %MSBUILD% @set MSBUILD="%PROGRAMFILES(X86)%\MSBuild\14.0\Bin\MSBuild.exe"
+if not exist %MSBUILD% @set MSBUILD="%PROGRAMFILES%\MSBuild\14.0\Bin\MSBuild.exe"
+if not exist %MSBUILD% @set MSBUILD="%SYSTEMROOT%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 
 set CACHED_NUGET=%LOCALAPPDATA%\NuGet\NuGet.exe
 if exist %CACHED_NUGET% goto :CopyNuGet
