@@ -81,7 +81,7 @@ namespace Silverpop.Client
             string response;
             using (var silverpop = _silverpopFactory())
             {
-                response = await silverpop.HttpUploadAsync(encodedMessage);
+                response = await silverpop.HttpUploadAsync(encodedMessage).ConfigureAwait(false);
             }
 
             var decodedResponse = _decoder.Decode(response);
@@ -160,11 +160,11 @@ namespace Silverpop.Client
 
                     await silverpop.SftpGzipUploadAsync(
                         encodedMessage,
-                        "transact/temp/" + filename);
+                        "transact/temp/" + filename).ConfigureAwait(false);
 
                     await silverpop.SftpMoveAsync(
                         "transact/temp/" + filename,
-                        "transact/inbound/" + filename);
+                        "transact/inbound/" + filename).ConfigureAwait(false);
 
                     filenames.Add(filename + ".status");
                 }
@@ -208,7 +208,7 @@ namespace Silverpop.Client
             Stream stream;
             using (var silverpop = _silverpopFactory())
             {
-                stream = await silverpop.SftpDownloadAsync(filePath);
+                stream = await silverpop.SftpDownloadAsync(filePath).ConfigureAwait(false);
             }
 
             if (stream == null)

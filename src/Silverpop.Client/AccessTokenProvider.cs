@@ -42,11 +42,11 @@ namespace Silverpop.Client
                     _configuration.OAuthClientId,
                     _configuration.OAuthClientSecret,
                     _configuration.OAuthRefreshToken
-            ), Encoding.UTF8, "application/x-www-form-urlencoded")).Result;
+            ), Encoding.UTF8, "application/x-www-form-urlencoded")).ConfigureAwait(false).GetAwaiter().GetResult();
 
             responseMessage.EnsureSuccessStatusCode();
 
-            var responseContentString = responseMessage.Content.ReadAsStringAsync().Result;
+            var responseContentString = responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             var refreshResponse = JsonConvert.DeserializeObject<AccessTokenRefreshResponse>(
                 responseContentString);
 
@@ -71,11 +71,11 @@ namespace Silverpop.Client
                     _configuration.OAuthClientId,
                     _configuration.OAuthClientSecret,
                     _configuration.OAuthRefreshToken
-            ), Encoding.UTF8, "application/x-www-form-urlencoded"));
+            ), Encoding.UTF8, "application/x-www-form-urlencoded")).ConfigureAwait(false);
 
             responseMessage.EnsureSuccessStatusCode();
 
-            var responseContentString = await responseMessage.Content.ReadAsStringAsync();
+            var responseContentString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             var refreshResponse = JsonConvert.DeserializeObject<AccessTokenRefreshResponse>(
                 responseContentString);
 
