@@ -61,7 +61,8 @@ namespace Silverpop.Client
                 try
                 {
                     var response = httpClient.PostAsync(_transactHttpsUrl, new StringContent(data)).Result;
-                    return response.Content.ReadAsStringAsync().Result;
+                    return response.Content.ReadAsStringAsync()
+                        .ConfigureAwait(false).GetAwaiter().GetResult();
                 }
                 catch (WebException ex)
                 {
@@ -79,14 +80,16 @@ namespace Silverpop.Client
             }
             else
             {
-                var response = httpClient.PostAsync(_transactHttpsUrl, new StringContent(data)).Result;
+                var response = httpClient.PostAsync(_transactHttpsUrl, new StringContent(data))
+                    .ConfigureAwait(false).GetAwaiter().GetResult();
+
                 return response.Content.ReadAsStringAsync().Result;
             }
         }
 
         public async Task<string> HttpUploadAsync(string data, bool tryRefreshingOAuthAccessToken = true)
         {
-            var httpClient = await GetAuthorizedHttpClientAsync();
+            var httpClient = await GetAuthorizedHttpClientAsync().ConfigureAwait(false);
 
             if (OAuthSpecified())
             {
@@ -94,7 +97,7 @@ namespace Silverpop.Client
                 try
                 {
                     var response = await httpClient.PostAsync(_transactHttpsUrl, new StringContent(data));
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
                 catch (WebException ex)
                 {
@@ -109,7 +112,7 @@ namespace Silverpop.Client
                     if (response != null && response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         _accessTokenProvider.Refresh();
-                        return await HttpUploadAsync(data, tryRefreshingOAuthAccessToken = false);
+                        return await HttpUploadAsync(data, tryRefreshingOAuthAccessToken = false).ConfigureAwait(false);
                     }
                     else
                     {
@@ -122,8 +125,8 @@ namespace Silverpop.Client
             }
             else
             {
-                var response = await httpClient.PostAsync(_transactHttpsUrl, new StringContent(data));
-                return await response.Content.ReadAsStringAsync();
+                var response = await httpClient.PostAsync(_transactHttpsUrl, new StringContent(data)).ConfigureAwait(false);
+                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
 
@@ -165,7 +168,7 @@ namespace Silverpop.Client
 
                 var sftpClient = _sftpConnectedClientFactory();
 
-                return Task.Factory.FromAsync(
+                var task = Task.Factory.FromAsync(
                     sftpClient.BeginUploadFile(ms, destinationPath, /* canOverride: */ false, null, null),
                     x =>
                     {
@@ -173,6 +176,10 @@ namespace Silverpop.Client
                         sftpClient.Dispose();
                         ms.Dispose();
                     });
+
+                task.ConfigureAwait(false);
+
+                return task;
             }
         }
 
@@ -192,7 +199,7 @@ namespace Silverpop.Client
                 {
                     sftpClient.RenameFile(fromPath, toPath);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         public Stream SftpDownload(string filePath)
@@ -221,7 +228,7 @@ namespace Silverpop.Client
 
             var sftpClient = _sftpConnectedClientFactory();
 
-            return Task.Factory.FromAsync<Stream>(
+            var task = Task.Factory.FromAsync<Stream>(
                 sftpClient.BeginDownloadFile(filePath, ms),
                 x =>
                 {
@@ -244,6 +251,10 @@ namespace Silverpop.Client
                     ms.Seek(0, SeekOrigin.Begin);
                     return ms;
                 });
+
+            task.ConfigureAwait(false);
+
+            return task;
         }
 
         private HttpClient GetAuthorizedHttpClient()
@@ -267,7 +278,7 @@ namespace Silverpop.Client
             var httpClient = _httpClientFactory();
             if (OAuthSpecified())
             {
-                var accessToken = await _accessTokenProvider.GetAsync();
+                var accessToken = await _accessTokenProvider.GetAsync().ConfigureAwait(false);
                 httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", accessToken);
             }
