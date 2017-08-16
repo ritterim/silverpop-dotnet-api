@@ -12,9 +12,9 @@ namespace Silverpop.Client.WebTester.Modules
     {
         public HomeModule(TransactClient client)
         {
-            Get["/"] = _ => View["Index", new IndexModel(client.Configuration)];
+            Get("/", _ => View["Index", new IndexModel(client.Configuration)]);
 
-            Post["/send"] = _ =>
+            Post("/send", _ =>
             {
                 var model = this.Bind<SendModel>();
 
@@ -45,7 +45,7 @@ namespace Silverpop.Client.WebTester.Modules
                 }
 
                 return Response.AsJson(response);
-            };
+            });
         }
     }
 }

@@ -14,7 +14,7 @@ PM> Install-Package silverpop-dotnet-api
 
 ## Requirements
 
-- .NET Framework 4.5
+- .NET Framework 4.6.1 / `netstandard2.0`
 
 ## Usage
 

@@ -1,20 +1,32 @@
-﻿using Autofac;
-using Nancy.Bootstrappers.Autofac;
+﻿using Microsoft.Extensions.Configuration;
+using Nancy;
+using Nancy.TinyIoc;
 
 namespace Silverpop.Client.WebTester.Infrastructure
 {
-    public class CustomBootstrapper : AutofacNancyBootstrapper
+    public class CustomBootstrapper : DefaultNancyBootstrapper
     {
-        protected override void ConfigureApplicationContainer(ILifetimeScope existingContainer)
+        public CustomBootstrapper()
         {
-            var builder = new ContainerBuilder();
-            builder
-                .Register<TransactClient>(x => TransactClient.CreateUsingConfiguration())
-                .SingleInstance();
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(RootPathProvider.GetRootPath())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.dev.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
-            builder.Update(existingContainer.ComponentRegistry);
+            Configuration = builder.Build();
+        }
 
-            base.ConfigureApplicationContainer(existingContainer);
+        public IConfigurationRoot Configuration { get; }
+
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        {
+            var transactClientConfiguration = new TransactClientConfiguration();
+
+            var configuration = Configuration.GetSection("silverpop");
+            configuration.Bind(transactClientConfiguration);
+
+            container.Register(new TransactClient(transactClientConfiguration));
         }
     }
 }

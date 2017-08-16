@@ -1,17 +1,25 @@
-﻿using Owin;
-using Owin.RequiresHttps;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Rewrite;
+using Nancy.Owin;
 
-namespace Silverpop.Client.WebTester
+namespace Client.WebTester
 {
     public class Startup
     {
-        public void Configuration(IAppBuilder app)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-#if !DEBUG
-            app.RequiresHttps(new RequiresHttpsOptions());
-#endif
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-            app.UseNancy();
+            var rewriteOptions = new RewriteOptions()
+                .AddRedirectToHttps();
+
+            app.UseRewriter(rewriteOptions);
+
+            app.UseOwin(x => x.UseNancy());
         }
     }
 }
