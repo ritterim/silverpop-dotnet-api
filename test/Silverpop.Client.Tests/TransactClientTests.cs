@@ -1,5 +1,4 @@
-﻿using AssertExLib;
-using Moq;
+﻿using Moq;
 using Silverpop.Core;
 using System;
 using System.Collections.Generic;
@@ -148,14 +147,14 @@ namespace Silverpop.Client.Tests
         public class SendMessageAsyncMethodTests : TransactClientTests
         {
             [Fact]
-            public void ThrowsForNullMessage()
+            public async Task ThrowsForNullMessage()
             {
-                AssertEx.TaskThrows<ArgumentNullException>(
+                await Assert.ThrowsAsync<ArgumentNullException>(
                     () => new TransactClientTester().SendMessageAsync(null));
             }
 
             [Fact]
-            public void ThrowsForTooManyRecipients()
+            public async Task ThrowsForTooManyRecipients()
             {
                 var message = new TransactMessage()
                 {
@@ -164,23 +163,23 @@ namespace Silverpop.Client.Tests
                         .ToList()
                 };
 
-                var exception = AssertEx.TaskThrows<ArgumentException>(
+                var exception = await Assert.ThrowsAsync<ArgumentException>(
                     () => new TransactClientTester().SendMessageAsync(message));
 
                 Assert.Equal(TransactClient.ErrorExceededNonBatchRecipients, exception.Message);
             }
 
             [Fact]
-            public void ThrowsWhenPodNumberIsNotConfigured()
+            public async Task ThrowsWhenPodNumberIsNotConfigured()
             {
-                var exception = AssertEx.TaskThrows<ApplicationException>(
+                var exception = await Assert.ThrowsAsync<ApplicationException>(
                     () => new TransactClientTester().SendMessageAsync(new TransactMessage()));
 
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
             }
 
             [Fact]
-            public void ThrowsWhenResponseIndicatesEncounteredErrorsNoMessagesSent()
+            public async Task ThrowsWhenResponseIndicatesEncounteredErrorsNoMessagesSent()
             {
                 var decoder = Mock.Of<TransactMessageResponseDecoder>();
                 Mock.Get(decoder)
@@ -192,7 +191,7 @@ namespace Silverpop.Client.Tests
                         RawResponse = "test-response"
                     });
 
-                var exception = AssertEx.TaskThrows<TransactClientException>(
+                var exception = await Assert.ThrowsAsync<TransactClientException>(
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         PodNumber = 0
@@ -385,14 +384,14 @@ namespace Silverpop.Client.Tests
             [Fact]
             public void ThrowsForNullMessages()
             {
-                AssertEx.TaskThrows<ArgumentNullException>(
+                Assert.ThrowsAsync<ArgumentNullException>(
                     () => new TransactClientTester().SendMessageBatchAsync(null));
             }
 
             [Fact]
-            public void ThrowsWhenPodNumberIsNotConfigured()
+            public async Task ThrowsWhenPodNumberIsNotConfigured()
             {
-                var exception = AssertEx.TaskThrows<ApplicationException>(
+                var exception = await Assert.ThrowsAsync<ApplicationException>(
                     () => new TransactClientTester().SendMessageBatchAsync(new TransactMessage()));
 
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
@@ -613,14 +612,14 @@ namespace Silverpop.Client.Tests
             [Fact]
             public void ThrowsForNullFilename()
             {
-                AssertEx.TaskThrows<ArgumentNullException>(
+                Assert.ThrowsAsync<ArgumentNullException>(
                     () => new TransactClientTester().GetStatusOfMessageBatchAsync(null));
             }
 
             [Fact]
-            public void ThrowsWhenPodNumberIsNotConfigured()
+            public async Task ThrowsWhenPodNumberIsNotConfigured()
             {
-                var exception = AssertEx.TaskThrows<ApplicationException>(
+                var exception = await Assert.ThrowsAsync<ApplicationException>(
                     () => new TransactClientTester().GetStatusOfMessageBatchAsync("file.xml.gz.status"));
 
                 Assert.Equal(TransactClient.ErrorMissingPodNumber, exception.Message);
@@ -652,14 +651,14 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
-            public void ThrowsWhenNoStatusFile()
+            public async Task ThrowsWhenNoStatusFile()
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
                 Mock.Get(silverpop)
                     .Setup(x => x.SftpDownloadAsync(It.IsAny<string>()))
-                    .ReturnsAsync(null);
+                    .ReturnsAsync((Stream)null);
 
-                var exception = AssertEx.TaskThrows<TransactClientException>(
+                var exception = await Assert.ThrowsAsync<TransactClientException>(
                     () => new TransactClientTester(configuration: new TransactClientConfiguration()
                     {
                         PodNumber = 0

@@ -3,6 +3,7 @@ using Nancy.Testing;
 using Silverpop.Client.WebTester.Models;
 using Silverpop.Core;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Silverpop.Client.WebTester.Tests.Modules
@@ -13,11 +14,11 @@ namespace Silverpop.Client.WebTester.Tests.Modules
 
         public HomeModuleTests()
         {
-            StaticConfiguration.DisableErrorTraces = false;
-
             var bootstrapper = GetConfigurableBootstrapper();
             _browser = new Browser(bootstrapper);
         }
+
+#pragma warning disable UseAsyncSuffix
 
         public class GetRootTests : HomeModuleTests
         {
@@ -28,7 +29,7 @@ namespace Silverpop.Client.WebTester.Tests.Modules
                 _response = _browser.Get("/", with =>
                 {
                     with.HttpRequest();
-                });
+                }).ConfigureAwait(false).GetAwaiter().GetResult();
             }
 
             [Fact]
@@ -54,9 +55,9 @@ namespace Silverpop.Client.WebTester.Tests.Modules
         public class PostSendTests : HomeModuleTests
         {
             [Fact]
-            public void ReturnsBadRequestWhenNoModel()
+            public async Task ReturnsBadRequestWhenNoModel()
             {
-                var response = _browser.Post("/send", with =>
+                var response = await _browser.Post("/send", with =>
                 {
                     with.AjaxRequest();
                 });
@@ -65,9 +66,9 @@ namespace Silverpop.Client.WebTester.Tests.Modules
             }
 
             [Fact]
-            public void ReturnsBadRequestWhenModelMissingCampaignId()
+            public async Task ReturnsBadRequestWhenModelMissingCampaignId()
             {
-                var response = _browser.Post("/send", with =>
+                var response = await _browser.Post("/send", with =>
                 {
                     with.AjaxRequest();
                     with.JsonBody<SendModel>(new SendModel()
@@ -82,9 +83,9 @@ namespace Silverpop.Client.WebTester.Tests.Modules
             }
 
             [Fact]
-            public void ReturnsBadRequestWhenMissingToAddress()
+            public async Task ReturnsBadRequestWhenMissingToAddress()
             {
-                var response = _browser.Post("/send", with =>
+                var response = await _browser.Post("/send", with =>
                 {
                     with.AjaxRequest();
                     with.JsonBody<SendModel>(new SendModel()
@@ -99,13 +100,13 @@ namespace Silverpop.Client.WebTester.Tests.Modules
             }
 
             [Fact]
-            public void ReturnsInternalServerErrorForSendingError()
+            public async Task ReturnsInternalServerErrorForSendingError()
             {
                 var testSpecificBootstrapper = GetConfigurableBootstrapper(
                     errorStringToUse: "Some error happened.");
                 var testSpecificBrowser = new Browser(testSpecificBootstrapper);
 
-                var response = testSpecificBrowser.Post("/send", with =>
+                var response = await testSpecificBrowser.Post("/send", with =>
                 {
                     with.AjaxRequest();
                     with.JsonBody<SendModel>(new SendModel()
@@ -120,9 +121,9 @@ namespace Silverpop.Client.WebTester.Tests.Modules
             }
 
             [Fact]
-            public void ReturnsOkForSuccess()
+            public async Task ReturnsOkForSuccess()
             {
-                var response = _browser.Post("/send", with =>
+                var response = await _browser.Post("/send", with =>
                 {
                     with.AjaxRequest();
                     with.JsonBody<SendModel>(new SendModel()
@@ -135,6 +136,8 @@ namespace Silverpop.Client.WebTester.Tests.Modules
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
         }
+
+#pragma warning restore UseAsyncSuffix
 
         private ConfigurableBootstrapper GetConfigurableBootstrapper(
             string errorStringToUse = null)

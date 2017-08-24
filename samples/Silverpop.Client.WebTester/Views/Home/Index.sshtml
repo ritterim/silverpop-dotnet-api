@@ -1,6 +1,7 @@
-﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<Silverpop.Client.WebTester.Models.IndexModel>
-@model Silverpop.Client.WebTester.Models.IndexModel
+﻿@Master['Layout.sshtml']
+@Model Silverpop.Client.WebTester.Models.IndexModel
 
+@Section['Content']
 <div class="row well">
     <div class="col-sm-5">
         <div class="form-group">
@@ -52,7 +53,8 @@
         </div>
     </div>
 </script>
+@EndSection
 
-@section scripts {
-    <script src="~/Assets/index.js"></script>
-}
+@Section['Scripts']
+    <script src="~/Content/index.js"></script>
+@EndSection

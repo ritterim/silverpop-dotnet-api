@@ -7,6 +7,8 @@
 *.userosscache
 *.sln.docstates
 .vs/
+.vscode/
+appsettings.dev.json
 
 # Build results
 [Dd]ebug/
@@ -18,6 +20,7 @@ x86/
 artifacts/
 [Bb]in/
 [Oo]bj/
+tools/
 
 # Roslyn cache directories
 *.ide/

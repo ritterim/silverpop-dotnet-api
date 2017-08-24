@@ -16,7 +16,7 @@ namespace Silverpop.Client.WebTester.Tests
             {
                 var assemblyPath = directoryName.Replace(@"file:\", string.Empty);
 
-                RootPath = Path.Combine(assemblyPath, "..", "..", "..", "..", "samples", "Silverpop.Client.WebTester");
+                RootPath = Path.Combine(assemblyPath, "..", "..", "..", "..", "..", "samples", "Silverpop.Client.WebTester");
             }
         }
 
