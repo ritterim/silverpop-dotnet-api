@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Silverpop Transact Tester</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
         <link rel="stylesheet" href="@Path['~/site.css']" />
     </head>
     <body>
@@ -26,7 +26,7 @@
                 </p>
             </div>
         </footer>
-        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 		@Section['Scripts'];
     </body>
 </html>
