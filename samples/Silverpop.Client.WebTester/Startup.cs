@@ -19,6 +19,7 @@ namespace Client.WebTester
 
             app.UseRewriter(rewriteOptions);
 
+            app.UseStaticFiles();
             app.UseOwin(x => x.UseNancy());
         }
     }
