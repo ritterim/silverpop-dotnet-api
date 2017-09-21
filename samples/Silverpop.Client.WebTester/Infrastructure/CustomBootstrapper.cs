@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Nancy;
+using Nancy.Configuration;
+using Nancy.Diagnostics;
 using Nancy.TinyIoc;
 
 namespace Silverpop.Client.WebTester.Infrastructure
@@ -18,6 +20,17 @@ namespace Silverpop.Client.WebTester.Infrastructure
         }
 
         public IConfigurationRoot Configuration { get; }
+
+        public override void Configure(INancyEnvironment environment)
+        {
+            var dashboardPassword = Configuration.GetValue<string>("NancyDashboardPassword");
+            if (!string.IsNullOrWhiteSpace(dashboardPassword))
+            {
+                environment.Diagnostics(true, dashboardPassword);
+            }
+
+            base.Configure(environment);
+        }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
