@@ -8,8 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Content\index.js" />
-    <Content Include="Content\site.css" />
     <Content Include="Views\Home\Index.sshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
