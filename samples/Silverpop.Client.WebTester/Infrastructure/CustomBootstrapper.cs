@@ -29,6 +29,12 @@ namespace Silverpop.Client.WebTester.Infrastructure
                 environment.Diagnostics(true, dashboardPassword);
             }
 
+            var displayErrorTraces = Configuration.GetValue<bool>("DisplayErrorTraces");
+            if (displayErrorTraces)
+            {
+                environment.Tracing(enabled: true, displayErrorTraces: true);
+            }
+
             base.Configure(environment);
         }
 
