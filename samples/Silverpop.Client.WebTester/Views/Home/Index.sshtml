@@ -56,5 +56,5 @@
 @EndSection
 
 @Section['Scripts']
-    <script src="~/Content/index.js"></script>
+    <script src="~/index.js"></script>
 @EndSection
