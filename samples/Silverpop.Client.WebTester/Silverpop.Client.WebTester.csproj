@@ -10,8 +10,12 @@
   <ItemGroup>
     <Content Include="Content\index.js" />
     <Content Include="Content\site.css" />
-    <Content Include="Views\Home\Index.sshtml" />
-    <Content Include="Views\Layout.sshtml" />
+    <Content Include="Views\Home\Index.sshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Layout.sshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
