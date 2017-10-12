@@ -8,6 +8,7 @@ namespace Silverpop.Client
 {
     public class AccessTokenProvider
     {
+        private static readonly TimeSpan ExpirationClockSkew = TimeSpan.FromMinutes(5);
         private static readonly string DataFormatString =
             "grant_type=refresh_token&client_id={0}&client_secret={1}&refresh_token={2}";
 
@@ -18,19 +19,22 @@ namespace Silverpop.Client
         private string _currentAccessToken;
         private DateTime? _currentAccessTokenExpiresAt;
 
-        public AccessTokenProvider(TransactClientConfiguration configuration)
+        /// <param name="httpClient">
+        /// Optional: If null a default implementation will be used.
+        /// </param>
+        public AccessTokenProvider(TransactClientConfiguration configuration, HttpClient httpClient = null)
         {
             _configuration = configuration;
             _tokenUrl = string.Format(
                 "https://api{0}.silverpop.com/oauth/token",
                 configuration.PodNumber);
-            _httpClient = new HttpClient();
+            _httpClient = httpClient ?? new HttpClient();
         }
 
         public string Get()
         {
             if (_currentAccessToken != null &&
-                _currentAccessTokenExpiresAt < DateTime.UtcNow.AddMinutes(-5))
+                _currentAccessTokenExpiresAt > DateTime.UtcNow.Subtract(ExpirationClockSkew))
             {
                 return _currentAccessToken;
             }
@@ -59,7 +63,7 @@ namespace Silverpop.Client
         public async Task<string> GetAsync()
         {
             if (_currentAccessToken != null &&
-                _currentAccessTokenExpiresAt < DateTime.UtcNow.AddMinutes(-5))
+                _currentAccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(-5))
             {
                 return _currentAccessToken;
             }
