@@ -66,6 +66,19 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
+            public void ShouldRequestAccessTokenInsideClockSkewWindow()
+            {
+                var clockSkewSeconds = (int)AccessTokenProvider.ExpirationClockSkew.TotalSeconds;
+                _accessTokenExpiresInSeconds = clockSkewSeconds / 2;
+
+                var token1 = _sut.Get();
+
+                var token2 = _sut.Get();
+
+                Assert.NotEqual(token1, token2);
+            }
+
+            [Fact]
             public async Task ShouldUseCachedTokenFromGetAsync()
             {
                 var getAsyncToken = await _sut.GetAsync();
@@ -100,6 +113,19 @@ namespace Silverpop.Client.Tests
             public async Task ShouldRequestAccessTokenWhenExpired()
             {
                 _accessTokenExpiresInSeconds = 0;
+
+                var token1 = await _sut.GetAsync();
+
+                var token2 = await _sut.GetAsync();
+
+                Assert.NotEqual(token1, token2);
+            }
+
+            [Fact]
+            public async Task ShouldRequestAccessTokenInsideClockSkewWindow()
+            {
+                var clockSkewSeconds = (int)AccessTokenProvider.ExpirationClockSkew.TotalSeconds;
+                _accessTokenExpiresInSeconds = clockSkewSeconds / 2;
 
                 var token1 = await _sut.GetAsync();
 
