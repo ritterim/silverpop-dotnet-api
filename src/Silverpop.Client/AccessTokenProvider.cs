@@ -8,6 +8,7 @@ namespace Silverpop.Client
 {
     public class AccessTokenProvider
     {
+        private static readonly TimeSpan ExpirationClockSkew = TimeSpan.FromMinutes(5);
         private static readonly string DataFormatString =
             "grant_type=refresh_token&client_id={0}&client_secret={1}&refresh_token={2}";
 
@@ -33,7 +34,7 @@ namespace Silverpop.Client
         public string Get()
         {
             if (_currentAccessToken != null &&
-                _currentAccessTokenExpiresAt > DateTime.UtcNow.AddMinutes(-5))
+                _currentAccessTokenExpiresAt > DateTime.UtcNow.Subtract(ExpirationClockSkew))
             {
                 return _currentAccessToken;
             }
