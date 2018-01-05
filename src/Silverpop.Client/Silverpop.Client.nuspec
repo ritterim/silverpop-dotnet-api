@@ -3,7 +3,7 @@
   <metadata>
    <id>silverpop-dotnet-api</id>
     <title>Silverpop .NET API</title>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <authors>Ritter Insurance Marketing</authors>
     <description>This is a .NET API wrapper for Silverpop Transact XML email sending.</description>
     <projectUrl>https://github.com/ritterim/silverpop-dotnet-api</projectUrl>
@@ -11,12 +11,14 @@
     <tags>silverpop api</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <group>
+      <group targetFramework="net461">
         <dependency id="Newtonsoft.Json" version="9.0.1" />
         <dependency id="SSH.NET" version="2013.1.27" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="System.Configuration.ConfigurationManager" version="4.4.0" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+        <dependency id="SSH.NET" version="2013.1.27" />
       </group>
     </dependencies>
   </metadata>
