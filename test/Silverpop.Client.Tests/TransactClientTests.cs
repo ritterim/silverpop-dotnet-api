@@ -85,6 +85,59 @@ namespace Silverpop.Client.Tests
             }
 
             [Fact]
+            public void ThrowsExpectedExceptionForSingleSuppressedEmailAddress()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse()
+                    {
+                        CampaignId = "123",
+                        TransactionId = "REDACTED",
+                        RecipientsReceived = 1,
+                        EmailsSent = 0,
+                        Status = TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent,
+                        Error = new KeyValuePair<int, string>(0, ""),
+                        RecipientDetails = new[]
+                        {
+                            new TransactMessageResponseRecipientDetails
+                            {
+                                Email = "test@example.com",
+                                Error = new KeyValuePair<int, string>(10, "email address is suppressed"),
+                                SendStatus = TransactMessageResponseRecipientSendStatus.ErrorEncounteredWillNotRetry
+                            }
+                        },
+                        RawResponse = @"
+<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
+<XTMAILING_RESPONSE>
+    <CAMPAIGN_ID>123</CAMPAIGN_ID>
+    <TRANSACTION_ID>REDACTED</TRANSACTION_ID>
+    <RECIPIENTS_RECEIVED>1</RECIPIENTS_RECEIVED>
+    <EMAILS_SENT>0</EMAILS_SENT>
+    <NUMBER_ERRORS>1</NUMBER_ERRORS>
+    <STATUS>2</STATUS>
+    <ERROR_CODE>0</ERROR_CODE>
+    <ERROR_STRING></ERROR_STRING>
+    <RECIPIENT_DETAIL>
+        <EMAIL>test@example.com</EMAIL>
+        <SEND_STATUS>1</SEND_STATUS>
+        <ERROR_CODE>10</ERROR_CODE>
+        <ERROR_STRING>email address is suppressed</ERROR_STRING>
+    </RECIPIENT_DETAIL>
+</XTMAILING_RESPONSE>
+"
+                    });
+
+                var exception = Assert.Throws<TransactClientException>(
+                    () => new TransactClientTester(configuration: new TransactClientConfiguration()
+                    {
+                        PodNumber = 0
+                    }, decoder: decoder).SendMessage(new TransactMessage()));
+
+                Assert.Equal("test@example.com: email address is suppressed", exception.Message);
+            }
+
+            [Fact]
             public void PerformsHttpRequest()
             {
                 var silverpop = Mock.Of<ISilverpopCommunicationsClient>();
@@ -200,6 +253,59 @@ namespace Silverpop.Client.Tests
                 Assert.Equal("An error occurred.", exception.Message);
                 Assert.Equal("XTMAILING", XDocument.Parse(exception.Request).Root.Name);
                 Assert.Equal("test-response", exception.Response);
+            }
+
+            [Fact]
+            public async Task ThrowsExpectedExceptionForSingleSuppressedEmailAddress()
+            {
+                var decoder = Mock.Of<TransactMessageResponseDecoder>();
+                Mock.Get(decoder)
+                    .Setup(x => x.Decode(It.IsAny<string>()))
+                    .Returns(new TransactMessageResponse()
+                    {
+                        CampaignId = "123",
+                        TransactionId = "REDACTED",
+                        RecipientsReceived = 1,
+                        EmailsSent = 0,
+                        Status = TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent,
+                        Error = new KeyValuePair<int, string>(0, ""),
+                        RecipientDetails = new[]
+                        {
+                            new TransactMessageResponseRecipientDetails
+                            {
+                                Email = "test@example.com",
+                                Error = new KeyValuePair<int, string>(10, "email address is suppressed"),
+                                SendStatus = TransactMessageResponseRecipientSendStatus.ErrorEncounteredWillNotRetry
+                            }
+                        },
+                        RawResponse = @"
+<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
+<XTMAILING_RESPONSE>
+    <CAMPAIGN_ID>123</CAMPAIGN_ID>
+    <TRANSACTION_ID>REDACTED</TRANSACTION_ID>
+    <RECIPIENTS_RECEIVED>1</RECIPIENTS_RECEIVED>
+    <EMAILS_SENT>0</EMAILS_SENT>
+    <NUMBER_ERRORS>1</NUMBER_ERRORS>
+    <STATUS>2</STATUS>
+    <ERROR_CODE>0</ERROR_CODE>
+    <ERROR_STRING></ERROR_STRING>
+    <RECIPIENT_DETAIL>
+        <EMAIL>test@example.com</EMAIL>
+        <SEND_STATUS>1</SEND_STATUS>
+        <ERROR_CODE>10</ERROR_CODE>
+        <ERROR_STRING>email address is suppressed</ERROR_STRING>
+    </RECIPIENT_DETAIL>
+</XTMAILING_RESPONSE>
+"
+                    });
+
+                var exception = await Assert.ThrowsAsync<TransactClientException>(
+                    () => new TransactClientTester(configuration: new TransactClientConfiguration()
+                    {
+                        PodNumber = 0
+                    }, decoder: decoder).SendMessageAsync(new TransactMessage()));
+
+                Assert.Equal("test@example.com: email address is suppressed", exception.Message);
             }
 
             [Fact]

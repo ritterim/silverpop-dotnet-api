@@ -64,8 +64,21 @@ namespace Silverpop.Client
             var decodedResponse = _decoder.Decode(response);
 
             if (decodedResponse.Status == TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent)
+            {
+                var errorMessage = decodedResponse.Error.Value;
+
+                if (string.IsNullOrWhiteSpace(errorMessage) && decodedResponse.RecipientDetails.Any())
+                {
+                    errorMessage = string.Join(
+                        "; ",
+                        decodedResponse.RecipientDetails
+                            .Where(x => x.SendStatus == TransactMessageResponseRecipientSendStatus.ErrorEncounteredWillNotRetry)
+                            .Select(x => $"{x.Email}: {(string.IsNullOrWhiteSpace(x.Error.Value) ? "Unknown error" : x.Error.Value)}"));
+                }
+
                 throw new TransactClientException(
-                    decodedResponse.Error.Value, encodedMessage, decodedResponse.RawResponse);
+                    errorMessage, encodedMessage, decodedResponse.RawResponse);
+            }
 
             return decodedResponse;
         }
@@ -87,8 +100,21 @@ namespace Silverpop.Client
             var decodedResponse = _decoder.Decode(response);
 
             if (decodedResponse.Status == TransactMessageResponseStatus.EncounteredErrorsNoMessagesSent)
+            {
+                var errorMessage = decodedResponse.Error.Value;
+
+                if (string.IsNullOrWhiteSpace(errorMessage) && decodedResponse.RecipientDetails.Any())
+                {
+                    errorMessage = string.Join(
+                        "; ",
+                        decodedResponse.RecipientDetails
+                            .Where(x => x.SendStatus == TransactMessageResponseRecipientSendStatus.ErrorEncounteredWillNotRetry)
+                            .Select(x => $"{x.Email}: {(string.IsNullOrWhiteSpace(x.Error.Value) ? "Unknown error" : x.Error.Value)}"));
+                }
+
                 throw new TransactClientException(
-                    decodedResponse.Error.Value, encodedMessage, decodedResponse.RawResponse);
+                    errorMessage, encodedMessage, decodedResponse.RawResponse);
+            }
 
             return decodedResponse;
         }
