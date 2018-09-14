@@ -15,6 +15,10 @@ namespace Silverpop.Client.WebTester.Tests
             return Task.FromResult(string.Empty);
         }
 
+        public void SftpCreateDirectoryIfNotExists(string path)
+        {
+        }
+
         public void SftpGzipUpload(string data, string destinationPath)
         {
         }

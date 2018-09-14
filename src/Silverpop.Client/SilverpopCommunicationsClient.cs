@@ -130,6 +130,17 @@ namespace Silverpop.Client
             }
         }
 
+        public void SftpCreateDirectoryIfNotExists(string path)
+        {
+            using (var sftpClient = _sftpConnectedClientFactory())
+            {
+                if (!sftpClient.Exists(path))
+                {
+                    sftpClient.CreateDirectory(path);
+                }
+            }
+        }
+
         public void SftpGzipUpload(string data, string destinationPath)
         {
             using (var file = new MemoryStream(Encoding.UTF8.GetBytes(data)))

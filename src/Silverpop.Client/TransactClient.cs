@@ -144,6 +144,8 @@ namespace Silverpop.Client
                         identifier,
                         filenames.Count() + 1);
 
+                    silverpop.SftpCreateDirectoryIfNotExists("transact/temp");
+
                     silverpop.SftpGzipUpload(
                         encodedMessage,
                         "transact/temp/" + filename);
@@ -183,6 +185,8 @@ namespace Silverpop.Client
                         "{0}.{1}.xml.gz",
                         identifier,
                         filenames.Count() + 1);
+
+                    silverpop.SftpCreateDirectoryIfNotExists("transact/temp");
 
                     await silverpop.SftpGzipUploadAsync(
                         encodedMessage,
