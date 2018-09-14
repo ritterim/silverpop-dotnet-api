@@ -31,17 +31,21 @@ namespace Silverpop.Client
 
             _httpClientFactory = () => new HttpClient();
 
-            var transactSftpHost = string.Format(
-                "transfer{0}.silverpop.com",
-                configuration.PodNumber);
-
-            if (_configuration.Username != null &&
-                _configuration.Password != null)
+            if (string.IsNullOrEmpty(_configuration.Username) ||
+                string.IsNullOrEmpty(_configuration.Password))
+            {
+                _sftpConnectedClientFactory = () =>
+                {
+                    throw new InvalidOperationException(
+                        $"{nameof(_configuration.Username)} and {nameof(_configuration.Password)} must be configured for SFTP usage.");
+                };
+            }
+            else
             {
                 _sftpConnectedClientFactory = () =>
                 {
                     var sftpClient = new SftpClient(
-                        transactSftpHost,
+                        $"transfer{configuration.PodNumber}.silverpop.com",
                         _configuration.Username,
                         _configuration.Password);
 
