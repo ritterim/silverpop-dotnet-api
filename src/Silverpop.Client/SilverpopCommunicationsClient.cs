@@ -251,17 +251,14 @@ namespace Silverpop.Client
                     {
                         sftpClient.EndDownloadFile(x);
                     }
-                    catch (SshException ex)
+                    catch (SftpPathNotFoundException)
                     {
-                        if (ex.InnerException != null && ex.InnerException is SftpPathNotFoundException)
-                        {
-                            return null;
-                        }
-
-                        throw;
+                        return null;
                     }
-
-                    sftpClient.Dispose();
+                    finally
+                    {
+                        sftpClient.Dispose();
+                    }
 
                     ms.Seek(0, SeekOrigin.Begin);
                     return ms;
