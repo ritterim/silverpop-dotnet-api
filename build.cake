@@ -46,7 +46,7 @@ Task("Run-Tests")
             continue;
         }
 
-        DotNetCoreTool(file, "xunit", "-configuration " + configuration);
+        DotNetCoreTest(file.FullPath);
     }
 });
 
