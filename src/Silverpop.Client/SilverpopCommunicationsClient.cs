@@ -31,29 +31,37 @@ namespace Silverpop.Client
 
             _httpClientFactory = () => new HttpClient();
 
-            if (string.IsNullOrEmpty(_configuration.Username) ||
-                string.IsNullOrEmpty(_configuration.Password))
+            _sftpConnectedClientFactory = () =>
             {
-                _sftpConnectedClientFactory = () =>
+                var username = _configuration.Username;
+                var password = _configuration.Password;
+
+                // Prefer Username and Password as OAuth may not be enabled for SFTP usage.
+                // See "Note" at
+                // https://www.ibm.com/support/knowledgecenter/en/SSWU4L/Data/imc_Data/Data_q_a_watson_assistant/Authenticate_to_FTP_with_OAuth.html
+                // for more details.
+                if ((string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) && OAuthSpecified())
+                {
+                    username = "oauth";
+                    password = _accessTokenProvider.Get();
+                }
+                
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
                     throw new InvalidOperationException(
-                        $"{nameof(_configuration.Username)} and {nameof(_configuration.Password)} must be configured for SFTP usage.");
-                };
-            }
-            else
-            {
-                _sftpConnectedClientFactory = () =>
-                {
-                    var sftpClient = new SftpClient(
-                        $"transfer{configuration.PodNumber}.silverpop.com",
-                        _configuration.Username,
-                        _configuration.Password);
+                        $"OAuth login details or {nameof(_configuration.Username)} and {nameof(_configuration.Password)} "
+                        + "must be configured for SFTP usage.");
+                }
 
-                    sftpClient.Connect();
+                var sftpClient = new SftpClient(
+                    $"transfer{configuration.PodNumber}.silverpop.com",
+                    username,
+                    password);
 
-                    return sftpClient;
-                };
-            }
+                sftpClient.Connect();
+
+                return sftpClient;
+            };
         }
 
         public string HttpUpload(string data, bool tryRefreshingOAuthAccessToken = true)
