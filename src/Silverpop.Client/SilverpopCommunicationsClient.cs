@@ -64,7 +64,8 @@ namespace Silverpop.Client
             {
                 try
                 {
-                    var response = httpClient.PostAsync(_transactHttpsUrl, new StringContent(data)).Result;
+                    var response = httpClient.PostAsync(_transactHttpsUrl, new StringContent(data))
+                        .ConfigureAwait(false).GetAwaiter().GetResult();
                     return response.Content.ReadAsStringAsync()
                         .ConfigureAwait(false).GetAwaiter().GetResult();
                 }
@@ -87,7 +88,8 @@ namespace Silverpop.Client
                 var response = httpClient.PostAsync(_transactHttpsUrl, new StringContent(data))
                     .ConfigureAwait(false).GetAwaiter().GetResult();
 
-                return response.Content.ReadAsStringAsync().Result;
+                return response.Content.ReadAsStringAsync()
+                    .ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
 
