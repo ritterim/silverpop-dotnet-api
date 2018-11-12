@@ -31,16 +31,8 @@ namespace Silverpop.Client
 
             _httpClientFactory = () => new HttpClient();
 
-            if (string.IsNullOrEmpty(_configuration.Username) ||
-                string.IsNullOrEmpty(_configuration.Password))
-            {
-                _sftpConnectedClientFactory = () =>
-                {
-                    throw new InvalidOperationException(
-                        $"{nameof(_configuration.Username)} and {nameof(_configuration.Password)} must be configured for SFTP usage.");
-                };
-            }
-            else
+            if (!string.IsNullOrEmpty(_configuration.Username) &&
+                !string.IsNullOrEmpty(_configuration.Password))
             {
                 _sftpConnectedClientFactory = () =>
                 {
@@ -53,6 +45,56 @@ namespace Silverpop.Client
 
                     return sftpClient;
                 };
+            }
+            else if (!string.IsNullOrEmpty(_configuration.OAuthClientId) &&
+                     !string.IsNullOrEmpty(_configuration.OAuthClientSecret) &&
+                     !string.IsNullOrEmpty(_configuration.OAuthRefreshToken))
+            {
+                bool tryRefreshingOAuthAccessToken = true;
+
+                while(tryRefreshingOAuthAccessToken == true)
+                {
+                    try
+                    {                        
+                        _sftpConnectedClientFactory = () =>
+                        {
+                            var sftpClient = new SftpClient(
+                                $"transfer{configuration.PodNumber}.silverpop.com",
+                                "oauth",
+                                _accessTokenProvider.Get());
+
+                            sftpClient.Connect();                            
+                            return sftpClient;
+                        };
+                        tryRefreshingOAuthAccessToken = false;
+                    }
+                    catch (WebException ex)
+                    {
+                        var response = ex.Response as HttpWebResponse;
+                        if (response != null && response.StatusCode == HttpStatusCode.Unauthorized)
+                        {
+                            _accessTokenProvider.Refresh();
+                            tryRefreshingOAuthAccessToken = false;
+                        }
+                        else
+                        {
+                            _sftpConnectedClientFactory = () =>
+                            {
+                                throw ex;
+                            };
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                _sftpConnectedClientFactory = () =>
+                {
+                    throw new InvalidOperationException(
+                        $"{nameof(_configuration.Username)} and {nameof(_configuration.Password)} must be configured for SFTP usage.");
+                };
+                
             }
         }
 
