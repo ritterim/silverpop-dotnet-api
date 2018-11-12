@@ -50,12 +50,12 @@ namespace Silverpop.Client
                      !string.IsNullOrEmpty(_configuration.OAuthClientSecret) &&
                      !string.IsNullOrEmpty(_configuration.OAuthRefreshToken))
             {
-                bool tryRefreshingOAuthAccessToken = true;
+                bool tryRefreshingOAuthAccessToken = false;
 
-                while(tryRefreshingOAuthAccessToken == true)
+                do
                 {
                     try
-                    {                        
+                    {
                         _sftpConnectedClientFactory = () =>
                         {
                             var sftpClient = new SftpClient(
@@ -63,7 +63,7 @@ namespace Silverpop.Client
                                 "oauth",
                                 _accessTokenProvider.Get());
 
-                            sftpClient.Connect();                            
+                            sftpClient.Connect();
                             return sftpClient;
                         };
                         tryRefreshingOAuthAccessToken = false;
@@ -71,20 +71,23 @@ namespace Silverpop.Client
                     catch (WebException ex)
                     {
                         var response = ex.Response as HttpWebResponse;
-                        if (response != null && response.StatusCode == HttpStatusCode.Unauthorized)
+                        if (response != null && 
+                            response.StatusCode == HttpStatusCode.Unauthorized && 
+                            tryRefreshingOAuthAccessToken == false)
                         {
                             _accessTokenProvider.Refresh();
-                            tryRefreshingOAuthAccessToken = false;
+                            tryRefreshingOAuthAccessToken = true;
                         }
                         else
                         {
+                            tryRefreshingOAuthAccessToken = false;
                             _sftpConnectedClientFactory = () =>
                             {
                                 throw ex;
                             };
                         }
                     }
-                }
+                } while (tryRefreshingOAuthAccessToken == true);
 
             }
             else
