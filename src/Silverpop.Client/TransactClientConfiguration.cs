@@ -50,9 +50,7 @@ namespace Silverpop.Client
                     case 9:
                         return "us-6";
                     default:
-                        throw new ArgumentOutOfRangeException(
-                            "PodNumber",
-                            "PodNumber is not a known value.");
+                        return "";
                 }
             }
         }
