@@ -26,7 +26,7 @@ namespace Silverpop.Client
             _accessTokenProvider = new AccessTokenProvider(configuration);
 
             _transactHttpsUrl = string.Format(
-                "transact-campaign-{0}.goacoustic.com/XTMail",
+                "https://transact-campaign-{0}.goacoustic.com/XTMail",
                 configuration.EndpointIdentifier);
 
             _httpClientFactory = () => new HttpClient();
