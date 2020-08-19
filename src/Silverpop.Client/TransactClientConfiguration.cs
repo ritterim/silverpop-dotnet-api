@@ -25,6 +25,36 @@ namespace Silverpop.Client
             }
         }
 
+        public string EndpointIdentifier
+        {
+            get
+            {
+                switch (_podNumber)
+                {
+                    case 1:
+                        return "us-1";
+                    case 2:
+                        return "us-2";
+                    case 3:
+                        return "us-3";
+                    case 4:
+                        return "us-4";
+                    case 5:
+                        return "us-5";
+                    case 6:
+                        return "eu-1";
+                    case 7:
+                        return "ap-2";
+                    case 8:
+                        return "ca-1";
+                    case 9:
+                        return "us-6";
+                    default:
+                        return "";
+                }
+            }
+        }
+
         public string Username { get; set; }
 
         public string Password { get; set; }

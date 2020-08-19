@@ -26,8 +26,8 @@ namespace Silverpop.Client
             _accessTokenProvider = new AccessTokenProvider(configuration);
 
             _transactHttpsUrl = string.Format(
-                "https://transact{0}.silverpop.com/XTMail",
-                configuration.PodNumber);
+                "https://transact-campaign-{0}.goacoustic.com/XTMail",
+                configuration.EndpointIdentifier);
 
             _httpClientFactory = () => new HttpClient();
 
@@ -54,7 +54,7 @@ namespace Silverpop.Client
                 }
 
                 var sftpClient = new SftpClient(
-                    $"transfer{configuration.PodNumber}.silverpop.com",
+                    $"transfer-campaign-{configuration.EndpointIdentifier}.goacoustic.com",
                     username,
                     password);
 

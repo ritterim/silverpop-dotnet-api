@@ -27,8 +27,8 @@ namespace Silverpop.Client
         {
             _configuration = configuration;
             _tokenUrl = string.Format(
-                "https://api{0}.silverpop.com/oauth/token",
-                configuration.PodNumber);
+                "https://api-campaign-{0}.goacoustic.com/oauth/token",
+                configuration.EndpointIdentifier);
             _httpClient = httpClient ?? new HttpClient();
         }
 
