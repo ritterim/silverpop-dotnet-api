@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Configuration;
+using Moq;
 using Silverpop.Core;
 using System;
 using System.Collections.Generic;
@@ -1125,7 +1126,11 @@ namespace Silverpop.Client.Tests
                         Username = "username-from-appSettings"
                     });
 
-                var client = TransactClient.CreateUsingConfiguration(_configProvider);
+                var client = TransactClient.CreateUsingConfiguration(
+#if NETCOREAPP
+                    null,
+#endif
+                    _configProvider);
 
                 Assert.Equal("username-from-appSettings", client.Configuration.Username);
             }
@@ -1140,10 +1145,33 @@ namespace Silverpop.Client.Tests
                         Username = "username-from-config-section"
                     });
 
-                var client = TransactClient.CreateUsingConfiguration(_configProvider);
+                var client = TransactClient.CreateUsingConfiguration(
+#if NETCOREAPP
+                    null,
+#endif
+                    _configProvider);
 
                 Assert.Equal("username-from-config-section", client.Configuration.Username);
             }
+
+#if NETCOREAPP
+            [Fact]
+            public void UsesIConfiguration()
+            {
+                var appSettings = new Dictionary<string, string>
+                {
+                    ["silverpop-dotnet-api:username"] = "username-from-iconfiguration"
+                };
+
+                var configuration = new ConfigurationBuilder()
+                    .AddInMemoryCollection(appSettings)
+                    .Build();
+
+                var client = TransactClient.CreateUsingConfiguration(configuration);
+
+                Assert.Equal("username-from-iconfiguration", client.Configuration.Username);
+            }
+#endif
 
             [Fact]
             public void AppSettingsOverwriteConfigSectionSettings()
@@ -1162,7 +1190,11 @@ namespace Silverpop.Client.Tests
                         Username = "username-from-config-section"
                     });
 
-                var client = TransactClient.CreateUsingConfiguration(_configProvider);
+                var client = TransactClient.CreateUsingConfiguration(
+#if NETCOREAPP
+                    null,
+#endif
+                    _configProvider);
 
                 Assert.Equal("username-from-appSettings", client.Configuration.Username);
             }
@@ -1171,7 +1203,11 @@ namespace Silverpop.Client.Tests
             public void ThrowsWhenNoConfigurationAvailable()
             {
                 var exception = Assert.Throws<InvalidOperationException>(
-                    () => TransactClient.CreateUsingConfiguration(_configProvider));
+                    () => TransactClient.CreateUsingConfiguration(
+#if NETCOREAPP
+                        null,
+#endif
+                        _configProvider));
 
                 Assert.Equal(
                     "Unable to create TransactClient using configuration. " +

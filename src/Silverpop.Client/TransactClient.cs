@@ -1,4 +1,8 @@
-﻿using Silverpop.Client.Extensions;
+﻿#if NETSTANDARD
+using Microsoft.Extensions.Configuration;
+#endif
+
+using Silverpop.Client.Extensions;
 using Silverpop.Core;
 using System;
 using System.Collections.Generic;
@@ -338,16 +342,24 @@ namespace Silverpop.Client
             });
         }
 
+#pragma warning disable CS1572 // XML comment has a param tag, but there is no parameter by that name
         /// <summary>
         /// Create the TransactClient using application configuration.
         /// This will attempt to read both the TransactClientConfigurationSection
         /// and appSettings from configuration. When a setting is set in both
         /// TransactClientConfigurationSection and appSettings the appSettings value is used.
         /// </summary>
+        /// <param name="configuration">
+        /// Optional provide IConfiguration to have associated app settings used.
+        /// </param>
         /// <param name="configProvider">
         /// Optional override for specifying a custom TransactClientConfigurationProvider.
         /// </param>
         public static TransactClient CreateUsingConfiguration(
+#pragma warning restore CS1572 // XML comment has a param tag, but there is no parameter by that name
+#if NETSTANDARD
+            IConfiguration configuration = null,
+#endif
             TransactClientConfigurationProvider configProvider = null)
         {
             var config = new TransactClientConfiguration();
@@ -359,8 +371,16 @@ namespace Silverpop.Client
 
             var configSectionConfig = configProvider.GetFromConfigurationSection();
             var appSettingsConfig = configProvider.GetFromAppSettings();
+#if NETSTANDARD
+            var configurationConfig = configProvider.GetFromAppSettings(configuration);
+#endif
 
-            if (configSectionConfig == null && appSettingsConfig == null)
+            if (configSectionConfig == null
+                && appSettingsConfig == null
+#if NETSTANDARD
+                && configurationConfig == null
+#endif
+            )
             {
                 throw new InvalidOperationException(
                     "Unable to create TransactClient using configuration. " +
@@ -376,6 +396,13 @@ namespace Silverpop.Client
             {
                 config.HydrateUsing(appSettingsConfig);
             }
+
+#if NETSTANDARD
+            if (configurationConfig != null)
+            {
+                config.HydrateUsing(configurationConfig);
+            }
+#endif
 
             return new TransactClient(config);
         }
