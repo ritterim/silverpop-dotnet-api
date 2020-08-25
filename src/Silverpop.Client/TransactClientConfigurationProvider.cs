@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if NETSTANDARD
+using Microsoft.Extensions.Configuration;
+#endif
+
+using System;
 using System.Configuration;
 using System.Linq;
 
@@ -28,6 +32,10 @@ namespace Silverpop.Client
             _appSettingsPrefix = appSettingsPrefix;
         }
 
+        /// <summary>
+        /// Retrieve settings using ConfigurationManager.AppSettings.
+        /// If targeting .NET Core you're probably looking for GetFromAppSettings(IConfiguration) instead.
+        /// </summary>
         public virtual TransactClientConfiguration GetFromAppSettings()
         {
             if (!ConfigurationManager.AppSettings.AllKeys.Any(
@@ -53,6 +61,33 @@ namespace Silverpop.Client
 
             return config;
         }
+
+#if NETSTANDARD
+        /// <summary>
+        /// Retrieve settings using IConfiguration.
+        /// </summary>
+        public virtual TransactClientConfiguration GetFromAppSettings(IConfiguration configuration)
+        {
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            int podNumber;
+            var parseablePodNumberSet = int.TryParse(
+                GetConfigurationAppSettingValueOrNull(configuration, "podNumber"),
+                out podNumber);
+
+            var config = new TransactClientConfiguration
+            {
+                PodNumber = parseablePodNumberSet ? podNumber : (int?)null,
+                Username = GetConfigurationAppSettingValueOrNull(configuration, "username"),
+                Password = GetConfigurationAppSettingValueOrNull(configuration, "password"),
+                OAuthClientId = GetConfigurationAppSettingValueOrNull(configuration, "oAuthClientId"),
+                OAuthClientSecret = GetConfigurationAppSettingValueOrNull(configuration, "oAuthClientSecret"),
+                OAuthRefreshToken = GetConfigurationAppSettingValueOrNull(configuration, "oAuthRefreshToken")
+            };
+
+            return config;
+        }
+#endif
 
         public virtual TransactClientConfiguration GetFromConfigurationSection()
         {
@@ -81,6 +116,13 @@ namespace Silverpop.Client
         {
             return GetValueOrNull(ConfigurationManager.AppSettings[_appSettingsPrefix + keyNoPrefix]);
         }
+
+#if NETSTANDARD
+        private string GetConfigurationAppSettingValueOrNull(IConfiguration configuration, string keyNoPrefix)
+        {
+            return GetValueOrNull(configuration[_appSettingsPrefix + keyNoPrefix]);
+        }
+#endif
 
         private static string GetValueOrNull(string str)
         {

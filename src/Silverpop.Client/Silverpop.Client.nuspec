@@ -16,9 +16,10 @@
         <dependency id="SSH.NET" version="2016.1.0" />
       </group>
       <group targetFramework="netstandard2.0">
-        <dependency id="System.Configuration.ConfigurationManager" version="4.4.0" />
+        <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="2.1.1" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
         <dependency id="SSH.NET" version="2016.1.0" />
+        <dependency id="System.Configuration.ConfigurationManager" version="4.4.0" />
       </group>
     </dependencies>
   </metadata>
