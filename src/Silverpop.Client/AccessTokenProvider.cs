@@ -20,6 +20,8 @@ namespace Silverpop.Client
 
         public static readonly TimeSpan ExpirationClockSkew = TimeSpan.FromMinutes(5);
 
+        /// <param name="configuration">
+        /// </param>
         /// <param name="httpClient">
         /// Optional: If null a default implementation will be used.
         /// </param>
