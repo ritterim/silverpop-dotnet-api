@@ -5,7 +5,8 @@
     <AssemblyName>Silverpop.Client</AssemblyName>
     <RootNamespace>Silverpop.Client</RootNamespace>
     <Version>0.0.0</Version>
-    <NoWarn>NU1701</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591;NU1701</NoWarn>
     <NuspecFile>Silverpop.Client.nuspec</NuspecFile>
   </PropertyGroup>
 

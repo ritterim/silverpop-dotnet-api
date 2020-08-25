@@ -5,6 +5,8 @@
     <RootNamespace>Silverpop.Core</RootNamespace>
     <AssemblyName>Silverpop.Core</AssemblyName>
     <Version>0.0.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
 
 </Project>
