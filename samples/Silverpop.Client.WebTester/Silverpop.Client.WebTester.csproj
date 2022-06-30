@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="7.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Nancy" Version="2.0.0-clinteastwood" />
+    <PackageReference Include="Nancy" Version="2.0.0" />
     <PackageReference Include="Nancy.Validation.FluentValidation" Version="2.0.0-clinteastwood" />
   </ItemGroup>
 
